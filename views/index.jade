@@ -1,0 +1,18 @@
+doctype 5
+html
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+		h1= title
+		p Welcome to #{title}
+		form(action='/query', method='GET')
+			select(name='uri')
+				!= beerOptions
+				
+			input(type='submit', value='Submit')
+
+		form(action='/put', method='GET')
+			input(type='text', name='name', value='Name')
+			input(type='submit', value='Submit')
+		//div!= queryResult
