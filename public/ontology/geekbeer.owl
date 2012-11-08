@@ -1,0 +1,842 @@
+@prefix : <http://www.w3.org/2011/12/beer.owl#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix gn: <http://www.geonames.org/ontology#> .
+@prefix jms: <http://jena.hpl.hp.com/2003/08/jms#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rss: <http://purl.org/rss/1.0/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix daml: <http://www.daml.org/2001/03/daml+oil#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vcard: <http://www.w3.org/2001/vcard-rdf/3.0#> .
+@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@base <http://www.w3.org/2011/12/beer.owl> .
+
+<http://www.w3.org/2011/12/beer.owl> rdf:type owl:Ontology ;
+                                     
+                                     rdfs:label "Beer Ontology, OWL Lite" ;
+                                     
+                                     rdfs:comment """
+    	An ontology that models types of beer and brewers/brands.
+	http://purl.org/net/ontology/beer.owl
+	
+	WordNet		beer -- (a general name for alcoholic beverages made by fermenting a cereal (or mixture of cereals) flavored with hops)
+			http://www.cogsci.princeton.edu/cgi-bin/webwn2.0?stage=1&word=beer
+	
+	History		Based on http://www.csd.abdn.ac.uk/research/AgentCities/ontologies/beer#
+	
+    	2004-04-02	* Converted to OWL-Lite by David and http://www.mindswap.org/2002/owl.html
+			* Changed concept hierarchy of beers: added top/bottom-fermention.
+	2004-08-24	* Removed FuzzyMeasure.
+			* Added some German labels, a Property, some Instances.
+
+	@todo		* revamp completely, use http://de.wikipedia.org/wiki/Bier
+			* model constraints
+			* How about some instances? See http://brewery.org/brewery/library/AlClbinger.html  !!
+			* Percentage as subclass of float?
+			
+	Hints		* model purity requirements (german purity law): barley/wheat (kindof grain): malt, hops, water (and yeast (yet unknown around 1516))
+			* For the preparation of beer, only malt, hops, yeast and water can be used.
+			* Typically, beers are made from water, malted barley, hops, fermented by yeast. The addition of other flavorings or sources of sugar is not uncommon.
+    """ ;
+                                     
+                                     owl:versionInfo "beer_v0.4.owl, based on http://purl.org/net/ontology/beer_v0.3.owl" .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://www.w3.org/2011/12/beer.owl#awardCategory
+
+:awardCategory rdf:type owl:ObjectProperty ;
+               
+               rdfs:domain :Award .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#awarded
+
+:awarded rdf:type owl:ObjectProperty ;
+         
+         rdfs:range :Award ;
+         
+         rdfs:domain :Beer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#awardedAt
+
+:awardedAt rdf:type owl:ObjectProperty ;
+           
+           rdfs:domain :Award ;
+           
+           rdfs:range :Festival .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#brewedBy
+
+:brewedBy rdf:type owl:ObjectProperty ;
+          
+          rdfs:domain :Beer ;
+          
+          rdfs:range :Brewery ;
+          
+          owl:inverseOf :brews .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#brews
+
+:brews rdf:type owl:ObjectProperty ;
+       
+       rdfs:range :Beer ;
+       
+       rdfs:domain :Brewery .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#locatedIn
+
+:locatedIn rdf:type owl:ObjectProperty ;
+           
+           rdfs:domain :Brewery ;
+           
+           rdfs:range :Region .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#madeFrom
+
+:madeFrom rdf:type owl:ObjectProperty ;
+          
+          rdfs:domain :Beer ;
+          
+          rdfs:range :Ingredient .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#maltedTo
+
+:maltedTo rdf:type owl:ObjectProperty ;
+          
+          rdfs:domain :Grain ;
+          
+          rdfs:range :Malt .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#sells
+
+:sells rdf:type owl:ObjectProperty ;
+       
+       rdfs:range :Beer ;
+       
+       rdfs:domain :Retailer ;
+       
+       owl:inverseOf :soldBy .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#soldBy
+
+:soldBy rdf:type owl:ObjectProperty ;
+        
+        rdfs:subPropertyOf owl:topObjectProperty ;
+        
+        rdfs:domain :Beer ;
+        
+        rdfs:range :Retailer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#sponsors
+
+:sponsors rdf:type owl:ObjectProperty ;
+          
+          rdfs:domain :Association ;
+          
+          rdfs:range :Festival .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://www.w3.org/2001/vcard-rdf/3.0#latitude
+
+vcard:latitude rdf:type owl:DatatypeProperty .
+
+
+
+###  http://www.w3.org/2001/vcard-rdf/3.0#longitude
+
+vcard:longitude rdf:type owl:DatatypeProperty .
+
+
+
+###  http://www.w3.org/2001/vcard-rdf/3.0#region
+
+vcard:region rdf:type owl:DatatypeProperty ;
+             
+             rdfs:domain vcard:Address .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#hasAlcoholicContent
+
+:hasAlcoholicContent rdf:type owl:DatatypeProperty ,
+                              owl:FunctionalProperty ;
+                     
+                     rdfs:range xsd:float ;
+                     
+                     rdfs:domain :Beer ;
+                     
+                     rdfs:subPropertyOf :hasContent .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#hasBarCode
+
+:hasBarCode rdf:type owl:DatatypeProperty ;
+            
+            rdfs:domain :Beer ;
+            
+            rdfs:subPropertyOf :hasContent .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#hasContent
+
+:hasContent rdf:type owl:DatatypeProperty ;
+            
+            rdfs:comment "only for test purposes" ;
+            
+            rdfs:domain :Beer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#hasOriginalWortContent
+
+:hasOriginalWortContent rdf:type owl:DatatypeProperty ,
+                                 owl:FunctionalProperty ;
+                        
+                        rdfs:range xsd:float ;
+                        
+                        rdfs:domain :Beer ;
+                        
+                        rdfs:subPropertyOf :hasContent .
+
+
+
+###  http://xmlns.com/foaf/0.1/account
+
+foaf:account rdf:type owl:DatatypeProperty ;
+             
+             rdfs:domain :User .
+
+
+
+###  http://xmlns.com/foaf/0.1/accountName
+
+foaf:accountName rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:domain :User .
+
+
+
+###  http://xmlns.com/foaf/0.1/name
+
+foaf:name rdf:type owl:DatatypeProperty ;
+          
+          rdfs:domain :User .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://www.w3.org/2001/vcard-rdf/3.0#Address
+
+vcard:Address rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Ale
+
+:Ale rdf:type owl:Class ;
+     
+     rdfs:subClassOf :TopFermentedBeer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Association
+
+:Association rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Organization .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Award
+
+:Award rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Barley
+
+:Barley rdf:type owl:Class ;
+        
+        rdfs:label "Gerste"@de ;
+        
+        rdfs:subClassOf :Grain .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Beer
+
+:Beer rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Bitter
+
+:Bitter rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Ale .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Black
+
+:Black rdf:type owl:Class ;
+       
+       rdfs:subClassOf :Malt .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Bock
+
+:Bock rdf:type owl:Class ;
+      
+      rdfs:subClassOf :BottomFermentedBeer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#BottomFermentedBeer
+
+:BottomFermentedBeer rdf:type owl:Class ;
+                     
+                     rdfs:label "Untergaeriges Bier"@de ;
+                     
+                     rdfs:subClassOf :Beer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Brewery
+
+:Brewery rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Organization .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#BrownAle
+
+:BrownAle rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Ale .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Caramel
+
+:Caramel rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Malt .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Carapils
+
+:Carapils rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Malt .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Cascade
+
+:Cascade rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Chinook
+
+:Chinook rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Chocolate
+
+:Chocolate rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Malt .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#DryStout
+
+:DryStout rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Stout .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Festival
+
+:Festival rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Galena
+
+:Galena rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Grain
+
+:Grain rdf:type owl:Class ;
+       
+       rdfs:label "Getreide"@de ;
+       
+       rdfs:subClassOf :Ingredient .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Hallertau
+
+:Hallertau rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Hops
+
+:Hops rdf:type owl:Class ;
+      
+      rdfs:label "Hopfen"@de ,
+                 "Hops"@en ,
+                 "Vine"@en ;
+      
+      rdfs:subClassOf :Ingredient .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#ImperialStout
+
+:ImperialStout rdf:type owl:Class ;
+               
+               rdfs:subClassOf :Stout .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#IndiaPaleAle
+
+:IndiaPaleAle rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Ale .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Ingredient
+
+:Ingredient rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#KentGoldings
+
+:KentGoldings rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Lager
+
+:Lager rdf:type owl:Class ;
+       
+       rdfs:label "Helles"@de ;
+       
+       rdfs:subClassOf :BottomFermentedBeer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Malt
+
+:Malt rdf:type owl:Class ;
+      
+      rdfs:label "Malz"@de ;
+      
+      rdfs:subClassOf :Ingredient .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Microbrewery
+
+:Microbrewery rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Brewery .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Mild
+
+:Mild rdf:type owl:Class ;
+      
+      rdfs:subClassOf :Ale .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#MountHood
+
+:MountHood rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Munich
+
+:Munich rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Malt .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Organization
+
+:Organization rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Pale
+
+:Pale rdf:type owl:Class ;
+      
+      rdfs:subClassOf :Malt .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#PaleAle
+
+:PaleAle rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Ale .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Perle
+
+:Perle rdf:type owl:Class ;
+       
+       rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Pilsner
+
+:Pilsner rdf:type owl:Class ;
+         
+         rdfs:label "Pils"@de ;
+         
+         rdfs:subClassOf :BottomFermentedBeer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Porter
+
+:Porter rdf:type owl:Class ;
+        
+        rdfs:subClassOf :TopFermentedBeer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Region
+
+:Region rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Retailer
+
+:Retailer rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Organization .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Saaz
+
+:Saaz rdf:type owl:Class ;
+      
+      rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#ScotchAle
+
+:ScotchAle rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Ale .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Stout
+
+:Stout rdf:type owl:Class ;
+       
+       rdfs:subClassOf :Porter .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#SweetStout
+
+:SweetStout rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Stout .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Tettnang
+
+:Tettnang rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#TopFermentedBeer
+
+:TopFermentedBeer rdf:type owl:Class ;
+                  
+                  rdfs:label "Obergaeriges Bier"@de ;
+                  
+                  rdfs:subClassOf :Beer .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Town
+
+:Town rdf:type owl:Class ;
+      
+      rdfs:subClassOf :Region .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#User
+
+:User rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Water
+
+:Water rdf:type owl:Class ;
+       
+       rdfs:subClassOf :Ingredient .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Wheat
+
+:Wheat rdf:type owl:Class ;
+       
+       rdfs:label "Weizen"@de ;
+       
+       rdfs:subClassOf :Grain .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#White
+
+:White rdf:type owl:Class ;
+       
+       rdfs:label "Weizenbier"@de ,
+                  "Wheat Beer"@en ;
+       
+       rdfs:subClassOf :TopFermentedBeer ;
+       
+       rdfs:comment "Weissbier"@de .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Willamette
+
+:Willamette rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Hops .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Yeast
+
+:Yeast rdf:type owl:Class ;
+       
+       rdfs:label "Hefe"@de ;
+       
+       rdfs:subClassOf :Ingredient .
+
+
+
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://www.w3.org/2011/12/beer.owl#Boddingtons
+
+:Boddingtons rdf:type owl:NamedIndividual ,
+                      :Ale .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Grafentrunk
+
+:Grafentrunk rdf:type owl:NamedIndividual ,
+                      :Bock .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Hoegaarden
+
+:Hoegaarden rdf:type owl:NamedIndividual ,
+                     :White .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Jever
+
+:Jever rdf:type owl:NamedIndividual ,
+                :Pilsner .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Knut
+
+:Knut rdf:type owl:NamedIndividual ,
+               :User ;
+      
+      foaf:accountName "knutern69" ;
+      
+      foaf:name "Knut Helle" .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Krieger
+
+:Krieger rdf:type owl:NamedIndividual ,
+                  :Lager ;
+         
+         rdfs:label "Krieger Hell"@de ;
+         
+         :hasAlcoholicContent "4.5" ;
+         
+         :brewedBy :KriegerBrauerei .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#KriegerBrauerei
+
+:KriegerBrauerei rdf:type owl:NamedIndividual ,
+                          :Brewery ;
+                 
+                 :locatedIn :LandauIsar .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#LandauIsar
+
+:LandauIsar rdf:type owl:NamedIndividual ,
+                     :Town ;
+            
+            rdfs:comment "Landau an der Isar, Germany" .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Paulaner
+
+:Paulaner rdf:type owl:NamedIndividual ,
+                   :White ;
+          
+          :soldBy :Vinmonopolet .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Tetleys
+
+:Tetleys rdf:type owl:NamedIndividual ,
+                  :Ale .
+
+
+
+###  http://www.w3.org/2011/12/beer.owl#Vinmonopolet
+
+:Vinmonopolet rdf:type owl:NamedIndividual ,
+                       :Retailer .
+
+
+
+
+###  Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net
+
