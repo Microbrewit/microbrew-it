@@ -7,6 +7,7 @@ var express = require('express'),
   routes = require('./routes'),
   user = require('./routes/user'),
   mail = require('./routes/mail'),
+  query = require('./routes/query'),
   http = require('http'),
   path = require('path');
 
@@ -34,6 +35,9 @@ app.configure('development', function () {
 app.get('/', routes.index);
 app.get('/mail', mail.mail);
 app.get('/users', user.list);
+app.get('/beer/add', query.insert);
+app.get('/beer/query', query.query);
+app.get('/beer/put', query.put);
 
 http.createServer(app).listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
