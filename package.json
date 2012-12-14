@@ -1,15 +1,19 @@
 {
-  "name": "application-name",
+  "name": "microbrew-it",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "node app",
+    "test": "mocha -w coffee:coffee-script"
   },
   "dependencies": {
-    "express": "3.0.4",
-    "ejs": "*",
-    "stylus": "*",
-    "mysql": "*",
-    "passport": "*"
+    "express": "3.0.x",
+    "ejs": "0.8.x",
+    "stylus": "0.31.x",
+    "mysql": "2.0.x",
+    "passport": "0.1.x",
+    "mocha": "1.7.x",
+    "coffee-script": "1.4.x",
+    "chai": "1.4.x"
   }
 }
