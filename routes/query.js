@@ -22,18 +22,12 @@ exports.query = function (req, res) {
       console.log('HEDERS: ' + JSON.stringify(response.headers));
       response.setEncoding('utf8');
       response.on('data', function (chunk) {
-        console.log(chunk);
+        console.log(response);
         returnedJSON += chunk;
       });
       response.on('end', function () {
-        var json = JSON.parse(returnedJSON),
-          queryData = '',
-          i = 0,
-          jsonLength = json.results.bindings.length;
-        for (i; i < jsonLength; i++) {
-          queryData += '<p class="made">' + JSON.stringify(json.results.bindings[i].b.value) + '</p>';
-        }
-        res.render('beer', {title: 'Query Results', queryResult: queryData });
+        var json = JSON.parse(returnedJSON);
+        res.render('beer', {title: 'Query Results', BeerJSON: json });
       });
     });
   request.on('error', function (e) {

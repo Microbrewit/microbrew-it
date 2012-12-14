@@ -649,13 +649,13 @@ Evaluator.prototype.visitImport = function(imported){
   var name = path = path.string;
 
   // Literal
-  if (~path.indexOf('.css')) {
+  if (~path.indexOf('.css') && !~path.indexOf('.css.')) {
     literal = true;
     if (!includeCSS) return imported;
   }
 
   // support optional .styl
-  if (!literal && !~path.indexOf('.styl')) path += '.styl';
+  if (!literal && !/\.styl$/i.test(path)) path += '.styl';
 
   // Lookup
   found = utils.lookup(path, this.paths, this.filename);
@@ -1007,6 +1007,7 @@ Evaluator.prototype.__defineGetter__('closestBlock', function(){
       switch (block.node.nodeName) {
         case 'group':
         case 'function':
+        case 'media':
           return block;
       }
     }
