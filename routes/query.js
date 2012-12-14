@@ -7,10 +7,10 @@ exports.query = function (req, res) {
 
   var  prefix = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> ',
     select = encodeURIComponent('SELECT ?b  WHERE {') + uri + encodeURIComponent(' ?a ?b }'),
-    repository = '/openrdf-sesame/repositories/geekbeer?query=',
+    repository = '/openrdf-sesame/repositories/microbrewit?query=',
     returnedJSON = '',
     options = {
-      host: 'collos.zapto.org',
+      host: 'microbrewit.thunemedia.no',
       port: 8088,
       path: repository + encodeURIComponent(prefix) + select,
       headers: { accept: 'application/sparql-results+json'},
@@ -43,9 +43,9 @@ exports.put = function (req, res) {
     insertEnd = ' rdf:type ns:Person}',
     update = encodeURIComponent(prefix + insertStart + name + insertEnd),
     options = {
-      host: 'collos.zapto.org',
+      host: 'microbrewit.thunemedia.no',
       port: 8088,
-      path: '/openrdf-sesame/repositories/geekbeer/statements?update=' + update,
+      path: '/openrdf-sesame/repositories/microbrewit/statements?update=' + update,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
