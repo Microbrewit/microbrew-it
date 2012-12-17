@@ -1,0 +1,13 @@
+
+root = true  ; top-most EditorConfig file
+
+; Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+charset = utf-8
+insert_final_newline = true
+indent_style = tab 
+[*.js]
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
