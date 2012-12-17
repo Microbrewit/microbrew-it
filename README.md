@@ -1,4 +1,4 @@
-GeekBeer
+Microbrew.it
 ========
 
-GeekBeer-app
+The web back end, and web app for microbrew.it.

@@ -1,0 +1,95 @@
+@import "Lattice/core.scss";
+@import "Lattice/grid.scss";
+@import "Lattice/forms.scss";
+@import "Lattice/buttons.scss";
+@import "Lattice/typography.scss";
+
+body {
+	background: #e4e4e4;
+}
+#main-header {
+	background-color: #454544;
+	max-height: 50px;
+	position:relative;
+	z-index: 20;
+}
+	#logo {
+		margin-right: 25px;
+	}
+	#main-header a {
+		color: #fff;
+		text-decoration:none;
+	}
+		#main-header a:hover {
+			color: #eee;
+		}
+	#main-search {
+		height: 50px;
+		margin:0;
+	}
+	.search input {
+		width: 120px;
+		display: inline;
+		margin-top: 10px;
+	}
+	.search .search.button {
+		width: 25px; height: 50px;
+		background: url(../images/search-white.png) center center no-repeat;
+		text-indent: -9999px;
+		border:0;
+	}
+	#main-navigation li {
+		height: 46px;
+	}
+	#main-navigation a {
+		line-height: 46px;
+		display: block;
+		padding: 0px 25px;
+	}
+		#main-navigation a:hover {
+			background: #3E3E3E;
+		}
+		#main-navigation .active a {
+			border-top: 4px solid #02ABD6;
+			background: #333333;
+		}
+	.horizontal-navigation li {
+		display: inline-block;
+		margin:0;
+	}
+	.image-middle img {
+		vertical-align: middle;
+	}
+.position-relative {
+	position:relative;
+}
+.beer-image {
+	background-position: center center;
+	background-size: 400px;
+	background-repeat: no-repeat;
+
+	width: 400px;
+	position:absolute;
+	height: 500px;
+	top: -50px;
+	left:0;
+	// margin-top: -300px;
+}
+	.beer-image:after {
+		position: absolute;
+		z-index:10;
+		left:0;
+		right:0;
+		top:0;
+		bottom:0;
+		background: -moz-radial-gradient(center, ellipse cover,  rgba(198,201,205,0) 0%, #e4e4e4 100%); /* FF3.6+ */
+		background: -webkit-radial-gradient(center, ellipse cover,  rgba(198,201,205,0) 0%, #e4e4e4 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-radial-gradient(center, ellipse cover,  rgba(198,201,205,0) 0%,rgba(198,201,205,0) 43%,rgba(198,201,205,1) 100%); /* Opera 12+ */
+		background: -ms-radial-gradient(center, ellipse cover,  rgba(198,201,205,0) 0%,rgba(198,201,205,0) 43%,rgba(198,201,205,1) 100%); /* IE10+ */
+		background: radial-gradient(ellipse at center,  rgba(198,201,205,0) 0%,rgba(198,201,205,0) 43%,rgba(198,201,205,1) 100%); /* W3C */
+		content:'';
+	}
+
+#beer-stats {
+	margin-left: 400px;
+}
