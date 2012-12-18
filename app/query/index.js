@@ -43,14 +43,18 @@ var http = require('http'),
 
 exports.insert = function (beer, callback) {
 	createInsertString(beer, function (err, result) {
-		options.path = config.ts.path.insert + result;
-		var request = http.request(options, function (response) {
-				callback(null, response);
+		if (err) {
+			callback(err);
+		} else {
+			options.path = config.ts.path.insert + result;
+			var request = http.request(options, function (response) {
+					callback(null, response);
+				});
+			request.on('error', function (e) {
+				callback(new Error(e.message));
 			});
-		request.on('error', function (e) {
-			callback(new Error(e.message));
-		});
-		request.end();
+			request.end();
+		}
 	});
 };
 
