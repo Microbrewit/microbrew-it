@@ -1,7 +1,7 @@
 var http = require('http'),
 	url = require('url'),
 	mysql = require('mysql'),
-	config = require('./config'),
+	config = require('../config'),
 	connection = mysql.createConnection({
 		'host'	: config.host,
 		'user'	: config.user,
