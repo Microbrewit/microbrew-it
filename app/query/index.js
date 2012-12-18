@@ -1,7 +1,7 @@
 'use strict';
 var http = require('http'),
 	querystring = require('querystring'),
-	config = require('../app/config'),
+	config = require('../config'),
 	createInsertString = function (options, callback) {
 		var prefixes = 'PREFIX mb:<http://www.microbrew.it/Beer/>',
 			insert = 'INSERT DATA { ';

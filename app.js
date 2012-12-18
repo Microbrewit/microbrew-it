@@ -5,7 +5,6 @@
 
 var express = require('express'),
 	routes = require('./routes'),
-	query = require('./routes/query'),
 	http = require('http'),
 	path = require('path');
 

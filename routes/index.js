@@ -1,5 +1,6 @@
 var mail = require('../app/mail'),
-	query = require('../app/query');
+	query = require('../app/query'),
+	url = require('url');
 /*
  * GET Beer page.
  */
@@ -56,7 +57,7 @@ exports.insert = function (req, res) {
 		mouthfeel : param.mouthfeel,
 		colour : param.colour,
 		barcode : param.barcode
-	}, function (err, response) {
+	}, function (error, response) {
 		if (error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
