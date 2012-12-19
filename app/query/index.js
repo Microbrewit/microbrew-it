@@ -55,24 +55,24 @@ exports.insert = function (beer, callback) {
 };
 
 exports.select = function (beerURI, callback) {
-	var prefix = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> ',
+	var prefix = 'PREFIX foaf: <PREFIX mb:<http://www.microbrew.it/Beer/> ',
 		select = encodeURIComponent('SELECT ?b  WHERE {' + beerURI + ' ?a ?b }'),
 		returnedJSON = '',
 		request;
-		
-		options.path = config.ts.path.query + encodeURIComponent(prefix) + select;
-		request = http.request(options, function (response) {
-			response.setEncoding('utf8');
-			response.on('data', function (chunk) {
+
+	options.path = config.ts.path.query + encodeURIComponent(prefix) + select;
+	request = http.request(options, function (response) {
+		response.setEncoding('utf8');
+		response.on('data', function (chunk) {
 			returnedJSON += chunk;
 		});
 		response.on('end', function () {
 			var json = JSON.parse(returnedJSON);
-			callback(null, {title: 'Query Results', BeerJSON: json })
+			callback(null, {title: 'Query Results', BeerJSON: json });
 		});
 	});
 	request.on('error', function (e) {
-		callback(new Error(e.message))
+		callback(new Error(e.message));
 	});
 	request.end();
 };
