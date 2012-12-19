@@ -20,7 +20,7 @@ exports.index = function (req, res) {
  * GET users listing.
  */
 
-exports.list = function(req, res){
+exports.list = function (req, res) {
   res.send("respond with a resource");
 };
 
@@ -48,7 +48,7 @@ exports.insert = function (req, res) {
 		bottle : param.bottle,
 		label : param.label,
 		comment : param.comment,
-		description : param.description, 
+		description : param.description,
 		servingtype : param.servingtype,
 		glasstype : param.glasstype,
 		ibu : param.ibu,
@@ -69,13 +69,16 @@ exports.insert = function (req, res) {
 };
 
 exports.query = function (req, res) {
-	var beerURI = '<' + req.param('uri') + '>';
+	var beerURI = '<http://www.microbrew.it/Beer/' + req.params.beer + '>';
+	console.log(beerURI);
 	query.select(beerURI, function (error, result) {
 		if (error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			res.render('beer', result);
-		}		
+			//res.render('beer', result);
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+			res.end(JSON.stringify(result));
+		}
 	});
 };

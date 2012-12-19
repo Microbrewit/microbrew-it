@@ -55,12 +55,13 @@ exports.insert = function (beer, callback) {
 };
 
 exports.select = function (beerURI, callback) {
-	var prefix = 'PREFIX foaf: <PREFIX mb:<http://www.microbrew.it/Beer/> ',
-		select = encodeURIComponent('SELECT ?b  WHERE {' + beerURI + ' ?a ?b }'),
+	var prefix = 'PREFIX mb:<http://www.microbrew.it/Beer/>',
+		select = encodeURIComponent('SELECT *  WHERE {' + beerURI + ' ?a ?b }'),
 		returnedJSON = '',
 		request;
 
 	options.path = config.ts.path.query + encodeURIComponent(prefix) + select;
+	options.headers.accept = 'application/sparql-results+json';
 	request = http.request(options, function (response) {
 		response.setEncoding('utf8');
 		response.on('data', function (chunk) {
