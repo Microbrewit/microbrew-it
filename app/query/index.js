@@ -2,6 +2,7 @@
 var http = require('http'),
 	querystring = require('querystring'),
 	config = require('../config'),
+	mb = require('../ontology').mb,
 	createInsertString = function (options, callback) {
 		var prefixes = 'PREFIX mb:<http://www.microbrew.it/Beer/>',
 			insert = 'INSERT DATA { ';
@@ -55,12 +56,15 @@ exports.insert = function (beer, callback) {
 };
 
 exports.select = function (beerURI, callback) {
-	var prefix = 'PREFIX mb:<http://www.microbrew.it/Beer/>',
-		select = encodeURIComponent('SELECT *  WHERE {' + beerURI + ' ?a ?b }'),
-		returnedJSON = '',
-		request;
+	var returnedJSON = '',
+		request,
+		prefix = 'PREFIX mb:<http://www.microbrew.it/Beer/>',
+		select = 'SELECT *  WHERE {' + beerURI + mb.beerName + '?name .';
+	select += ' OPTIONAL { ' + beerURI + 'mb:hasStyle ?style}';
+	select += '}';
+	console.log(select);
 
-	options.path = config.ts.path.query + encodeURIComponent(prefix) + select;
+	options.path = config.ts.path.query;
 	options.headers.accept = 'application/sparql-results+json';
 	request = http.request(options, function (response) {
 		response.setEncoding('utf8');
@@ -75,5 +79,5 @@ exports.select = function (beerURI, callback) {
 	request.on('error', function (e) {
 		callback(new Error(e.message));
 	});
-	request.end();
+	request.end('query=' + encodeURIComponent(prefix + select));
 };
