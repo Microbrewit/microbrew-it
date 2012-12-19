@@ -46,14 +46,20 @@ exports.insert = function (beer, callback) {
 		if (err) {
 			callback(err);
 		} else {
-			options.path = config.ts.path.insert + result;
+			options.path = config.ts.path.baseURL;
 			var request = http.request(options, function (response) {
-					callback(null, response);
+					response.on('end', function () {
+						callback(null, {'statusCode': response.statusCode});
+						console.log(response.statusCode);
+					});
+					response.on('data', function (data) {
+					});
+					
 				});
 			request.on('error', function (e) {
 				callback(new Error(e.message));
 			});
-			request.end();
+			request.end('update=' + result);
 		}
 	});
 };

@@ -20,17 +20,18 @@ describe('query module functionality', function () {
 			});
 		});
 		it('should accept beers with only a name', function (done) {
-			var ts = nock('http://microbrewit.thunemedia.no:8080')
-                .filteringPath(function(path) {
-                   return '/test';
-                 })
-				.post('/test')
-				.reply(404, 'hei');
+			var resBody,
+				ts = nock('http://microbrewit.thunemedia.no:8080')
+				.filteringRequestBody(/.*/, function (body) {
+					resBody = body;	
+					return '*';
+				})
+				.post('/openrdf-sesame/repositories/microbrewit/statements', '*')
+				.reply(204, 'hei');
 			query.insert({name: 'Hansa'}, function (err, response) {
 				if (err) {
 					throw new Error ('Threw error when name was present');
 				}
-				console.log(response);
 				done();
 			});
 		});
