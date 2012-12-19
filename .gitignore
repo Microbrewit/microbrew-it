@@ -1,1 +1,5 @@
 .DS_Store
+.sass-cache
+css/Lattice/*
+node_modules
+app/config
