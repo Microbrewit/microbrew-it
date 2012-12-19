@@ -8,9 +8,9 @@ var http = require('http'),
 		if (!options.name) {
 			callback(new Error('Name required'));
 		} else {
-			insert += 'http://www.microbrew.it/beer/' + encodeURIComponent(options.name) + ' rdf:type' + mb.beer;
-			insert += '; ' + mb.name + options.name + '"';
-			insert += options.brewery ? '; ' + mb.name + ' <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' : '';
+			insert += '<http://www.microbrew.it/beer/' + encodeURIComponent(options.name) + '> rdf:type' + mb.beer;
+			insert += '; ' + mb.name + '"' + options.name + '"';
+			insert += options.brewery ? '; ' + mb.brewedBy + ' <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' : '';
 			insert += options.styles ? ';  ' + mb.style + ' "' + options.styles + '"' : '';
 			insert += options.abv ? ';  ' + mb.abv + ' "' + options.abv + '"' : '';
 			insert += options.origin ? ';  ' + mb.origin + ' "' + options.origin + '"' : '';
@@ -28,7 +28,8 @@ var http = require('http'),
 			insert += options.colour ? '; ' + mb.colour + ' "' + options.colour + '"' : '';
 			insert += options.barcode ? '; ' + mb.barcode + ' "' + options.barcode + '"' : '';
 			insert += options.ebc ? '; ' + mb.ebu + '"' + options.ebu + '"' : '';
-			insert +=  '}';
+			insert +=  ' }';
+			console.log(insert);
 			callback(null, encodeURIComponent(insert));
 		}
 	},
@@ -44,14 +45,14 @@ var http = require('http'),
 
 exports.insert = function (beer, callback) {
 	createInsertString(beer, function (err, result) {
-		options.path = config.ts.path.insert + result;
+		options.path = config.ts.path.insert;
 		var request = http.request(options, function (response) {
 				callback(null, response);
 			});
 		request.on('error', function (e) {
 			callback(new Error(e.message));
 		});
-		request.end();
+		request.end('update=' + result);
 	});
 };
 
@@ -79,7 +80,6 @@ exports.select = function (beerURI, callback) {
 	select += ' OPTIONAL { ' + beerURI + mb.barcode  + '?barcode} . ';
 	select += ' OPTIONAL { ' + beerURI + mb.brewedBy  + '?brewedBy} . ';
 	select += '}';
-	console.log('Query: ' + select);
 
 	options.path = config.ts.path.query;
 	options.headers.accept = 'application/sparql-results+json';

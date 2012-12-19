@@ -24,8 +24,6 @@ exports.list = function (req, res) {
   res.send("respond with a resource");
 };
 
-
-
 exports.mail = function (req, res) {
 	var param = url.parse(req.url, true).query,
 		name = param.name,
@@ -38,6 +36,7 @@ exports.mail = function (req, res) {
 
 exports.insert = function (req, res) {
 	var param = url.parse(req.url, true).query;
+	console.log(param);
 	query.insert({
 		name : param.name,
 		brewery : param.brewery,
@@ -62,14 +61,13 @@ exports.insert = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			res.writeHead(200, {'Content-Type': 'text/plain'});
-			res.end('inserted');
+			res.render('add', { title: 'Register Beer'});
 		}
 	});
 };
 
 exports.query = function (req, res) {
-	var beerURI = '<http://www.microbrew.it/Beer/' + req.params.beer + '>';
+	var beerURI = '<http://www.microbrew.it/beer/' + req.params.beer + '>';
 	console.log(beerURI);
 	query.select(beerURI, function (error, result) {
 		if (error) {
