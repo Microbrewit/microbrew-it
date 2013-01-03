@@ -34,8 +34,8 @@ app.get('/', routes.index);
 app.get('/mail', routes.mail);
 app.get('/users', routes.list);
 app.get('/beer/add', routes.insert);
-app.get('/beer/query', routes.query);
 app.get('/beer/view', routes.beer);
+app.get('/beer/:beer', routes.query);
 
 http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));
