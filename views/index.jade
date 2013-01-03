@@ -1,0 +1,20 @@
+!!! 5
+html(lang='no')
+	head
+		include includes/head
+	body
+		.container
+			img.block.center(src='/images/microbrewit.png', alt='Microbrew.it')
+			h1.text-center.blue-text beer is coming
+			form.block.eight.columns.center.clear-right.join-form(action='/mail', type='GET')
+				label(for='name') Your name
+				input(type='text', name='name', placeholder='John Doe')
+				label(for='name') Your email
+				input(type='text', name='email', placeholder='john@doe.com')
+				button.btn.btn-large mail me on release
+			.eight.columns.center
+				p
+					| Microbrew.it is developed as free open source software by the guys n' gals at
+					a(href='http://pilsprog.no') Pilsprog
+					| .
+				a.block.btn.btn-large.center(href='http://github.com/pilsprog/microbrew-it') GitHub
