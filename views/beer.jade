@@ -1,0 +1,42 @@
+!!! 5
+html(lang='no')
+	head
+		include includes/head
+	body
+		header#main-header.header
+			.container
+				#logo.logo.no-margin.no-padding.four.columns
+					img(src='/images/microbrewit-small.png', alt='Microbrew.it')
+				nav#main-navigation.horizontal-navigation.no-margin.no-padding.six.columns
+					ul
+						li.active
+							a(href='') Discover
+						li
+							a(href='') Share
+						li
+							a(href='') Create
+				form#main-search.search.no-padding.four.columns
+					input.rounded(type='text', placeholder='find beer')
+					button.search.button Search
+				#user-logged-in.user.image-middle.two.columns.no-padding.logged-in.right
+					a(href='#user-logged-in')
+						img(src='/images/placeholder-avatar.png', alt='User Name')
+						img(src='/images/arrow-down-white.png', alt='')
+					nav.hidden.sub-navigation
+						ul
+							li
+								a(href='') Profile
+							li
+								a(href='') Settings
+							li
+								a(href='') Logout
+		article#beer.beer
+			header#beer-header.beer-header
+				.container.position-relative
+					.beer-image(style='background-image: url(/images/beer/duvel.jpg);')
+					h1 Duvel
+					#beer-stats.stats
+						.column
+							label(for='beer-type') Type
+							input.large.no-border(name='beer-origin', placeholder='beer type')
+							label(for='beer-origin') Origin
