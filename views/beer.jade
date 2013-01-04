@@ -45,8 +45,11 @@ html(lang='no')
 
 							p.brewery	
 								| by  
-								if(results.bindings[0].brewedBy.value)
-									a(href='#{results.bindings[0].brewedBy.value}') #{results.bindings[0].brewedBy.value}
+								if(results.bindings[0].brewedBy)
+									if(results.bindings[0].breweryName)
+										a(href='#{results.bindings[0].brewedBy.value}')  #{results.bindings[0].breweryName.value}
+									else 
+										a(href='#{results.bindings[0].brewedBy.value}')  #{results.bindings[0].brewedBy.value}
 								else
 									input(type="text", placeholder="Brewery")
 									lackingData = true
@@ -54,7 +57,7 @@ html(lang='no')
 								if(results.bindings[0].origin.country)
 									#{results.bindings[0].origin.country.value}
 								else
-									input(type="text", placeholder="Country of origin")
+									input(type="text", placeholder="Country of origin").inline
 									lackingData = true
 
 							div
