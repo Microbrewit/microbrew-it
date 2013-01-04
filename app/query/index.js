@@ -5,37 +5,37 @@ var http = require('http'),
 	mb = require('../ontology').mb,
 	createInsertString = function (options, callback) {
 		console.log('====!!!! STARTING INSERT !!!!====');
-		var insert = 'INSERT DATA ';
+		var insert = 'INSERT DATA {';
 		if (!options.name && !options.uri) {
 			callback(new Error('Name required'));
 		} else {
 			if(!options.uri) {
-				insert += ' { <http://www.microbrew.it/beer/' + encodeURIComponent(options.name) + '> rdf:type' + mb.beer;
+				insert += ' <http://www.microbrew.it/beer/' + encodeURIComponent(options.name) + '> rdf:type' + mb.beer;
 				insert += '; ' + mb.name + '"' + options.name + '"';
 				console.log('===== RECEIVED NO URI TO INSERT INTO =====');
 			} else {
-				insert += ' INTO <' + options.uri + '> { ';
+				insert += ' <' + options.uri + '> ';
 				console.log('===== RECEIVED URI TO INSERT INTO =====');
 			}
 
-			insert += options.brewery ? '; ' + mb.brewedBy + ' <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' : '';
-			insert += options.styles ? ';  ' + mb.style + ' "' + options.styles + '"' : '';
-			insert += options.abv ? ';  ' + mb.abv + ' "' + options.abv + '"' : '';
-			insert += options.origin ? ';  ' + mb.origin + ' "' + options.origin + '"' : '';
-			insert += options.image ? ';  ' + mb.image + ' "' + options.image + '"' : '';
-			insert += options.bottle ? ';  ' + mb.bottle + ' "' + options.bottle + '"' : '';
-			insert += options.label ? ';  ' + mb.label + ' "' + options.label + '"' : '';
-			insert += options.comment ? ';  ' + mb.comment + ' "' + options.comment + '"' : '';
-			insert += options.description ? ';  ' + mb.description + '"' + options.description + '"' : '';
-			insert += options.servingtype ? ';  ' + mb.servingType + '"' + options.servingtype + '"' : '';
-			insert += options.glasstype ? ';  ' + mb.glassType + ' "' + options.glasstype + '"' : '';
-			insert += options.ibu ? '  ' + mb.ibu + ' "' + options.ibu + '"' : '';
-			insert += options.aroma ? ';  ' + mb.aroma + ' "' + options.aroma + '"' : '';
-			insert += options.appearance ? ';  ' + mb.appearance + ' "' + options.appearance + '"' : '';
-			insert += options.mouthfeel ? ';  ' + mb.mouthfeel + ' "' + options.mouthfeel + '"' : '';
-			insert += options.colour ? '; ' + mb.colour + ' "' + options.colour + '"' : '';
-			insert += options.barcode ? '; ' + mb.barcode + ' "' + options.barcode + '"' : '';
-			insert += options.ebc ? '; ' + mb.ebc + '"' + options.ebc + '"' : '';
+			insert += options.brewery ? mb.brewedBy + ' <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' : '';
+			insert += options.styles ?  mb.style + ' "' + options.styles + '";' : '';
+			insert += options.abv ?  mb.abv + ' "' + options.abv + '";' : '';
+			insert += options.origin ?  mb.origin + ' "' + options.origin + '";' : '';
+			insert += options.image ?  mb.image + ' "' + options.image + '";' : '';
+			insert += options.bottle ?  mb.bottle + ' "' + options.bottle + '";' : '';
+			insert += options.label ?  mb.label + ' "' + options.label + '";' : '';
+			insert += options.comment ?  mb.comment + ' "' + options.comment + '";' : '';
+			insert += options.description ?  mb.description + '"' + options.description + '";' : '';
+			insert += options.servingtype ?  mb.servingType + '"' + options.servingtype + '";' : '';
+			insert += options.glasstype ?  mb.glassType + ' "' + options.glasstype + '";' : '';
+			insert += options.ibu ? mb.ibu + ' "' + options.ibu + '";' : '';
+			insert += options.aroma ? mb.aroma + ' "' + options.aroma + '";' : '';
+			insert += options.appearance ?  mb.appearance + ' "' + options.appearance + '";' : '';
+			insert += options.mouthfeel ?  mb.mouthfeel + ' "' + options.mouthfeel + '";' : '';
+			insert += options.colour ? mb.colour + ' "' + options.colour + '";' : '';
+			insert += options.barcode ? mb.barcode + ' "' + options.barcode + '";' : '';
+			insert += options.ebc ? mb.ebc + '"' + options.ebc + '";' : '';
 			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) +'>' + mb.name + ' "' + options.brewery + '"' : '';
 			insert +=  ' }';
 			console.log("INSERT: " + insert);
