@@ -75,7 +75,7 @@ exports.query = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			if(result.results.bindings.length == 1) {
+			if(result.results.bindings.length <= 1 ) {
 				res.render('beer', result);
 			} else {
 				res.writeHead(500, {'Content-Type': 'text/plain'});
