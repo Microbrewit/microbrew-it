@@ -33,7 +33,7 @@ html(lang='no')
 		article#beer.beer
 			form(action="../../beer/add")
 				if(results.bindings[0] && results.bindings[0].uri)
-					input(type="hidden", value="#{results.bindings[0].uri.value}")
+					input(name="uri", type="hidden", value="#{results.bindings[0].uri.value}")
 
 				header#beer-header.beer-header
 					.container.position-relative
@@ -53,11 +53,11 @@ html(lang='no')
 									else 
 										a(href='#{results.bindings[0].brewedBy.value}')  #{results.bindings[0].brewedBy.value}
 								else
-									input(name="brewedBy", type="text", placeholder="Brewery").inline
+									input(name="brewery", type="text", placeholder="Brewery").inline
 									lackingData = true
 								| , 
-								if(results.bindings[0] && results.bindings[0].origin.country)
-									#{results.bindings[0].origin.country.value}
+								if(results.bindings[0] && results.bindings[0].origin)
+									#{results.bindings[0].origin.value}
 								else
 									input(name="origin", type="text", placeholder="Country of origin").inline
 									lackingData = true
@@ -84,18 +84,18 @@ html(lang='no')
 									span.large-text 
 										| #{results.bindings[0].abv.value}%
 								else
-									<input type="text" placeholder="ABV in %" />
+									<input name="abv" type="text" placeholder="ABV in %" />
 									lackingData = true
 
 							.bitterness.four.columns
 								strong
 									a(href='') Bitterness
 								br
-								if(results.bindings[0] && results.bindings[0].bitterness)
+								if(results.bindings[0] && results.bindings[0].ibu)
 									span.large-text 
-										| #{results.bindings[0].bitterness.value} IBU
+										| #{results.bindings[0].ibu.value} IBU
 								else
-									input(name="bitterness", type="text", placeholder="IBU")
+									input(name="ibu", type="text", placeholder="IBU")
 									lackingData = true
 
 							.colour.four.columns
