@@ -56,31 +56,34 @@ exports.insert = function (beer, callback) {
 	});
 };
 
-exports.select = function (beerURI, callback) {
+exports.select = function (beerName, callback) {
 	var returnedJSON = '',
 		request,
 		select;
-	select = 'SELECT *  WHERE {' + beerURI + mb.name + '?name .';
-	select += ' OPTIONAL { ' + beerURI + mb.style + ' ?style} .';
-	select += ' OPTIONAL { ' + beerURI + mb.abv  + '?abv} .';
-	select += ' OPTIONAL { ' + beerURI + mb.origin  + '?origin} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.bottle  + '?bottle} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.image  + '?image} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.label  + '?label} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.comment  + '?commen} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.description  + '?description} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.servingType  + '?servingType} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.glassType  + '?glassType} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.ebu  + '?ebu} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.aroma  + '?aroma} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.appearance  + '?appearance} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.mouthfeel  + '?mouthfeel} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.ebc  + '?ebc} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.colour  + '?colour} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.barcode  + '?barcode} . ';
-	select += ' OPTIONAL { ' + beerURI + mb.brewedBy  + '?brewedBy} . ';
+	select = 'SELECT * WHERE { ?uri ' + mb.name + ' "' + beerName + '" .';
+	select += ' ?uri' + mb.name + ' ?name .';
+	select += ' OPTIONAL { ?uri' + mb.style + ' ?style} . ';
+	select += ' OPTIONAL { ?uri' + mb.abv  + '?abv} . ';
+	select += ' OPTIONAL { ?uri' + mb.origin  + '?origin} . ';
+	select += ' OPTIONAL { ?uri' + mb.bottle  + '?bottle} . ';
+	select += ' OPTIONAL { ?uri' + mb.image  + '?image} . ';
+	select += ' OPTIONAL { ?uri' + mb.label  + '?label} . ';
+	select += ' OPTIONAL { ?uri' + mb.comment  + '?comment} . ';
+	select += ' OPTIONAL { ?uri' + mb.description  + '?description} . ';
+	select += ' OPTIONAL { ?uri' + mb.servingType  + '?servingType} . ';
+	select += ' OPTIONAL { ?uri' + mb.glassType  + '?glassType} . ';
+	select += ' OPTIONAL { ?uri' + mb.ebu  + '?ebu} . ';
+	select += ' OPTIONAL { ?uri' + mb.aroma  + '?aroma} . ';
+	select += ' OPTIONAL { ?uri' + mb.appearance  + '?appearance} . ';
+	select += ' OPTIONAL { ?uri' + mb.mouthfeel  + '?mouthfeel} . ';
+	select += ' OPTIONAL { ?uri' + mb.ebc  + '?ebc} . ';
+	select += ' OPTIONAL { ?uri' + mb.colour  + '?colour} . ';
+	select += ' OPTIONAL { ?uri' + mb.barcode  + '?barcode} . ';
+	select += ' ?uri' + mb.brewedBy  + '?brewedBy. ';
+	select += ' OPTIONAL { ?brewedBy' + mb.name  + '?breweryName} . ';
 	select += '}';
 
+	console.log(select);
 	options.path = config.ts.path.query;
 	options.headers.accept = 'application/sparql-results+json';
 	request = http.request(options, function (response) {
@@ -91,6 +94,35 @@ exports.select = function (beerURI, callback) {
 		response.on('end', function () {
 			var json = JSON.parse(returnedJSON);
 			console.log(JSON.stringify(json)); // TODO: remove (used for bugfix)
+			callback(null, json);
+		});
+	});
+	request.on('error', function (e) {
+		callback(new Error(e.message));
+	});
+	request.end('query=' + encodeURIComponent(select));
+};
+
+exports.findBrewery = function (breweryName, callback) {
+	var returnedJSON,
+	  request,
+	  select;
+	select = 'SELECT * WHERE {?breweryURI ' + mb.name + ' "' + breweryName + '" .';
+	select += ' OPTIONAL { ?breweryURI ' + mb.name + ' ?name} . ';
+	select += '}';
+
+	console.log(select);
+	options.path = config.ts.path.query;
+	options.headers.accept = 'application/sparql-results+json';
+	request = http.request(options, function (response) {
+		response.setEncoding('utf8');
+		response.on('data', function (chunk) {
+			console.log(chunk);
+			returnedJSON += chunk;
+		});
+
+		response.on('end', function () {
+			var json = JSON.parse(returnedJSON);
 			callback(null, json);
 		});
 	});
