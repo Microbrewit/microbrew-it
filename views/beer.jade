@@ -31,54 +31,83 @@ html(lang='no')
 							li
 								a(href='') Logout
 		article#beer.beer
-			header#beer-header.beer-header
-				.container.position-relative
-					.beer-image(style='background-image: url(/images/beer/duvel.jpg);')
-					#beer-stats.stats.offset-top-by-two
-						h1 
-							| #{results.bindings[0].name.value} 
-						p.brewery	
-							| by  
-							a(href='') Thune Schjelderup Hjemmebryggeri
-							| , 
-							a(href='') Norway
-						div
-							span.full-average-rating-box.left.offset-right-by-one
-								| 10
+			form(action="./beer/add")
+				if(results.bindings[0].uri)
+					input(type="hidden", value="#{results.bindings[0].uri.value}")
 
-							p.rating-details.average-scores.uppercase
-								| AROMA 8/10   APPEARANCE 10/10   TASTE 9/10   MOUTHFEEL 9/10
+				header#beer-header.beer-header
+					.container.position-relative
+						.beer-image(style='background-image: url(/images/beer/duvel.jpg);')
+						#beer-stats.stats
 
-							.rating-details.user-scores.uppercase
-								strong YOUR RATING: 
-									span.red 6/10
-									br
-								| AROMA 8/10   APPEARANCE 4/10   TASTE 8/10   MOUTHFEEL 4/10
-					#beer-meta.stats.meta.offset-top-by-two.clearfix.border-box
-						.large-text.text-center Belgian Strong Ale
-						.abv.four.columns
-							strong
-								a(href='') ABV 
-							br
-							span.large-text 
-								if(results.bindings[0].abv.value)
-									| #{results.bindings[0].abv.value}%
+							h1.offset-top-by-one 
+								| #{results.bindings[0].name.value} 
+
+							p.brewery	
+								| by  
+								if(results.bindings[0].brewedBy.value)
+									a(href='#{results.bindings[0].brewedBy.value}') #{results.bindings[0].brewedBy.value}
 								else
-									<input type="text" placeholder="?" />
+									input(type="text", placeholder="Brewery")
+									lackingData = true
+								| , 
+								if(results.bindings[0].origin.country)
+									#{results.bindings[0].origin.country.value}
+								else
+									input(type="text", placeholder="Country of origin")
+									lackingData = true
 
-						.bitterness.four.columns
-							strong
-								a(href='') Bitterness
-							br
-							span.large-text #{results.bindings[0].name.value} IBU
+							div
+								span.full-average-rating-box.left.offset-right-by-one
+									| 10
 
-						.colour.four.columns
-							strong
-								a(href='') Colour 
-							br
-							span.large-text 47 EBC
+								p.rating-details.average-scores.uppercase
+									| AROMA 8/10   APPEARANCE 10/10   TASTE 9/10   MOUTHFEEL 9/10
 
-						.glasstype.four.columns
-							strong
-								a(href='') Glasstype 
+								.rating-details.user-scores.uppercase
+									strong YOUR RATING: 
+										span.red 6/10
+										br
+									| AROMA 8/10   APPEARANCE 4/10   TASTE 8/10   MOUTHFEEL 4/10
+						#beer-meta.stats.meta.offset-top-by-two.clearfix.border-box
+							.large-text.text-center Belgian Strong Ale
+							.abv.four.columns
+								strong
+									a(href='') ABV 
+								br
+								if(results.bindings[0].abv)
+									span.large-text 
+										| #{results.bindings[0].abv.value}%
+								else
+									<input type="text" placeholder="ABV in %" />
+									lackingData = true
+
+							.bitterness.four.columns
+								strong
+									a(href='') Bitterness
+								br
+								if(results.bindings[0].bitterness)
+									span.large-text 
+										| #{results.bindings[0].bitterness.value} IBU
+								else
+									<input type="text" placeholder="IBU" />
+									lackingData = true
+
+							.colour.four.columns
+								strong
+									a(href='') Colour 
+								br
+								if(results.bindings[0].colour)
+									span.large-text 
+										| #{results.bindings[0].colour.value} EBC
+								else
+									<input type="text" placeholder="EBC" />
+									lackingData = true
+
+							.glasstype.four.columns
+								strong
+									a(href='') Glasstype
+
+						if(lackingData = true)
+							button.clear-both.right.block.offset-top-by-two Submit
 
