@@ -176,6 +176,9 @@ or wrap each row of columns in a <div class="row"> */
   display: inline-block !important;
   float: none !important; }
 
+.border-box {
+  box-sizing: border-box; }
+
 .clear {
   clear: both; }
 
@@ -938,13 +941,23 @@ img.scale-with-grid, img.responsive {
   display: block; }
 
 body {
-  background: #e4e4e4; }
+  background: #F4F4F4; }
+
+a {
+  color: #02ABD6;
+  text-decoration: none; }
+
+a:hover {
+  color: #55DDFF; }
 
 #main-header {
   background-color: #454544;
   max-height: 50px;
   position: relative;
   z-index: 20; }
+
+.large-text {
+  font-size: 24px; }
 
 #logo {
   margin-right: 25px; }
@@ -962,6 +975,7 @@ body {
 
 .search input {
   width: 120px;
+  height: 25px;
   display: inline;
   margin-top: 10px; }
 
@@ -1004,7 +1018,7 @@ body {
   width: 400px;
   position: absolute;
   height: 500px;
-  top: -50px;
+  top: 80px;
   left: 0; }
 
 .beer-image:after {
@@ -1014,17 +1028,31 @@ body {
   right: 0;
   top: 0;
   bottom: 0;
-  background: -moz-radial-gradient(center, ellipse cover, rgba(198, 201, 205, 0) 0%, #e4e4e4 100%);
+  background: -moz-radial-gradient(center, ellipse cover, rgba(244, 244, 244, 0) 0%, rgba(244, 244, 244, 0) 43%, #f4f4f4 100%);
   /* FF3.6+ */
-  background: -webkit-radial-gradient(center, ellipse cover, rgba(198, 201, 205, 0) 0%, #e4e4e4 100%);
+  background: -webkit-radial-gradient(center, ellipse cover, rgba(244, 244, 244, 0) 0%, rgba(244, 244, 244, 0) 43%, #f4f4f4 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-radial-gradient(center, ellipse cover, rgba(198, 201, 205, 0) 0%, rgba(198, 201, 205, 0) 43%, #c6c9cd 100%);
+  background: -o-radial-gradient(center, ellipse cover, rgba(244, 244, 244, 0) 0%, rgba(244, 244, 244, 0) 43%, #f4f4f4 100%);
   /* Opera 12+ */
-  background: -ms-radial-gradient(center, ellipse cover, rgba(198, 201, 205, 0) 0%, rgba(198, 201, 205, 0) 43%, #c6c9cd 100%);
+  background: -ms-radial-gradient(center, ellipse cover, rgba(244, 244, 244, 0) 0%, rgba(244, 244, 244, 0) 43%, #f4f4f4 100%);
   /* IE10+ */
-  background: radial-gradient(ellipse at center, rgba(198, 201, 205, 0) 0%, rgba(198, 201, 205, 0) 43%, #c6c9cd 100%);
+  background: radial-gradient(ellipse at center, rgba(244, 244, 244, 0) 0%, rgba(244, 244, 244, 0) 43%, #f4f4f4 100%);
   /* W3C */
   content: ''; }
 
-#beer-stats {
-  margin-left: 400px; }
+#beer-stats, #beer-meta {
+  margin-left: 425px; }
+
+.full-average-rating-box {
+  width: 75px;
+  height: 75px;
+  line-height: 75px;
+  font-size: 50px;
+  text-align: center;
+  color: #fff;
+  background: #D43131; }
+
+.meta {
+  background: #FAFAFA;
+  border: 1px solid #ccc;
+  padding-top: 25px; }
