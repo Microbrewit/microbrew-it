@@ -3,12 +3,12 @@ html(lang='no')
 	head
 		include includes/head
 	body
-		header#main-header.header
-			.container
+		header#main-header.header.clearfix
+			.container.clearfix
 				#logo.logo.no-margin.no-padding.four.columns
 					img(src='/images/microbrewit-small.png', alt='Microbrew.it')
 				nav#main-navigation.horizontal-navigation.no-margin.no-padding.six.columns
-					ul
+					ul.no-margin
 						li.active
 							a(href='') Discover
 						li
@@ -16,11 +16,11 @@ html(lang='no')
 						li
 							a(href='') Create
 				form#main-search.search.no-padding.four.columns
-					input.rounded(type='text', placeholder='find beer')
+					input.rounded.border-box(type='text', placeholder='find beer')
 					button.search.button Search
 				#user-logged-in.user.image-middle.two.columns.no-padding.logged-in.right
 					a(href='#user-logged-in')
-						img(src='/images/placeholder-avatar.png', alt='User Name')
+						img(src='/images/placeholder-avatar.png', alt='Username')
 						img(src='/images/arrow-down-white.png', alt='')
 					nav.hidden.sub-navigation
 						ul
@@ -34,9 +34,51 @@ html(lang='no')
 			header#beer-header.beer-header
 				.container.position-relative
 					.beer-image(style='background-image: url(/images/beer/duvel.jpg);')
-					h1 Duvel
-					#beer-stats.stats
-						.column
-							label(for='beer-type') Type
-							input.large.no-border(name='beer-origin', placeholder='beer type')
-							label(for='beer-origin') Origin
+					#beer-stats.stats.offset-top-by-two
+						h1 
+							| #{results.bindings[0].name.value} 
+						p.brewery	
+							| by  
+							a(href='') Thune Schjelderup Hjemmebryggeri
+							| , 
+							a(href='') Norway
+						div
+							span.full-average-rating-box.left.offset-right-by-one
+								| 10
+
+							p.rating-details.average-scores.uppercase
+								| AROMA 8/10   APPEARANCE 10/10   TASTE 9/10   MOUTHFEEL 9/10
+
+							.rating-details.user-scores.uppercase
+								strong YOUR RATING: 
+									span.red 6/10
+									br
+								| AROMA 8/10   APPEARANCE 4/10   TASTE 8/10   MOUTHFEEL 4/10
+					#beer-meta.stats.meta.offset-top-by-two.clearfix.border-box
+						.large-text.text-center Belgian Strong Ale
+						.abv.four.columns
+							strong
+								a(href='') ABV 
+							br
+							span.large-text 
+								if(results.bindings[0].abv.value)
+									| #{results.bindings[0].abv.value}%
+								else
+									<input type="text" placeholder="?" />
+
+						.bitterness.four.columns
+							strong
+								a(href='') Bitterness
+							br
+							span.large-text #{results.bindings[0].name.value} IBU
+
+						.colour.four.columns
+							strong
+								a(href='') Colour 
+							br
+							span.large-text 47 EBC
+
+						.glasstype.four.columns
+							strong
+								a(href='') Glasstype 
+
