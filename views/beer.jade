@@ -31,8 +31,8 @@ html(lang='no')
 							li
 								a(href='') Logout
 		article#beer.beer
-			form(action="./beer/add")
-				if(results.bindings[0].uri)
+			form(action="../../beer/add")
+				if(results.bindings[0] && results.bindings[0].uri)
 					input(type="hidden", value="#{results.bindings[0].uri.value}")
 
 				header#beer-header.beer-header
@@ -41,23 +41,25 @@ html(lang='no')
 						#beer-stats.stats
 
 							h1.offset-top-by-one 
-								| #{results.bindings[0].name.value} 
-
+								if(results.bindings[0] && results.bindings[0].name)
+									| #{results.bindings[0].name.value} 
+								else
+									input(name="name",type="text", placeholder="Name of beer")
 							p.brewery	
 								| by  
-								if(results.bindings[0].brewedBy)
+								if(results.bindings[0] && results.bindings[0].brewedBy)
 									if(results.bindings[0].breweryName)
 										a(href='#{results.bindings[0].brewedBy.value}')  #{results.bindings[0].breweryName.value}
 									else 
 										a(href='#{results.bindings[0].brewedBy.value}')  #{results.bindings[0].brewedBy.value}
 								else
-									input(type="text", placeholder="Brewery")
+									input(name="brewedBy", type="text", placeholder="Brewery").inline
 									lackingData = true
 								| , 
-								if(results.bindings[0].origin.country)
+								if(results.bindings[0] && results.bindings[0].origin.country)
 									#{results.bindings[0].origin.country.value}
 								else
-									input(type="text", placeholder="Country of origin").inline
+									input(name="origin", type="text", placeholder="Country of origin").inline
 									lackingData = true
 
 							div
@@ -78,7 +80,7 @@ html(lang='no')
 								strong
 									a(href='') ABV 
 								br
-								if(results.bindings[0].abv)
+								if(results.bindings[0] && results.bindings[0].abv)
 									span.large-text 
 										| #{results.bindings[0].abv.value}%
 								else
@@ -89,22 +91,22 @@ html(lang='no')
 								strong
 									a(href='') Bitterness
 								br
-								if(results.bindings[0].bitterness)
+								if(results.bindings[0] && results.bindings[0].bitterness)
 									span.large-text 
 										| #{results.bindings[0].bitterness.value} IBU
 								else
-									<input type="text" placeholder="IBU" />
+									input(name="bitterness", type="text", placeholder="IBU")
 									lackingData = true
 
 							.colour.four.columns
 								strong
 									a(href='') Colour 
 								br
-								if(results.bindings[0].colour)
+								if(results.bindings[0] && results.bindings[0].colour)
 									span.large-text 
 										| #{results.bindings[0].colour.value} EBC
 								else
-									<input type="text" placeholder="EBC" />
+									input(name="colour", type="text", placeholder="EBC")
 									lackingData = true
 
 							.glasstype.four.columns
