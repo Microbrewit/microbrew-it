@@ -14,7 +14,7 @@ exports.mb = {
 	description : ' <' + baseURI + 'description> ',
 	servingType : ' <' + baseURI + 'servingType> ',
 	glassType : ' <' + baseURI + 'glassType> ',
-	ebu : ' <' + baseURI + 'ebu> ',
+	ibu : ' <' + baseURI + 'ibu> ',
 	aroma : ' <' + baseURI + 'aroma> ',
 	appearance : ' <' + baseURI + 'appearance> ',
 	mouthfeel : ' <' + baseURI + 'mouthfeel> ',
