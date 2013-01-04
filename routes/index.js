@@ -67,16 +67,22 @@ exports.insert = function (req, res) {
 };
 
 exports.query = function (req, res) {
-	var beerURI = '<http://www.microbrew.it/beer/' + req.params.beer + '>';
+	var beerURI = '<http://www.microbrew.it/beer/' + req.params.searchTerms + '>';
+
 	console.log(beerURI);
 	query.select(beerURI, function (error, result) {
 		if (error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			//res.render('beer', result);
-			res.writeHead(200, {'Content-Type' : 'application/json'});
-			res.end(JSON.stringify(result));
+			if(result.results.bindings.length == 1) {
+				res.render('beer', result);
+			} else {
+				res.writeHead(500, {'Content-Type': 'text/plain'});
+				res.end('Exception: Mothefucking internal shit with arrays error'); // TODO: add error view
+			}
+			// res.writeHead(200, {'Content-Type' : 'application/json'});
+			// res.end(JSON.stringify(result));
 		}
 	});
 };
