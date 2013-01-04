@@ -90,7 +90,8 @@ exports.select = function (beerURI, callback) {
 		});
 		response.on('end', function () {
 			var json = JSON.parse(returnedJSON);
-			callback(null, {title: 'Query Results', BeerJSON: json });
+			console.log(JSON.stringify(json)); // TODO: remove (used for bugfix)
+			callback(null, json);
 		});
 	});
 	request.on('error', function (e) {
