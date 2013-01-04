@@ -67,10 +67,10 @@ exports.insert = function (req, res) {
 };
 
 exports.query = function (req, res) {
-	var beerURI = '<http://www.microbrew.it/beer/' + req.params.searchTerms + '>';
+	var beerName = req.params.searchTerms;
 
-	console.log(beerURI);
-	query.select(beerURI, function (error, result) {
+	console.log(beerName);
+	query.select(beerName, function (error, result) {
 		if (error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
@@ -85,4 +85,21 @@ exports.query = function (req, res) {
 			// res.end(JSON.stringify(result));
 		}
 	});
+};
+
+exports.breweryQuery = function (req, res) {
+	var breweryName = req.params.brewery;
+	console.log(breweryName);
+  query.findBrewery(breweryName, function (error, result) {
+    if (error) {
+      res.writeHead(500, {'Content-Type': 'text/plain'});
+      res.end(error.message);
+    } else {
+    //res.render('brewery', result);
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(result));
+    }
+
+  });
+
 };

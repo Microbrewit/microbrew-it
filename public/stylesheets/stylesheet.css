@@ -170,7 +170,7 @@ or wrap each row of columns in a <div class="row"> */
   display: block; }
 
 .inline {
-  display: inline; }
+  display: inline !important; }
 
 .inline-block {
   display: inline-block !important;
@@ -1018,7 +1018,7 @@ a:hover {
   width: 400px;
   position: absolute;
   height: 500px;
-  top: 80px;
+  top: -50px;
   left: 0; }
 
 .beer-image:after {
