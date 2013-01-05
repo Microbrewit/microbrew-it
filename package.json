@@ -11,6 +11,7 @@
     "ejs": "0.8.x",
     "stylus": "0.31.x",
     "mysql": "2.0.x",
+    "pg": "0.10.x",
     "passport": "0.1.x",
     "mocha": "1.7.x",
     "coffee-script": "1.4.x",
