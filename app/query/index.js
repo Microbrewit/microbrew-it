@@ -3,6 +3,7 @@ var http = require('http'),
 	querystring = require('querystring'),
 	config = require('../config'),
 	mb = require('../ontology').mb,
+	ts = require('../tripplestore'),
 
 	createInsertString = function (options, callback) {
 		console.log('====!!!! STARTING INSERT !!!!====');
@@ -53,24 +54,14 @@ var http = require('http'),
 	};
 
 exports.ask = function (triple, callback) {
-	options.path = config.ts.path.query;
-	options.headers.accept = 'text/boolean';
-	var askQuery = 'ASK {' + triple + '}',
-		data = '',
-		request = http.request(options, function (response) {
-			response.on('data', function (chunk) {
-				console.log(data);
-				data += chunk;
-
-			});
-			response.on('end', function () {
-				callback(null, data);
-			});
-		});
-	request.on('error', function (e) {
-		callback(new Error(e.message));
+	var askQuery = 'ASK {' + triple + '}';
+	ts.ask(askQuery, function (err, result) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(null, result);
+		}
 	});
-	request.end('query=' + encodeURIComponent(askQuery));
 };
 
 exports.insert = function (beer, callback) {
