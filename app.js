@@ -36,8 +36,9 @@ app.get('/users', routes.list);
 app.get('/beer/add', routes.insert);
 app.get('/beer/view', routes.beer); // todo: remove
 app.get('/q/:searchTerms', routes.query);
-// TODO app.get('/b/:brewery', routes.breweryQuery);
+app.get('/b/:brewery', routes.breweryQuery);
 // TODO app.get('/b/:brewery/:id/:beer', routes.beerQuery);
+app.get('/ask', routes.ask);
 
 http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));

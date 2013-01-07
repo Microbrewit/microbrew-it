@@ -3,13 +3,14 @@ var http = require('http'),
 	querystring = require('querystring'),
 	config = require('../config'),
 	mb = require('../ontology').mb,
+
 	createInsertString = function (options, callback) {
 		console.log('====!!!! STARTING INSERT !!!!====');
 		var insert = 'INSERT DATA {';
 		if (!options.name && !options.uri) {
 			callback(new Error('Name required'));
 		} else {
-			if(!options.uri) {
+			if (!options.uri) {
 				insert += ' <http://www.microbrew.it/beer/' + encodeURIComponent(options.name) + '> rdf:type' + mb.beer;
 				insert += '; ' + mb.name + '"' + options.name + '"';
 				console.log('===== RECEIVED NO URI TO INSERT INTO =====');
@@ -36,7 +37,7 @@ var http = require('http'),
 			insert += options.colour ? mb.colour + ' "' + options.colour + '";' : '';
 			insert += options.barcode ? mb.barcode + ' "' + options.barcode + '";' : '';
 			insert += options.ebc ? mb.ebc + '"' + options.ebc + '";' : '';
-			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) +'>' + mb.name + ' "' + options.brewery + '"' : '';
+			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' + mb.name + ' "' + options.brewery + '"' : '';
 			insert +=  ' }';
 			console.log("INSERT: " + insert);
 			callback(null, encodeURIComponent(insert));
@@ -51,6 +52,26 @@ var http = require('http'),
 		'method': 'POST'
 	};
 
+exports.ask = function (triple, callback) {
+	options.path = config.ts.path.query;
+	options.headers.accept = 'text/boolean';
+	var askQuery = 'ASK {' + triple + '}',
+		data = '',
+		request = http.request(options, function (response) {
+			response.on('data', function (chunk) {
+				console.log(data);
+				data += chunk;
+
+			});
+			response.on('end', function () {
+				callback(null, data);
+			});
+		});
+	request.on('error', function (e) {
+		callback(new Error(e.message));
+	});
+	request.end('query=' + encodeURIComponent(askQuery));
+};
 
 exports.insert = function (beer, callback) {
 	createInsertString(beer, function (err, result) {
@@ -61,6 +82,7 @@ exports.insert = function (beer, callback) {
 		request.on('error', function (e) {
 			callback(new Error(e.message));
 		});
+
 		request.end('update=' + result);
 	});
 };
@@ -96,6 +118,7 @@ exports.select = function (beerName, callback) {
 	options.path = config.ts.path.query;
 	options.headers.accept = 'application/sparql-results+json';
 	request = http.request(options, function (response) {
+		console.dir(response);
 		response.setEncoding('utf8');
 		response.on('data', function (chunk) {
 			returnedJSON += chunk;
