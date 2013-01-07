@@ -52,12 +52,14 @@ var http = require('http'),
 	};
 
 exports.ask = function (triple, callback) {
-	var askQuery = 'ASK {' + triple + '}';
+	var askQuery = 'ASK {' + triple + '}',
+		response;
 	ts.ask(askQuery, function (err, result) {
 		if (err) {
 			callback(err);
 		} else {
-			callback(null, result);
+			response = result.indexOf("true") !== -1;
+			callback(null, response);
 		}
 	});
 };
