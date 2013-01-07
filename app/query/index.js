@@ -3,10 +3,10 @@ var http = require('http'),
 	querystring = require('querystring'),
 	config = require('../config'),
 	mb = require('../ontology').mb,
-	ts = require('../tripplestore'),
+	ts = require('../triplestore'),
 
 	createInsertString = function (options, callback) {
-		console.log('====!!!! STARTING INSERT !!!!====');
+
 		var insert = 'INSERT DATA {';
 		if (!options.name && !options.uri) {
 			callback(new Error('Name required'));
@@ -14,10 +14,8 @@ var http = require('http'),
 			if (!options.uri) {
 				insert += ' <http://www.microbrew.it/beer/' + encodeURIComponent(options.name) + '> rdf:type' + mb.beer;
 				insert += '; ' + mb.name + '"' + options.name + '"';
-				console.log('===== RECEIVED NO URI TO INSERT INTO =====');
 			} else {
 				insert += ' <' + options.uri + '> ';
-				console.log('===== RECEIVED URI TO INSERT INTO =====');
 			}
 
 			insert += options.brewery ? ' ; ' + mb.brewedBy + ' <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '> ' : '';
@@ -40,7 +38,7 @@ var http = require('http'),
 			insert += options.ebc ? ' ; ' + mb.ebc + '"' + options.ebc + '"': '';
 			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' + mb.name + ' "' + options.brewery + '"' : '';
 			insert +=  ' }';
-			console.log("INSERT: " + insert);
+
 			callback(null, insert);
 		}
 	},
