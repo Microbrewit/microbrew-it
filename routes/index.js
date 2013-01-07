@@ -39,6 +39,7 @@ exports.insert = function (req, res) {
 	var param = url.parse(req.url, true).query;
 	console.log(param);
 	query.insert({
+		uri : param.uri,
 		name : param.name,
 		brewery : param.brewery,
 		styles : param.styles,
