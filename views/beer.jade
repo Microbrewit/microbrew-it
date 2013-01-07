@@ -1,0 +1,177 @@
+doctype 5
+html(lang='no')
+	head
+		include includes/head
+	body
+		header#main-header.header.clearfix
+			.container.clearfix
+				#logo.logo.no-margin.no-padding.four.columns
+					a(href='http://microbrew.it') 
+						img(src='/images/microbrewit-small.png', alt='Microbrew.it')
+				nav#main-navigation.horizontal-navigation.no-margin.no-padding.six.columns
+					ul.no-margin
+						li.active
+							a(href='') Discover
+						li
+							a(href='') Share
+						li
+							a(href='') Create
+				form#main-search.search.no-padding.four.columns
+					input.rounded.border-box(type='text', placeholder='find beer')
+					button.search.button Search
+				#user-logged-in.user.image-middle.two.columns.no-padding.logged-in.right
+					a(href='#user-logged-in')
+						img(src='/images/placeholder-avatar.png', alt='Username')
+						img(src='/images/arrow-down-white.png', alt='')
+					nav.hidden.sub-navigation
+						ul
+							li
+								a(href='') Profile
+							li
+								a(href='') Settings
+							li
+								a(href='') Logout
+		article#beer.beer
+			form(action="../../beer/add").no-margin
+				if(results.bindings[0] && results.bindings[0].uri)
+					input(name="uri", type="hidden", value="#{results.bindings[0].uri.value}")
+
+				header#beer-header.beer-header
+					.container.position-relative
+						.beer-image.six.columns.left.clear-left.no-top-padding.no-left-padding.no-bottom-padding
+							img(src='/images/beer/duvel.jpg').responsive
+						#beer-stats.stats.ten.columns.right.no-padding.offset-top-by-one.offset-bottom-by-one
+
+							h1
+								if(results.bindings[0] && results.bindings[0].name)
+									| #{results.bindings[0].name.value} 
+								else
+									input(name="name",type="text", placeholder="Name of beer")
+							p.brewery	
+								| by  
+								if(results.bindings[0] && results.bindings[0].brewedBy)
+									if(results.bindings[0].breweryName)
+										a(href='#{results.bindings[0].brewedBy.value}')  #{results.bindings[0].breweryName.value}
+									else 
+										a(href='#{results.bindings[0].brewedBy.value}')  #{results.bindings[0].brewedBy.value}
+								else
+									input(name="brewery", type="text", placeholder="Brewery").inline
+									lackingData = true
+								| , 
+								if(results.bindings[0] && results.bindings[0].origin)
+									#{results.bindings[0].origin.value}
+								else
+									input(name="origin", type="text", placeholder="Country of origin").inline
+									lackingData = true
+
+							div
+								span.full-average-rating-box.left.offset-right-by-one
+									| 10
+
+								p.rating-details.average-scores.uppercase
+									| AROMA 8/10   APPEARANCE 10/10   TASTE 9/10   MOUTHFEEL 9/10
+
+								.rating-details.user-scores.uppercase
+									strong YOUR RATING: 
+										span.red 6/10
+										br
+									| AROMA 8/10   APPEARANCE 4/10   TASTE 8/10   MOUTHFEEL 4/10
+						#beer-meta.stats.meta.offset-bottom-by-one.clearfix.border-box.ten.columns.right
+							.large-text.text-center Belgian Strong Ale
+							.abv.four.columns
+								strong
+									a(href='') ABV 
+								br
+								if(results.bindings[0] && results.bindings[0].abv)
+									span.large-text 
+										| #{results.bindings[0].abv.value}%
+								else
+									<input name="abv" type="text" placeholder="ABV in %" />
+									lackingData = true
+
+							.bitterness.four.columns
+								strong
+									a(href='') Bitterness
+								br
+								if(results.bindings[0] && results.bindings[0].ibu)
+									span.large-text 
+										| #{results.bindings[0].ibu.value} IBU
+								else
+									input(name="ibu", type="text", placeholder="IBU")
+									lackingData = true
+
+							.colour.four.columns
+								strong
+									a(href='') Colour 
+								br
+								if(results.bindings[0] && results.bindings[0].colour)
+									span.large-text 
+										| #{results.bindings[0].colour.value} EBC
+								else
+									input(name="colour", type="text", placeholder="EBC")
+									lackingData = true
+
+							.glasstype.four.columns
+								strong
+									a(href='') Glasstype
+
+						if(lackingData = true)
+							button.right.no-margin.hidden Submit
+
+			.further-info
+				.nav-chrome.offset-bottom-by-one
+					.container
+						ul#beerTabs.nav.nav-pills
+							li
+								a(href='#overview', data-toggle='tab') Overview
+							li
+								a(href='#ratings', data-toggle='tab') Ratings 
+							li
+								a(href='#similar-beers', data-toggle='tab') Similar Beers 
+							li
+								a(href='#clones', data-toggle='tab') Clones
+							li.right
+								a(href='#add-clone', data-toggle='tab') Add clone
+							li.right
+								a(href='#add-review', data-toggle='tab') Add review
+						
+
+				.tab-content.container
+					#overview.tab-pane.active
+						.eight.columns.no-left-padding.no-top-padding
+							h2 Official Description
+							p  With its subtly bitter bite and delicate aroma, Duvel holds a unique position within the rich Belgian beer tradition. After bottling, the beer continues to ferment for a fortnight in the warm cellars of the brewery. Finally, the beer is chilled for 6 weeks in the cold cellars. This extra long maturing process is unique and contributes to the exquisite flavour and pure aroma of Duvel.
+						.eight.columns.no-right-padding.no-top-padding.no-bottom-padding
+							.row
+								.eight.columns.no-top-padding
+									strong.block Appearance
+									| dark brown color, hazy, thick head
+								.eight.columns.no-top-padding
+									strong.block Mouthfeel
+									| Medium body, slick
+							.row
+								.eight.columns.no-top-padding
+									strong.block Taste
+									| marzipan, bourbon, brandy, chocolate, honey, vanilla, caramel and oak
+								.eight.columns.no-top-padding
+									strong.block Aroma
+									| marzipan, bourbon, brandy, chocolate, honey, vanilla, caramel and oak
+					#ratings.tab-pane
+						| Ratings
+					#similar-beers.tab-pane
+						| Similar Beers
+					#clones.tab-pane
+						| Beer clones
+					#add-review.tab-pane
+						| Add review 
+					#add-clone.tab-pane
+						| Add clone recipe
+
+		// Bootstrap tabs
+		script(src='/javascript/bootstrap.js')
+		script
+			$(function () {
+				$('#beerTabs li:first a:last').tab('show');
+			});
+
+	include includes/footer

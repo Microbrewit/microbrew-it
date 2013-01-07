@@ -1,5 +1,6 @@
 var mail = require('../app/mail'),
 	query = require('../app/query'),
+	mb = require('../app/ontology').mb,
 	url = require('url');
 /*
  * GET Beer page.
@@ -20,11 +21,9 @@ exports.index = function (req, res) {
  * GET users listing.
  */
 
-exports.list = function(req, res){
+exports.list = function (req, res) {
   res.send("respond with a resource");
 };
-
-
 
 exports.mail = function (req, res) {
 	var param = url.parse(req.url, true).query,
@@ -38,7 +37,9 @@ exports.mail = function (req, res) {
 
 exports.insert = function (req, res) {
 	var param = url.parse(req.url, true).query;
+	console.log(param);
 	query.insert({
+		uri : param.uri,
 		name : param.name,
 		brewery : param.brewery,
 		styles : param.styles,
@@ -48,7 +49,7 @@ exports.insert = function (req, res) {
 		bottle : param.bottle,
 		label : param.label,
 		comment : param.comment,
-		description : param.description, 
+		description : param.description,
 		servingtype : param.servingtype,
 		glasstype : param.glasstype,
 		ibu : param.ibu,
@@ -62,20 +63,59 @@ exports.insert = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			res.writeHead(200, {'Content-Type': 'text/plain'});
-			res.end('inserted');
+			res.render('add', { title: 'Register Beer'});
 		}
 	});
 };
 
 exports.query = function (req, res) {
-	var beerURI = '<' + req.param('uri') + '>';
-	query.select(beerURI, function (error, result) {
+	var beerName = req.params.searchTerms;
+
+	console.log(beerName);
+	query.select(beerName, function (error, result) {
 		if (error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			res.render('beer', result);
-		}		
+			if (result.results.bindings.length <= 1) {
+				res.render('beer', result);
+			} else {
+				res.writeHead(500, {'Content-Type': 'text/plain'});
+				res.end('Exception: Mothefucking internal shit with arrays error'); // TODO: add error view
+			}
+			// res.writeHead(200, {'Content-Type' : 'application/json'});
+			// res.end(JSON.stringify(result));
+		}
 	});
+};
+
+exports.ask = function (req, res) {
+	var askString = '<http://www.microbrew.it/beer/Trippel%20Torstein>' + mb.ibu + ' ?a';
+	query.ask(askString, function (error, result) {
+		if (error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			//res.render('beer', result);
+			res.writeHead(200, {'Content-Type' : 'text/plain'});
+			res.end(result);
+		}
+	});
+};
+
+exports.breweryQuery = function (req, res) {
+	var breweryName = req.params.brewery;
+	console.log(breweryName);
+  query.findBrewery(breweryName, function (error, result) {
+    if (error) {
+      res.writeHead(500, {'Content-Type': 'text/plain'});
+      res.end(error.message);
+    } else {
+    //res.render('brewery', result);
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(result));
+    }
+
+  });
+
 };
