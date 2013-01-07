@@ -6,7 +6,8 @@ html(lang='no')
 		header#main-header.header.clearfix
 			.container.clearfix
 				#logo.logo.no-margin.no-padding.four.columns
-					img(src='/images/microbrewit-small.png', alt='Microbrew.it')
+					a(href='http://microbrew.it') 
+						img(src='/images/microbrewit-small.png', alt='Microbrew.it')
 				nav#main-navigation.horizontal-navigation.no-margin.no-padding.six.columns
 					ul.no-margin
 						li.active
@@ -31,16 +32,17 @@ html(lang='no')
 							li
 								a(href='') Logout
 		article#beer.beer
-			form(action="../../beer/add")
+			form(action="../../beer/add").no-margin
 				if(results.bindings[0] && results.bindings[0].uri)
 					input(name="uri", type="hidden", value="#{results.bindings[0].uri.value}")
 
 				header#beer-header.beer-header
 					.container.position-relative
-						.beer-image(style='background-image: url(/images/beer/duvel.jpg);')
-						#beer-stats.stats
+						.beer-image.six.columns.left.clear-left.no-top-padding.no-left-padding.no-bottom-padding
+							img(src='/images/beer/duvel.jpg').responsive
+						#beer-stats.stats.ten.columns.right.no-padding.offset-top-by-one.offset-bottom-by-one
 
-							h1.offset-top-by-one 
+							h1
 								if(results.bindings[0] && results.bindings[0].name)
 									| #{results.bindings[0].name.value} 
 								else
@@ -74,7 +76,7 @@ html(lang='no')
 										span.red 6/10
 										br
 									| AROMA 8/10   APPEARANCE 4/10   TASTE 8/10   MOUTHFEEL 4/10
-						#beer-meta.stats.meta.offset-top-by-two.clearfix.border-box
+						#beer-meta.stats.meta.offset-bottom-by-one.clearfix.border-box.ten.columns.right
 							.large-text.text-center Belgian Strong Ale
 							.abv.four.columns
 								strong
@@ -114,5 +116,62 @@ html(lang='no')
 									a(href='') Glasstype
 
 						if(lackingData = true)
-							button.clear-both.right.block.offset-top-by-two Submit
+							button.right.no-margin.hidden Submit
 
+			.further-info
+				.nav-chrome.offset-bottom-by-one
+					.container
+						ul#beerTabs.nav.nav-pills
+							li
+								a(href='#overview', data-toggle='tab') Overview
+							li
+								a(href='#ratings', data-toggle='tab') Ratings 
+							li
+								a(href='#similar-beers', data-toggle='tab') Similar Beers 
+							li
+								a(href='#clones', data-toggle='tab') Clones
+							li.right
+								a(href='#add-clone', data-toggle='tab') Add clone
+							li.right
+								a(href='#add-review', data-toggle='tab') Add review
+						
+
+				.tab-content.container
+					#overview.tab-pane.active
+						.eight.columns.no-left-padding.no-top-padding
+							h2 Official Description
+							p  With its subtly bitter bite and delicate aroma, Duvel holds a unique position within the rich Belgian beer tradition. After bottling, the beer continues to ferment for a fortnight in the warm cellars of the brewery. Finally, the beer is chilled for 6 weeks in the cold cellars. This extra long maturing process is unique and contributes to the exquisite flavour and pure aroma of Duvel.
+						.eight.columns.no-right-padding.no-top-padding.no-bottom-padding
+							.row
+								.eight.columns.no-top-padding
+									strong.block Appearance
+									| dark brown color, hazy, thick head
+								.eight.columns.no-top-padding
+									strong.block Mouthfeel
+									| Medium body, slick
+							.row
+								.eight.columns.no-top-padding
+									strong.block Taste
+									| marzipan, bourbon, brandy, chocolate, honey, vanilla, caramel and oak
+								.eight.columns.no-top-padding
+									strong.block Aroma
+									| marzipan, bourbon, brandy, chocolate, honey, vanilla, caramel and oak
+					#ratings.tab-pane
+						| Ratings
+					#similar-beers.tab-pane
+						| Similar Beers
+					#clones.tab-pane
+						| Beer clones
+					#add-review.tab-pane
+						| Add review 
+					#add-clone.tab-pane
+						| Add clone recipe
+
+		// Bootstrap tabs
+		script(src='/javascript/bootstrap.js')
+		script
+			$(function () {
+				$('#beerTabs li:first a:last').tab('show');
+			});
+
+	include includes/footer

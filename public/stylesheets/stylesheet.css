@@ -470,9 +470,6 @@ or wrap each row of columns in a <div class="row"> */
 
 /* #Base Grid
 ================================================== */
-.row {
-  margin-bottom: 24px; }
-
 /* Nested Column Classes */
 .column.alpha, .columns.alpha {
   padding: 0; }
@@ -1012,14 +1009,7 @@ a:hover {
   position: relative; }
 
 .beer-image {
-  background-position: center center;
-  background-size: 400px;
-  background-repeat: no-repeat;
-  width: 400px;
-  position: absolute;
-  height: 500px;
-  top: -50px;
-  left: 0; }
+  position: relative; }
 
 .beer-image:after {
   position: absolute;
@@ -1040,9 +1030,6 @@ a:hover {
   /* W3C */
   content: ''; }
 
-#beer-stats, #beer-meta {
-  margin-left: 425px; }
-
 .full-average-rating-box {
   width: 75px;
   height: 75px;
@@ -1056,3 +1043,69 @@ a:hover {
   background: #FAFAFA;
   border: 1px solid #ccc;
   padding-top: 25px; }
+
+.further-info {
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+  z-index: 100; }
+
+.nav {
+  margin: 0;
+  padding: 8px;
+  list-style: none; }
+
+.nav > li {
+  display: inline-block; }
+
+.nav > li > a {
+  display: block; }
+
+.nav-chrome {
+  background: white;
+  background: -moz-linear-gradient(top, white 0%, #eeeeee 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white), color-stop(100%, #eeeeee));
+  background: -webkit-linear-gradient(top, white 0%, #eeeeee 100%);
+  background: -o-linear-gradient(top, white 0%, #eeeeee 100%);
+  background: -ms-linear-gradient(top, white 0%, #eeeeee 100%);
+  background: linear-gradient(to bottom, white 0%, #eeeeee 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eeeeee',GradientType=0 );
+  border: 1px solid #ccc; }
+
+.nav-pills > li {
+  margin: 0; }
+
+.nav-pills > li > a {
+  padding: 8px;
+  line-height: 20px;
+  border-radius: 5px;
+  margin: 0 8px 0 0; }
+
+.nav-pills > li.right > a {
+  margin-: 0 0 0 8px; }
+
+.nav-pills > li.active > a {
+  background: #02ABD6;
+  color: #fff; }
+
+.nav-tabs > li > a:hover {
+  border-color: #eeeeee #eeeeee #dddddd; }
+
+.nav-tabs > .active > a,
+.nav-tabs > .active > a:hover {
+  color: #555555;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default; }
+
+.tab-content {
+  overflow: auto; }
+
+.tab-content > .tab-pane,
+.pill-content > .pill-pane {
+  display: none; }
+
+.tab-content > .active,
+.pill-content > .active {
+  display: block; }
