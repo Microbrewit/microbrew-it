@@ -36,7 +36,7 @@ var http = require('http'),
 			insert += options.colour ? ' ; ' + mb.colour + ' "' + options.colour + '"' : '';
 			insert += options.barcode ? ' ; ' + mb.barcode + ' "' + options.barcode + '"' : '';
 			insert += options.ebc ? ' ; ' + mb.ebc + '"' + options.ebc + '"' : '';
-			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' + mb.name + ' "' + options.brewery + '"' : '';
+			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' + mb.name + ' "' + options.brewery + '" ; rdf:type' + mb.brewery : '';
 			insert +=  ' }';
 
 			callback(null, insert);
@@ -50,6 +50,7 @@ var http = require('http'),
 		},
 		'method': 'POST'
 	};
+
 exports.beerName = function (beerName, callback) {
 	var queryBeerName = 'SELECT ?name ?url ?brewery ?breweryName WHERE {';
 	queryBeerName += '?url' + mb.name + '?name FILTER regex(?name, "' + beerName + '") .';
@@ -66,6 +67,26 @@ exports.beerName = function (beerName, callback) {
 		}
 	});
 };
+
+exports.breweryName = function (breweryName, callback) {
+	var queryBreweryName = 'SELECT * WHERE {';
+	queryBreweryName += '?url' + mb.name + '?name FILTER regex(?name, "' + breweryName + '") .';
+	queryBreweryName += '?url rdf:type' + mb.brewery + '.';
+	queryBreweryName += '}';
+	ts.select(queryBreweryName, function (err, result) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(null, result);
+		}
+	});
+};
+
+/**
+*	Takes a triple, and returns boolean true if it exists in the triple store,
+*	If not it returns boolean false.
+*	Throws an exception if there is something wrong with the connection
+**/
 exports.ask = function (triple, callback) {
 	var askQuery = 'ASK {' + triple + '}',
 		response;
@@ -78,7 +99,11 @@ exports.ask = function (triple, callback) {
 		}
 	});
 };
-
+/**
+*	Takes a Beer object and inserts it into the triple store
+*	Returns an object with the status code and insertion statement
+*	Throws an Exception if the insertion was not accepted.
+**/
 exports.insert = function (beer, callback) {
 	createInsertString(beer, function (err, result) {
 		if (err) {
@@ -95,6 +120,10 @@ exports.insert = function (beer, callback) {
 	});
 };
 
+/**
+*	Takes a beer name String
+*	Returns a JSON object with the hits from the triple store.
+**/
 exports.select = function (beerName, callback) {
 	var select;
 	select = 'SELECT * WHERE { ?uri ' + mb.name + ' "' + beerName + '" .';
