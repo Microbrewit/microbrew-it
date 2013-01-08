@@ -36,7 +36,7 @@ var http = require('http'),
 			insert += options.colour ? ' ; ' + mb.colour + ' "' + options.colour + '"' : '';
 			insert += options.barcode ? ' ; ' + mb.barcode + ' "' + options.barcode + '"' : '';
 			insert += options.ebc ? ' ; ' + mb.ebc + '"' + options.ebc + '"' : '';
-			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' + mb.name + ' "' + options.brewery + '"' : '';
+			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' + mb.name + ' "' + options.brewery + '" ; rdf:type' + mb.brewery : '';
 			insert +=  ' }';
 
 			callback(null, insert);
@@ -59,6 +59,19 @@ exports.beerName = function (beerName, callback) {
 	queryBeerName += '}';
 	//console.log('Query: ' + queryBeerName);
 	ts.select(queryBeerName, function (err, result) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(null, result);
+		}
+	});
+};
+exports.breweryName = function (breweryName, callback) {
+	var queryBreweryName = 'SELECT * WHERE {';
+	queryBreweryName += '?url' + mb.name + '?name FILTER regex(?name, "' + breweryName + '") .';
+	queryBreweryName += '?url rdf:type' + mb.brewery + '.';
+	queryBreweryName += '}';
+	ts.select(queryBreweryName, function (err, result) {
 		if (err) {
 			callback(err);
 		} else {
