@@ -22,4 +22,5 @@ exports.mb = {
 	colour : ' <' + baseURI + 'colour> ',
 	barcode : ' <' + baseURI + 'barcode> ',
 	brewedBy : ' <' + baseURI + 'brewedBy> ',
+	brewery : ' <' + baseURI + 'Brewery> ',
 };
