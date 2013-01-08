@@ -1,5 +1,6 @@
 var mail = require('../app/mail'),
 	query = require('../app/query'),
+	mb = require('../app/ontology').mb,
 	url = require('url');
 /*
  * GET Beer page.
@@ -76,7 +77,7 @@ exports.query = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			if(result.results.bindings.length <= 1 ) {
+			if (result.results.bindings.length <= 1) {
 				res.render('beer', result);
 			} else {
 				res.writeHead(500, {'Content-Type': 'text/plain'});
@@ -84,6 +85,20 @@ exports.query = function (req, res) {
 			}
 			// res.writeHead(200, {'Content-Type' : 'application/json'});
 			// res.end(JSON.stringify(result));
+		}
+	});
+};
+
+exports.ask = function (req, res) {
+	var askString = '<http://www.microbrew.it/beer/Trippel%20Torstein>' + mb.ibu + ' ?a';
+	query.ask(askString, function (error, result) {
+		if (error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			//res.render('beer', result);
+			res.writeHead(200, {'Content-Type' : 'text/plain'});
+			res.end(result);
 		}
 	});
 };
