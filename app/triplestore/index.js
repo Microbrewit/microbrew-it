@@ -11,6 +11,9 @@ var http = require('http'),
 		},
 		'method': 'POST'
 	};
+/**
+*	Takes a SPARQL ASK query, and returns 'true' or 'false'.
+**/
 exports.ask = function (query, callback) {
 	var options = util.beget(opts);
 	options.headers.accept = 'text/boolean';
@@ -30,7 +33,11 @@ exports.ask = function (query, callback) {
 	});
 	request.end('query=' + encodeURIComponent(query));
 };
-
+/**
+*	Takes a SPARQL INSERT statement and attempts to insert it into the triple store.
+*	Returns an object with the 204 statuscode, and the insertion query,
+*	Or returns an Exception.
+**/
 exports.insert = function (query, callback) {
 	var options = util.beget(opts);
 	options.path = config.ts.path.insert;
@@ -54,7 +61,10 @@ exports.insert = function (query, callback) {
 	console.log('update=' + encodeURIComponent(query));
 	request.end('update=' + encodeURIComponent(query));
 };
-
+/**
+*	Takes a SPARQL SELECT query, and returns the result set as a JSON object
+*	Throws an Exception if there is something wrong with the connection
+**/
 exports.select = function (query, callback) {
 	var options = util.beget(opts),
 		returnedJSON = '';
