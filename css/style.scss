@@ -4,8 +4,33 @@
 @import "Lattice/buttons.scss";
 @import "Lattice/typography.scss";
 
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: url('../fonts/SourceSansPro/SourceSansPro-Regular-webfont.eot');
+    src: url('../fonts/SourceSansPro/SourceSansPro-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/SourceSansPro/SourceSansPro-Regular-webfont.svg#SourceSansPro') format('svg'),
+         url('../fonts/SourceSansPro/SourceSansPro-Regular-webfont.woff') format('woff'),
+         url('../fonts/SourceSansPro/SourceSansPro-Regular-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: url('../fonts/SourceSansPro/SourceSansPro-Bold-webfont.eot');
+    src: url('../fonts/SourceSansPro/SourceSansPro-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/SourceSansPro/SourceSansPro-Bold-webfont.svg#SourceSansPro') format('svg'),
+         url('../fonts/SourceSansPro/SourceSansPro-Bold-webfont.woff') format('woff'),
+         url('../fonts/SourceSansPro/SourceSansPro-Bold-webfont.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
 body {
 	background: #F4F4F4;
+	font-family: 'Source Sans Pro';
+}
+h1 {
+	font-family: 'Source Sans Pro';
 }
 a {
 	color: #02ABD6;
@@ -186,3 +211,13 @@ a:hover {
   display: block;
 }
 
+.user.logged-in {
+	height: 50px;
+	line-height: 50px;
+}
+.user.logged-in img:first-child {
+	width: 25px;
+	height:25px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
