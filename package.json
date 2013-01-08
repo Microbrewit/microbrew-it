@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app",
-    "test": "mocha -w coffee:coffee-script"
+    "test": "mocha"
   },
   "dependencies": {
     "express": "3.0.x",
@@ -12,7 +12,10 @@
     "pg": "0.10.x",
     "passport": "0.1.x",
     "mocha": "1.7.x",
-    "coffee-script": "1.4.x",
+    "coffee-script": "1.4.x"
+  },
+  "devDependencies": {
+    "nock": "~0.14.2",
     "chai": "1.4.x",
     "jade": "~0.27.7"
   }
