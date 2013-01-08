@@ -15,7 +15,7 @@ app.configure(function () {
 	app.set('port', process.env.PORT || 3000);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
-	app.configure('development', function(){
+	app.configure('development', function () {
 		app.use(express.errorHandler());
 		app.locals.pretty = true;
 	});
@@ -43,6 +43,7 @@ app.get('/q/:searchTerms', routes.query);
 app.get('/b/:brewery', routes.breweryQuery);
 // TODO app.get('/b/:brewery/:id/:beer', routes.beerQuery);
 app.get('/ask', routes.ask);
+app.get('/name/:name', routes.getBeerName);
 
 http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));

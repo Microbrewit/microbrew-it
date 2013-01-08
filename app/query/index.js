@@ -19,23 +19,23 @@ var http = require('http'),
 			}
 
 			insert += options.brewery ? ' ; ' + mb.brewedBy + ' <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '> ' : '';
-			insert += options.styles ?  ' ; ' + mb.style + ' "' + options.styles + '"': '';
-			insert += options.abv ?  ' ; ' + mb.abv + ' "' + options.abv + '"': '';
-			insert += options.origin ?  ' ; ' + mb.origin + ' "' + options.origin + '"': '';
-			insert += options.image ?  ' ; ' + mb.image + ' "' + options.image + '"': '';
-			insert += options.bottle ?  ' ; ' + mb.bottle + ' "' + options.bottle + '"': '';
-			insert += options.label ?  ' ; ' + mb.label + ' "' + options.label + '"': '';
-			insert += options.comment ? ' ; ' +  mb.comment + ' "' + options.comment + '"': '';
-			insert += options.description ?  ' ; ' + mb.description + '"' + options.description + '"': '';
-			insert += options.servingtype ?  ' ; ' + mb.servingType + '"' + options.servingtype + '"': '';
-			insert += options.glasstype ?  ' ; ' + mb.glassType + ' "' + options.glasstype + '"': '';
-			insert += options.ibu ? ' ; ' + mb.ibu + ' "' + options.ibu + '"': '';
-			insert += options.aroma ? ' ; ' + mb.aroma + ' "' + options.aroma + '"': '';
-			insert += options.appearance ?  ' ; ' + mb.appearance + ' "' + options.appearance + '"': '';
-			insert += options.mouthfeel ?  ' ; ' + mb.mouthfeel + ' "' + options.mouthfeel + '"': '';
+			insert += options.styles ?  ' ; ' + mb.style + ' "' + options.styles + '"' : '';
+			insert += options.abv ?  ' ; ' + mb.abv + ' "' + options.abv + '"' : '';
+			insert += options.origin ?  ' ; ' + mb.origin + ' "' + options.origin + '"' : '';
+			insert += options.image ?  ' ; ' + mb.image + ' "' + options.image + '"' : '';
+			insert += options.bottle ?  ' ; ' + mb.bottle + ' "' + options.bottle + '"' : '';
+			insert += options.label ?  ' ; ' + mb.label + ' "' + options.label + '"' : '';
+			insert += options.comment ? ' ; ' +  mb.comment + ' "' + options.comment + '"' : '';
+			insert += options.description ?  ' ; ' + mb.description + '"' + options.description + '"' : '';
+			insert += options.servingtype ?  ' ; ' + mb.servingType + '"' + options.servingtype + '"' : '';
+			insert += options.glasstype ?  ' ; ' + mb.glassType + ' "' + options.glasstype + '"' : '';
+			insert += options.ibu ? ' ; ' + mb.ibu + ' "' + options.ibu + '"' : '';
+			insert += options.aroma ? ' ; ' + mb.aroma + ' "' + options.aroma + '"' : '';
+			insert += options.appearance ?  ' ; ' + mb.appearance + ' "' + options.appearance + '"' : '';
+			insert += options.mouthfeel ?  ' ; ' + mb.mouthfeel + ' "' + options.mouthfeel + '"' : '';
 			insert += options.colour ? ' ; ' + mb.colour + ' "' + options.colour + '"' : '';
-			insert += options.barcode ? ' ; ' + mb.barcode + ' "' + options.barcode + '"': '';
-			insert += options.ebc ? ' ; ' + mb.ebc + '"' + options.ebc + '"': '';
+			insert += options.barcode ? ' ; ' + mb.barcode + ' "' + options.barcode + '"' : '';
+			insert += options.ebc ? ' ; ' + mb.ebc + '"' + options.ebc + '"' : '';
 			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' + mb.name + ' "' + options.brewery + '"' : '';
 			insert +=  ' }';
 
@@ -50,7 +50,22 @@ var http = require('http'),
 		},
 		'method': 'POST'
 	};
-
+exports.beerName = function (beerName, callback) {
+	var queryBeerName = 'SELECT ?name ?url ?brewery ?breweryName WHERE {';
+	queryBeerName += '?url' + mb.name + '?name FILTER regex(?name, "' + beerName + '") .';
+	queryBeerName += '?url rdf:type' + mb.beer + '.';
+	queryBeerName += ' ?url ' + mb.brewedBy + '?brewery .';
+	queryBeerName += '?brewery' + mb.name + '?breweryName';
+	queryBeerName += '}';
+	//console.log('Query: ' + queryBeerName);
+	ts.select(queryBeerName, function (err, result) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(null, result);
+		}
+	});
+};
 exports.ask = function (triple, callback) {
 	var askQuery = 'ASK {' + triple + '}',
 		response;
