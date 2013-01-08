@@ -176,6 +176,9 @@ or wrap each row of columns in a <div class="row"> */
   display: inline-block !important;
   float: none !important; }
 
+.position-relative {
+  position: relative; }
+
 .border-box {
   box-sizing: border-box; }
 
@@ -1137,3 +1140,24 @@ a:hover {
   height: 25px;
   margin-right: 10px;
   vertical-align: middle; }
+
+.typeahead {
+  background: rgba(0, 0, 0, 0.8);
+  color: #ccc;
+  font-size: 15px;
+  position: absolute;
+  top: 100%;
+  width: 500px; }
+
+.typeahead li {
+  list-style: none;
+  padding: 0;
+  margin: 0; }
+
+.typeahead a {
+  color: #fff;
+  display: block;
+  padding: 10px; }
+
+.typeahead a:hover {
+  background: #02ABD6; }
