@@ -4,7 +4,7 @@ html(lang='no')
 		include includes/head
 	body
 		include includes/header
-		
+
 		article#beer.beer
 			form(action="../../beer/add").no-margin
 				if(results.bindings[0] && results.bindings[0].uri)
@@ -20,7 +20,8 @@ html(lang='no')
 								if(results.bindings[0] && results.bindings[0].name)
 									| #{results.bindings[0].name.value} 
 								else
-									input(name="name",type="text", placeholder="Name of beer")
+									#beerName.position-relative
+										input#name(name="name",type="text", placeholder="Name of beer", autocomplete="off")
 							p.brewery	
 								| by  
 								if(results.bindings[0] && results.bindings[0].brewedBy)
@@ -29,7 +30,7 @@ html(lang='no')
 									else 
 										a(href='#{results.bindings[0].brewedBy.value}')  #{results.bindings[0].brewedBy.value}
 								else
-									input(name="brewery", type="text", placeholder="Brewery").inline
+									input#brewery(name="brewery", type="text", placeholder="Brewery", data-source="beerQuery").inline
 									lackingData = true
 								| , 
 								if(results.bindings[0] && results.bindings[0].origin)
@@ -143,6 +144,7 @@ html(lang='no')
 
 		// Bootstrap tabs
 		script(src='/javascript/bootstrap.js')
+		script(src='/javascript/ajaxRequests.js')
 		script
 			$(function () {
 				$('#beerTabs li:first a:last').tab('show');
