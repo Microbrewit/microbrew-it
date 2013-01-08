@@ -53,7 +53,7 @@ var http = require('http'),
 
 exports.beerName = function (beerName, callback) {
 	var queryBeerName = 'SELECT ?name ?url ?brewery ?breweryName WHERE {';
-	queryBeerName += '?url' + mb.name + '?name FILTER regex(?name, "' + beerName + '") .';
+	queryBeerName += '?url' + mb.name + '?name FILTER regex(?name, "' + beerName + '", "i") .';
 	queryBeerName += '?url rdf:type' + mb.beer + '.';
 	queryBeerName += ' ?url ' + mb.brewedBy + '?brewery .';
 	queryBeerName += '?brewery' + mb.name + '?breweryName';
@@ -70,7 +70,7 @@ exports.beerName = function (beerName, callback) {
 
 exports.breweryName = function (breweryName, callback) {
 	var queryBreweryName = 'SELECT * WHERE {';
-	queryBreweryName += '?url' + mb.name + '?name FILTER regex(?name, "' + breweryName + '") .';
+	queryBreweryName += '?url' + mb.name + '?name FILTER regex(?name, "' + breweryName + '", "i") .';
 	queryBreweryName += '?url rdf:type' + mb.brewery + '.';
 	queryBreweryName += '}';
 	ts.select(queryBreweryName, function (err, result) {
