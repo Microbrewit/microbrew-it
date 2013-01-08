@@ -119,3 +119,17 @@ exports.breweryQuery = function (req, res) {
   });
 
 };
+
+exports.getBeerName = function (req, res) {
+	var nameString = req.params.name;
+	query.beerName(nameString, function (error, result) {
+		if (error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			//res.render('beer', result);
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+			res.end(JSON.stringify(result));
+		}
+	});
+};
