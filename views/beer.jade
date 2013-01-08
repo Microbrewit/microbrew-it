@@ -3,34 +3,8 @@ html(lang='no')
 	head
 		include includes/head
 	body
-		header#main-header.header.clearfix
-			.container.clearfix
-				#logo.logo.no-margin.no-padding.four.columns
-					a(href='http://microbrew.it') 
-						img(src='/images/microbrewit-small.png', alt='Microbrew.it')
-				nav#main-navigation.horizontal-navigation.no-margin.no-padding.six.columns
-					ul.no-margin
-						li.active
-							a(href='') Discover
-						li
-							a(href='') Share
-						li
-							a(href='') Create
-				form#main-search.search.no-padding.four.columns
-					input.rounded.border-box(type='text', placeholder='find beer')
-					button.search.button Search
-				#user-logged-in.user.image-middle.two.columns.no-padding.logged-in.right
-					a(href='#user-logged-in')
-						img(src='/images/placeholder-avatar.png', alt='Username')
-						img(src='/images/arrow-down-white.png', alt='')
-					nav.hidden.sub-navigation
-						ul
-							li
-								a(href='') Profile
-							li
-								a(href='') Settings
-							li
-								a(href='') Logout
+		include includes/header
+		
 		article#beer.beer
 			form(action="../../beer/add").no-margin
 				if(results.bindings[0] && results.bindings[0].uri)
