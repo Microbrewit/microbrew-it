@@ -6,7 +6,7 @@ html(lang='no')
 		include includes/header
 
 		article#beer.beer
-			form(action="../../beer/add").no-margin
+			form(action="../../api/add/beer").no-margin
 				if(results.bindings[0] && results.bindings[0].uri)
 					input(name="uri", type="hidden", value="#{results.bindings[0].uri.value}")
 
@@ -91,7 +91,7 @@ html(lang='no')
 									a(href='') Glasstype
 
 						if(lackingData = true)
-							button.right.no-margin.hidden Submit
+							button.right.no-margin Submit
 
 			.further-info
 				.nav-chrome.offset-bottom-by-one
