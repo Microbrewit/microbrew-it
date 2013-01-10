@@ -35,16 +35,43 @@ app.configure('development', function () {
 });
 
 app.get('/', routes.index);
+
+// testing TODO: remove when app works
 app.get('/mail', routes.mail);
 app.get('/users', routes.list);
-app.get('/beer/add', routes.insert);
 app.get('/beer/view', routes.beer); // todo: remove
-app.get('/q/:searchTerms', routes.query);
-app.get('/b/:brewery', routes.breweryQuery);
-// TODO app.get('/b/:brewery/:id/:beer', routes.beerQuery);
 app.get('/ask', routes.ask);
+
+// users
+app.get('/user/:userName', routes.breweryQuery);
+
+// searches
+app.get('/find/:searchTerms', routes.query);
+app.get('/find/user/:name', routes.getBreweryName);
 app.get('/find/brewery/:name', routes.getBreweryName);
 app.get('/find/beer/:name', routes.getBeerName);
+
+// beer and breweries
+app.get('/brewery/:id', routes.breweryQuery);
+app.get('/brewery/:brewery/:id', routes.breweryQuery);
+app.get('/brewery/:brewery/:id/:beer', routes.beer);
+
+// API
+app.get('/api/add/beer', routes.insert);
+app.get('/api/add/brewery', routes.insert);
+app.get('/api/add/user', routes.insert);
+app.get('/api/add/beer/rating', routes.insert);
+app.get('/api/add/brewery/rating', routes.insert);
+app.get('/api/user/:userName', routes.breweryQuery);
+app.get('/api/find/:searchTerms', routes.query);
+app.get('/api/find/user/:name', routes.getBreweryName);
+app.get('/api/find/brewery/:name', routes.getBreweryName);
+app.get('/api/find/beer/:name', routes.getBeerName);
+app.get('/api/brewery/:id', routes.breweryQuery);
+app.get('/api/brewery/:brewery/:id', routes.breweryQuery);
+app.get('/api/brewery/:brewery/:id/:beer', routes.beer);
+
+
 
 http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));
