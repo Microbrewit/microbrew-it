@@ -1,8 +1,9 @@
 //Ontology export
 var baseURI = 'http://ontology.microbrew.it/';
+
 exports.mb = {
 //beer
-	beer  : ' <' + baseURI + 'beer> ',
+	beer  : ' <' + baseURI + 'Beer> ',
 	name : ' <' + baseURI + 'name> ',
 	style : ' <' + baseURI + 'hasStyle> ',
 	abv : ' <' + baseURI + 'abv> ',
