@@ -5,20 +5,30 @@ var http = require('http'),
 	mb = require('../ontology').mb,
 	ts = require('../triplestore'),
 
-	createInsertString = function (options, callback) {
+	breweryURI = function (breweryName) {
+		var id = new Date().getTime() + '' + (Math.floor((Math.random()) * 100) + 100),
+			uri = 'http://microbrew.it/brewery/' + encodeURIComponent(breweryName) + '/' + id;
+		console.log(id);
+		return uri;
+	},
 
-		var insert = 'INSERT DATA {';
+	createInsertString = function (options, callback) {
+		var insert = 'INSERT DATA { ';
 		if (!options.name && !options.uri) {
 			callback(new Error('Name required'));
 		} else {
+			if (!options.breweryuri) {
+				options.breweryuri = breweryURI(options.brewery);
+				insert += options.brewery ? '<' + options.breweryuri + '> ' + mb.name + ' "' + options.brewery + '" ; rdf:type' + mb.brewery + '.' : '';
+			}
 			if (!options.uri) {
-				insert += ' <http://www.microbrew.it/beer/' + encodeURIComponent(options.name) + '> rdf:type' + mb.beer;
+				insert += ' <' + options.breweryuri + '/' + encodeURIComponent(options.name) + '> rdf:type' + mb.beer;
 				insert += '; ' + mb.name + '"' + options.name + '"';
 			} else {
 				insert += ' <' + options.uri + '> ';
 			}
 
-			insert += options.brewery ? ' ; ' + mb.brewedBy + ' <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '> ' : '';
+			insert += options.brewery ? ' ; ' + mb.brewedBy + ' <' + options.breweryuri + '>' : '';
 			insert += options.styles ?  ' ; ' + mb.style + ' "' + options.styles + '"' : '';
 			insert += options.abv ?  ' ; ' + mb.abv + ' "' + options.abv + '"' : '';
 			insert += options.origin ?  ' ; ' + mb.origin + ' "' + options.origin + '"' : '';
@@ -36,9 +46,9 @@ var http = require('http'),
 			insert += options.colour ? ' ; ' + mb.colour + ' "' + options.colour + '"' : '';
 			insert += options.barcode ? ' ; ' + mb.barcode + ' "' + options.barcode + '"' : '';
 			insert += options.ebc ? ' ; ' + mb.ebc + '"' + options.ebc + '"' : '';
-			insert += options.brewery ? '.  <http://www.microbrew.it/Brewery/' + encodeURIComponent(options.brewery) + '>' + mb.name + ' "' + options.brewery + '" ; rdf:type' + mb.brewery : '';
+			//end
 			insert +=  ' }';
-
+			console.log('INSERT: ' + insert);
 			callback(null, insert);
 		}
 	},

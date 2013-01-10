@@ -57,7 +57,8 @@ exports.insert = function (req, res) {
 		appearance : param.appearance,
 		mouthfeel : param.mouthfeel,
 		colour : param.colour,
-		barcode : param.barcode
+		barcode : param.barcode,
+		breweryturi : param.breweryturi
 	}, function (error, response) {
 		if (error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
