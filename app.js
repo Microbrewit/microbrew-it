@@ -52,8 +52,8 @@ app.get('/find/:searchTerms', routes.find);
 // app.get('/find/beer/:name', routes.findBeer);
 
 // beer and breweries
-// app.get('/brewery/:id', routes.brewery);
-// app.get('/brewery/:brewery/:id', routes.brewery);
+app.get('/brewery/:brewery/:id', routes.brewery);
+app.get('/brewery/:id', routes.brewery);
 // app.get('/brewery/:brewery/:id/:beer', routes.beer);
 
 // add new beers and breweries
