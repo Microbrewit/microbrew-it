@@ -5,7 +5,7 @@ var http = require('http'),
 	opts = {
 		'host': config.ts.host,
 		'port': config.ts.port,
-		
+
 		'headers': {
 			'Content-Type': 'application/x-www-form-urlencoded',
 		},
@@ -70,10 +70,11 @@ exports.select = function (query, callback) {
 		returnedJSON = '';
 	options.path = config.ts.path.query;
 	options.headers.accept = 'application/sparql-results+json';
-	
+
 	var request = http.request(options, function (response) {
 		response.setEncoding('utf8');
 		response.on('data', function (chunk) {
+			console.log('chunk' + chunk);
 			returnedJSON += chunk;
 		});
 		response.on('end', function () {
