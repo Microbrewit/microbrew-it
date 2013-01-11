@@ -6,7 +6,7 @@ var http = require('http'),
 	ts = require('../triplestore'),
 
 	breweryURI = function (breweryName) {
-		var id = new Date().getTime() + '' + (Math.floor((Math.random()) * 100) + 100),
+		var id = new Date().getTime().toString() + (Math.floor((Math.random()) * 100) + 100),
 			uri = 'http://microbrew.it/brewery/' + encodeURIComponent(breweryName) + '/' + id;
 		console.log(id);
 		return uri;
@@ -14,7 +14,7 @@ var http = require('http'),
 
 	createInsertString = function (options, callback) {
 		var insert = 'INSERT DATA { ';
-		if (!options.name && !options.uri) {
+		if (!options.name && !options.uri && !options.breweryuri && !options.brewery) {
 			callback(new Error('Name required'));
 		} else {
 			if (!options.breweryuri) {
@@ -178,7 +178,6 @@ exports.select = function (beerName, callback) {
 	select += ' ?uri' + mb.brewedBy  + '?brewedBy. ';
 	select += ' OPTIONAL { ?brewedBy' + mb.name  + '?breweryName} . ';
 	select += '}';
-
 	ts.select(select, function (err, result) {
 		if (err) {
 			callback(err);
