@@ -58,6 +58,13 @@ exports.addBeer = function (req, res) {
 	}
 };
 
+exports.addBrewery = function (req, res) {
+	var param = url.parse(req.url, true).query;
+	console.log(param);
+	res.render(addBrewery, {})
+
+}
+
 exports.user = function (req, res) {
 	res.writeHead(500, {'Content-Type': 'text/plain'});
 	res.end('Exception: Mothefucking internal shit with arrays error'); // TODO: add error view
