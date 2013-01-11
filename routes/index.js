@@ -98,6 +98,25 @@ exports.ask = function (req, res) {
 	});
 };
 
+// TODO change lookups to use ID
+exports.brewery = function (req, res) {
+	var breweryID = req.params.id;
+	var breweryName = req.params.brewery;
+
+	console.log('Looking up brewery with name ' + breweryName);
+	query.findBrewery(breweryName, function (error, result) {
+	    if (error) {
+	      res.writeHead(500, {'Content-Type': 'text/plain'});
+	      res.end(error.message);
+	    } else {
+	    	console.log(result);
+	    	res.render('brewery', result);
+	      // res.writeHead(200, {'Content-Type': 'application/json'});
+	      // res.end(JSON.stringify(result));
+	    }
+  });
+};
+
 exports.breweryQuery = function (req, res) {
 	var breweryName = req.params.brewery;
 	console.log(breweryName);
