@@ -61,7 +61,7 @@ exports.addBeer = function (req, res) {
 exports.addBrewery = function (req, res) {
 	var param = url.parse(req.url, true).query;
 	console.log(param);
-	res.render(addBrewery, {})
+	res.render('addBrewery', {});
 
 }
 
