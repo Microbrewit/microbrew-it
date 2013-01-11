@@ -1,0 +1,39 @@
+doctype 5
+html(lang='no')
+	head
+		include includes/head
+	body
+		include includes/header
+		.container
+			if(uri)
+				script
+					window.location='#{uri}';
+			h1 Add Beer!
+
+			.row
+				.one-third.column
+					h2 Beer pages
+					ul
+						li 
+							a(href="/find/Duvel") Duvel 
+						li
+							a(href="/find/null") Beer not existing
+						li TODO: add beer view
+				.one-third.column
+					h2 Brewery pages
+					ul
+						li Single Brewery
+						li Add Brewery
+				.one-third.column
+					h2 Search pages
+			.row
+				.one-third.column
+					h2 User pages
+					ul
+						li TODO
+				.one-third.column
+					h2 Other
+					ul
+						li Index
+
+		include includes/footer
