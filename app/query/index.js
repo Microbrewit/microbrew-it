@@ -79,6 +79,23 @@ exports.beerName = function (beerName, callback) {
 	});
 };
 
+exports.beerByURI = function (beerURI, callback) {
+var query = 'SELECT ?name ?url ?brewery ?breweryName WHERE {';
+	query += beerURI + ' ' + mb.name + '?name';
+	query += beerURI + 'l rdf:type' + mb.beer + '.';
+	query += beerURI + ' ' + mb.brewedBy + '?brewery .';
+	query += '?brewery' + mb.name + '?breweryName';
+	query += '}';
+	//console.log('Query: ' + queryBeerName);
+	ts.select(queryBeerName, function (err, result) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(null, result);
+		}
+	});
+};
+
 exports.breweryName = function (breweryName, callback) {
 	var queryBreweryName = 'SELECT * WHERE {';
 	queryBreweryName += '?url' + mb.name + '?name FILTER regex(?name, "' + breweryName + '", "i") .';
@@ -177,12 +194,13 @@ exports.findBrewery = function (breweryName, callback) {
 	  request,
 	  select;
 	select = 'SELECT * WHERE {?breweryURI ' + mb.name + ' "' + breweryName + '" .';
-	select += ' OPTIONAL { ?breweryURI ' + mb.name + ' ?name} . ';
+	// select += ' OPTIONAL { ?breweryURI ' + mb.name + ' ?name} . ';
 	select += '}';
 	ts.select(select, function (err, result) {
 		if (err) {
 			callback(err);
 		} else {
+			console.log(result);
 			callback(null, result);
 		}
 	});
