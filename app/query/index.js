@@ -22,7 +22,8 @@ var http = require('http'),
 				insert += options.brewery ? '<' + options.breweryuri + '> ' + mb.name + ' "' + options.brewery + '" ; rdf:type' + mb.brewery + '.' : '';
 			}
 			if (!options.uri) {
-				insert += ' <' + options.breweryuri + '/' + encodeURIComponent(options.name) + '> rdf:type' + mb.beer;
+				options.uri = options.breweryuri + '/' + encodeURIComponent(options.name);
+				insert += ' <' + options.uri + '> rdf:type' + mb.beer;
 				insert += '; ' + mb.name + '"' + options.name + '"';
 			} else {
 				insert += ' <' + options.uri + '> ';
@@ -49,7 +50,7 @@ var http = require('http'),
 			//end
 			insert +=  ' }';
 			console.log('INSERT: ' + insert);
-			callback(null, insert);
+			callback(null, { 'insertString' : insert, 'uri' : options.uri});
 		}
 	},
 	options = {
@@ -113,16 +114,18 @@ exports.ask = function (triple, callback) {
 *	Takes a Beer object and inserts it into the triple store
 *	Returns an object with the status code and insertion statement
 *	Throws an Exception if the insertion was not accepted.
+*	Result contains an object containing insertString and uri of the (soon to be) inserted beer.
 **/
 exports.insert = function (beer, callback) {
 	createInsertString(beer, function (err, result) {
 		if (err) {
 			callback(err);
 		} else {
-			ts.insert(result, function (error, result) {
+			ts.insert(result.insertString, function (error, res) {
 				if (error) {
 					callback(error);
 				} else {
+					console.log(result);
 					callback(null, result);
 				}
 			});
