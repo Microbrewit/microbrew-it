@@ -14,7 +14,7 @@ var http = require('http'),
 
 	createInsertString = function (options, callback) {
 		var insert = 'INSERT DATA { ';
-		if (!options.name && !options.uri) {
+		if (!options.name && !options.uri && !options.breweryuri && !options.brewery) {
 			callback(new Error('Name required'));
 		} else {
 			if (!options.breweryuri) {
