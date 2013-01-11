@@ -9,34 +9,37 @@ html(lang='no')
 		include includes/header
 		.container
 			
-			h1.text-center.offset-top-by-two Add Brewry!
+			h1.text-center.offset-top-by-two Add Brewery!
 			form
+				label(for="name") Name
 				input(type="text", name="name", id="name")
+				label(for="origin") Country of origin
 				input(type="text", name="origin", id="origin")
-				input(type="text", name="logo", id="logo")
+				label(for="description") Description
+				textarea(name="description", id="description")
+				label(for="address") Address of brewery
 				input(type="text", name="address", id="address").inline
+
+				label(for="lon") lon/lat
 				input(type="text", name="lon", id="lon").inline
 				input(type="text", name="lat", id="lat").inline
+				label(for="website") Website
 				input(type="text", name="website", id="website")
 				h2 Social media
+				.inline-block
+					label(for="twitter") Twitter
+					input(type="text", name="twitter", id="website").inline
+				.inline-block
+					label(for="facebook") Facebook
+					input(type="text", name="facebook", id="facebook").inline
+				.inline-block
+					label(for="youtube") Youtube
+					input(type="text", name="youtube", id="youtube").inline
+				.inline-block
+					label(for="Ggoogle+") Google+
+					input(type="text", name="google+", id="googleplus").inline
 
-				input(type="text", name="twitter", id="website").inline
-				input(type="text", name="facebook", id="facebook").inline
-				input(type="text", name="youtube", id="youtube").inline
-				input(type="text", name="google+", id="googleplus").inline
-
-				Name
-Country
-Origin
-Description
-Logo/Emblem
-Address
-Lon/lat
-Website
-Twitter
-Facebook
-Youtube
-Google+
+				button.block Submit
 
 
 		include includes/footer
