@@ -37,39 +37,44 @@ app.configure('development', function () {
 app.get('/', routes.index);
 
 // testing TODO: remove when app works
-app.get('/mail', routes.mail);
 app.get('/users', routes.list);
-app.get('/beer/view', routes.beer); // todo: remove
 app.get('/ask', routes.ask);
 
+
+// ================ FRONTEND ===============
 // users
-app.get('/user/:userName', routes.breweryQuery);
+app.get('/user/:userName', routes.user);
 
 // searches
-app.get('/find/:searchTerms', routes.query);
-app.get('/find/user/:name', routes.getBreweryName);
-app.get('/find/brewery/:name', routes.getBreweryName);
-app.get('/find/beer/:name', routes.getBeerName);
+app.get('/find/:searchTerms', routes.find);
+// app.get('/find/user/:name', routes.findUser);
+// app.get('/find/brewery/:name', routes.findBrewery);
+// app.get('/find/beer/:name', routes.findBeer);
 
 // beer and breweries
-app.get('/brewery/:id', routes.breweryQuery);
-app.get('/brewery/:brewery/:id', routes.breweryQuery);
-app.get('/brewery/:brewery/:id/:beer', routes.beer);
+// app.get('/brewery/:id', routes.brewery);
+// app.get('/brewery/:brewery/:id', routes.brewery);
+// app.get('/brewery/:brewery/:id/:beer', routes.beer);
 
-// API
-app.get('/api/add/beer', routes.insert);
-app.get('/api/add/brewery', routes.insert);
-app.get('/api/add/user', routes.insert);
-app.get('/api/add/beer/rating', routes.insert);
-app.get('/api/add/brewery/rating', routes.insert);
-app.get('/api/user/:userName', routes.breweryQuery);
-app.get('/api/find/:searchTerms', routes.query);
-app.get('/api/find/user/:name', routes.getBreweryName);
-app.get('/api/find/brewery/:name', routes.getBreweryName);
-app.get('/api/find/beer/:name', routes.getBeerName);
-app.get('/api/brewery/:id', routes.breweryQuery);
-app.get('/api/brewery/:brewery/:id', routes.breweryQuery);
-app.get('/api/brewery/:brewery/:id/:beer', routes.beer);
+// add new beers and breweries
+// app.get('/add/brewery', routes.addBrewery);
+app.get('/add/beer', routes.addBeer);
+
+// ======================= BACKEND =====================
+// TODO: naming scheme for API routes functions
+// app.get('/api/add/beer', routes.apiAddBeer);
+// app.get('/api/add/brewery', routes.apiAddBrewery);
+// app.get('/api/add/user', routes.apiAddUser);
+// app.get('/api/add/beer/rating', routes.apiAddBeerRating);
+// app.get('/api/add/brewery/rating', routes.apiAddBreweryRating);
+// app.get('/api/user/:userName', routes.apiUser);
+// app.get('/api/find/:searchTerms', routes.query);
+// app.get('/api/find/user/:name', routes.getBreweryName);
+// app.get('/api/find/brewery/:name', routes.getBreweryName);
+// app.get('/api/find/beer/:name', routes.getBeerName);
+// app.get('/api/brewery/:id', routes.breweryQuery);
+// app.get('/api/brewery/:brewery/:id', routes.breweryQuery);
+// app.get('/api/brewery/:brewery/:id/:beer', routes.beer);
 
 
 
