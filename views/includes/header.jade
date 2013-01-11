@@ -1,28 +1,30 @@
 header#main-header.header.clearfix
 			.container.clearfix
-				#logo.logo.no-margin.no-padding.four.columns
-					a(href='http://microbrew.it') 
-						img(src='/images/microbrewit-small.png', alt='Microbrew.it')
-				nav#main-navigation.horizontal-navigation.no-margin.no-padding.six.columns
-					ul.no-margin
-						li.active
-							a(href='') Discover
-						li
-							a(href='') Share
-						li
-							a(href='') Create
-				form#main-search.search.no-padding.four.columns
-					input.rounded.border-box(type='text', placeholder='find beer')
-					button.search.button Search
-				#user-logged-in.user.image-middle.two.columns.no-padding.logged-in.right.text-right.header-user-administration
-					a(href='#user-logged-in')
-						img(src='/images/placeholder-avatar.png', alt='Username')
-						img(src='/images/arrow-down-white.png', alt='')
-					nav.hidden.sub-navigation
-						ul
+				.eight.columns.no-padding
+					#logo.logo.no-padding.left.offset-right-by-two
+						a(href='/')
+							img(src='/images/microbrewit-small.png', alt='Microbrew.it')
+					nav#main-navigation.horizontal-navigation.no-margin.no-padding
+						ul.no-margin.left
+							li.active
+								a(href='/') Discover
 							li
-								a(href='') Profile
-							li
-								a(href='') Settings
-							li
-								a(href='') Logout
+								a(href='/add') Create
+					
+				.eight.columns.no-padding.text-right
+					form#main-search.search.inline-block(action='/find')
+						input.rounded.border-box(type='text', placeholder='find beer')
+						button.search.button Search
+					#user-logged-in.user.image-middle.logged-in.header-user-administration.inline-block.offset-left-by-two.columns.no-padding
+						a(href='#user-logged-in')
+							img(src='/images/placeholder-avatar.png', alt='Username')
+							img(src='/images/arrow-down-white.png', alt='')
+						nav.hidden.sub-navigation
+							ul
+								li
+									a(href='') Profile
+								li
+									a(href='') Settings
+								li
+									a(href='') Logout
+				
