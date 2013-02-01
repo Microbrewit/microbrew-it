@@ -63,7 +63,7 @@ exports.addBrewery = function (req, res) {
 	console.log(param);
 	res.render('addBrewery', {});
 
-}
+};
 
 exports.user = function (req, res) {
 	res.writeHead(500, {'Content-Type': 'text/plain'});
@@ -140,6 +140,17 @@ exports.breweryQuery = function (req, res) {
   });
 
 };
+exports.beerStyleQuery = function (req, res) {
+	query.findBeerStyles(function (error, result) {
+		if (error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+      		res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type': 'application/json'});
+      		res.end(JSON.stringify(result));
+		}
+	});
+};
 
 exports.getBeerName = function (req, res) {
 	var nameString = req.params.name;
@@ -168,3 +179,4 @@ exports.getBreweryName = function (req, res) {
 		}
 	});
 };
+
