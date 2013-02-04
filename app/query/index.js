@@ -1,6 +1,6 @@
 'use strict';
 var http = require('http'),
-	querystring = require('querystring'),
+    querystring = require('querystring'),
 	config = require('../config'),
 	mb = require('../ontology').mb,
 	ts = require('../triplestore'),
@@ -14,7 +14,7 @@ var http = require('http'),
 
 	createInsertString = function (options, callback) {
 		var insert = 'INSERT DATA { ';
-		if (!options.name && !options.uri) {
+		if (!options.name && !options.uri && !options.breweryuri && !options.brewery) {
 			callback(new Error('Name required'));
 		} else {
 			if (!options.breweryuri) {
@@ -79,6 +79,25 @@ exports.beerName = function (beerName, callback) {
 	});
 };
 
+exports.beerByURI = function (beerURI, callback) {
+var query = 'SELECT ?name ?url ?brewery ?breweryName WHERE {';
+	query += beerURI + ' ' + mb.name + '?name';
+	query += beerURI + 'l rdf:type' + mb.beer + '.';
+	query += beerURI + ' ' + mb.brewedBy + '?brewery .';
+	query += '?brewery' + mb.name + '?breweryName';
+	query += '}';
+	//console.log('Query: ' + queryBeerName);
+	ts.select(query, function (err, result) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(null, result);
+		}
+	});
+};
+
+
+
 exports.breweryName = function (breweryName, callback) {
 	var queryBreweryName = 'SELECT * WHERE {';
 	queryBreweryName += '?url' + mb.name + '?name FILTER regex(?name, "' + breweryName + '", "i") .';
@@ -133,6 +152,8 @@ exports.insert = function (beer, callback) {
 	});
 };
 
+
+
 /**
 *	Takes a beer name String
 *	Returns a JSON object with the hits from the triple store.
@@ -161,7 +182,6 @@ exports.select = function (beerName, callback) {
 	select += ' ?uri' + mb.brewedBy  + '?brewedBy. ';
 	select += ' OPTIONAL { ?brewedBy' + mb.name  + '?breweryName} . ';
 	select += '}';
-
 	ts.select(select, function (err, result) {
 		if (err) {
 			callback(err);
@@ -171,18 +191,30 @@ exports.select = function (beerName, callback) {
 	});
 
 };
+exports.findBeerStyles = function (callback) {
+var	select = 'SELECT ?style ?label WHERE { ?style rdf:type' + mb.beerstyle + '; rdf:label ?label }';
+console.log(select);
+	ts.select(select, function (err, result) {
+		if(err) {
+			callback(err);
+		} else {
+			callback(null, result);
+		}
+	});
+};
 
 exports.findBrewery = function (breweryName, callback) {
 	var returnedJSON,
 		request,
 		select;
 	select = 'SELECT * WHERE {?breweryURI ' + mb.name + ' "' + breweryName + '" .';
-	select += ' OPTIONAL { ?breweryURI ' + mb.name + ' ?name} . ';
+	// select += ' OPTIONAL { ?breweryURI ' + mb.name + ' ?name} . ';
 	select += '}';
 	ts.select(select, function (err, result) {
 		if (err) {
 			callback(err);
 		} else {
+			console.log(result);
 			callback(null, result);
 		}
 	});

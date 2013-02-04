@@ -7,7 +7,8 @@ html(lang='no')
 		
 		article#brewery.brewery
 			header.brewery-header.container
-				h1
-					| Brewery Headline
+				h1 #{results.bindings[0].name.value}
+					small 
+						#{results.bindings[0].breweryURI.value}
 
 		include includes/footer

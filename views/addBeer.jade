@@ -1,39 +1,31 @@
 doctype 5
 html(lang='no')
 	head
+		if(locals.uri)
+			script
+				window.location='#{uri}';
 		include includes/head
 	body
 		include includes/header
+			
 		.container
-			if(uri)
-				script
-					window.location='#{uri}';
-			h1 Add Beer!
+			h1.text-center.offset-top-by-two Add Beer!
+			| Needs brewery to add beer to
+			| TODO: ADD FORM
 
-			.row
-				.one-third.column
-					h2 Beer pages
-					ul
-						li 
-							a(href="/find/Duvel") Duvel 
-						li
-							a(href="/find/null") Beer not existing
-						li TODO: add beer view
-				.one-third.column
-					h2 Brewery pages
-					ul
-						li Single Brewery
-						li Add Brewery
-				.one-third.column
-					h2 Search pages
-			.row
-				.one-third.column
-					h2 User pages
-					ul
-						li TODO
-				.one-third.column
-					h2 Other
-					ul
-						li Index
+			form.no-margin
+				input#name(name="name",type="text", placeholder="Name of beer", autocomplete="off")
 
+				input#brewery(name="brewery", type="text", placeholder="Brewery", data-source="beerQuery").inline
+				input(name="origin", type="text", placeholder="Country of origin").inline
+				input(name="abv", type="text", placeholder="ABV in %")
+				input(name="ibu", type="text", placeholder="IBU")
+				input(name="colour", type="text", placeholder="EBC")
+				select(name="beerstyle", placeholder="Choose beer style")
+					each result in results.bindings
+						option(value="#{result.style.value}") #{result.label.value}
+				button.right.no-margin Submit
+
+			
 		include includes/footer
+

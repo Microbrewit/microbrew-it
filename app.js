@@ -52,8 +52,8 @@ app.get('/find/:searchTerms', routes.find);
 // app.get('/find/beer/:name', routes.findBeer);
 
 // beer and breweries
-// app.get('/brewery/:id', routes.brewery);
-// app.get('/brewery/:brewery/:id', routes.brewery);
+app.get('/brewery/:brewery/:id', routes.brewery);
+app.get('/brewery/:id', routes.brewery);
 // app.get('/brewery/:brewery/:id/:beer', routes.beer);
 
 // add new beers and breweries
@@ -76,7 +76,7 @@ app.get('/add/beer', routes.addBeer);
 // app.get('/api/brewery/:brewery/:id', routes.breweryQuery);
 // app.get('/api/brewery/:brewery/:id/:beer', routes.beer);
 
-
+app.get('/BeerStyle', routes.beerStyleQuery);
 
 http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));
