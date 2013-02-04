@@ -54,7 +54,15 @@ exports.addBeer = function (req, res) {
 			}
 		});
 	} else {
-		res.render('addBeer');
+		query.findBeerStyles( function (err, styles) {
+		if(err) {
+			console.log(err);
+		}else {
+			console.log(styles);
+		res.render('addBeer', styles);
+
+		}
+	});
 	}
 };
 
