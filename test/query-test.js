@@ -1,3 +1,6 @@
+/*jslint node: true, regexp: true */
+/*global describe, it */
+'use strict';
 var chai = require('chai'),
 	assert = chai.assert,
 	expect = chai.expect,
@@ -14,7 +17,7 @@ describe('query module functionality', function () {
 				.filteringRequestBody(/.*/, function (body) {
 					if (body.match(/.*exist*/)) {
 						return 'true';
-					} 
+					}
 					return 'false';
 				})
 				.post(config.ts.path.query, 'true')
@@ -35,7 +38,7 @@ describe('query module functionality', function () {
 				done();
 			});
 		});
-		
+
 	});
 //	describe('#insert()', function () {
 //		var url = 'http://' + config.ts.host + ':' + config.ts.port,
