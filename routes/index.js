@@ -55,8 +55,23 @@ exports.addBeer = function (req, res) {
 			}
 		});
 	} else {
-		res.render('addBeer');
+		query.findBeerStyles( function (err, styles) {
+		if(err) {
+			console.log(err);
+		}else {
+			console.log(styles);
+		res.render('addBeer', styles);
+
+		}
+	});
 	}
+};
+
+exports.addBrewery = function (req, res) {
+	var param = url.parse(req.url, true).query;
+	console.log(param);
+	res.render('addBrewery', {});
+
 };
 
 exports.user = function (req, res) {
@@ -99,6 +114,25 @@ exports.ask = function (req, res) {
 	});
 };
 
+// TODO change lookups to use ID
+exports.brewery = function (req, res) {
+	var breweryID = req.params.id;
+	var breweryName = req.params.brewery;
+
+	console.log('Looking up brewery with name ' + breweryName);
+	query.findBrewery(breweryName, function (error, result) {
+	    if (error) {
+	      res.writeHead(500, {'Content-Type': 'text/plain'});
+	      res.end(error.message);
+	    } else {
+	    	console.log(result);
+	    	res.render('brewery', result);
+	      // res.writeHead(200, {'Content-Type': 'application/json'});
+	      // res.end(JSON.stringify(result));
+	    }
+  });
+};
+
 exports.breweryQuery = function (req, res) {
 	var breweryName = req.params.brewery;
 	console.log(breweryName);
@@ -110,6 +144,17 @@ exports.breweryQuery = function (req, res) {
 		//res.render('brewery', result);
 			res.writeHead(200, {'Content-Type': 'application/json'});
 			res.end(JSON.stringify(result));
+		}
+	});
+};
+exports.beerStyleQuery = function (req, res) {
+	query.findBeerStyles(function (error, result) {
+		if (error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+      		res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type': 'application/json'});
+      		res.end(JSON.stringify(result));
 		}
 	});
 };
@@ -141,3 +186,4 @@ exports.getBreweryName = function (req, res) {
 		}
 	});
 };
+

@@ -62,7 +62,8 @@ exports.insert = function (query, callback) {
 };
 /**
 *	Takes a SPARQL SELECT query, and returns the result set as a JSON object
-*	Throws an Exception if there is something wrong with the connection
+*	Throws an Exception if 
+there is something wrong with the connection
 **/
 exports.select = function (query, callback) {
 	var options = util.beget(opts),
@@ -70,10 +71,10 @@ exports.select = function (query, callback) {
 		request;
 	options.path = config.ts.path.query;
 	options.headers.accept = 'application/sparql-results+json';
-
 	request = http.request(options, function (response) {
 		response.setEncoding('utf8');
 		response.on('data', function (chunk) {
+			//console.log('chunk' + chunk);
 			returnedJSON += chunk;
 		});
 		response.on('end', function () {
