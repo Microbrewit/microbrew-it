@@ -1,3 +1,4 @@
+'use strict';
 var query = require('../app/query'),
 	mb = require('../app/ontology').mb,
 	url = require('url');
@@ -7,7 +8,7 @@ var query = require('../app/query'),
  */
 
 exports.index = function (req, res) {
-  res.render('index', { title: 'Microbrewit' });
+	res.render('index', { title: 'Microbrewit' });
 };
 
 /*
@@ -15,13 +16,13 @@ exports.index = function (req, res) {
  */
 
 exports.list = function (req, res) {
-  res.send("respond with a resource");
+	res.send("respond with a resource");
 };
 
 exports.addBeer = function (req, res) {
 	var param = url.parse(req.url, true).query;
 	console.log(param);
-	if(param.name) {
+	if (param.name) {
 		query.insert({
 			uri : param.uri,
 			name : param.name,
@@ -135,18 +136,16 @@ exports.brewery = function (req, res) {
 exports.breweryQuery = function (req, res) {
 	var breweryName = req.params.brewery;
 	console.log(breweryName);
-  query.findBrewery(breweryName, function (error, result) {
-    if (error) {
-      res.writeHead(500, {'Content-Type': 'text/plain'});
-      res.end(error.message);
-    } else {
-    //res.render('brewery', result);
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      res.end(JSON.stringify(result));
-    }
-
-  });
-
+	query.findBrewery(breweryName, function (error, result) {
+		if (error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+		//res.render('brewery', result);
+			res.writeHead(200, {'Content-Type': 'application/json'});
+			res.end(JSON.stringify(result));
+		}
+	});
 };
 exports.beerStyleQuery = function (req, res) {
 	query.findBeerStyles(function (error, result) {

@@ -205,8 +205,8 @@ console.log(select);
 
 exports.findBrewery = function (breweryName, callback) {
 	var returnedJSON,
-	  request,
-	  select;
+		request,
+		select;
 	select = 'SELECT * WHERE {?breweryURI ' + mb.name + ' "' + breweryName + '" .';
 	// select += ' OPTIONAL { ?breweryURI ' + mb.name + ' ?name} . ';
 	select += '}';
