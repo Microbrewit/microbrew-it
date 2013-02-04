@@ -198,7 +198,6 @@ console.log(select);
 		if(err) {
 			callback(err);
 		} else {
-			console.log(result);
 			callback(null, result);
 		}
 	});
