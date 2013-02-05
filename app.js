@@ -1,17 +1,17 @@
-
+'use strict';
+/*jslint nomen:true es5:true */
 /**
  * Module dependencies.
  */
 
 var express = require('express'),
-  routes = require('./routes'),
+	routes = require('./routes'),
 	http = require('http'),
 	path = require('path');
 
 var app = express();
 
 app.configure(function () {
-
 	app.set('port', process.env.PORT || 3000);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
@@ -76,7 +76,7 @@ app.get('/add/beer', routes.addBeer);
 // app.get('/api/brewery/:brewery/:id', routes.breweryQuery);
 // app.get('/api/brewery/:brewery/:id/:beer', routes.beer);
 
-
+app.get('/BeerStyle', routes.beerStyleQuery);
 
 http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));
