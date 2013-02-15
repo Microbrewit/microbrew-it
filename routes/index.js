@@ -82,8 +82,30 @@ exports.user = function (req, res) {
 
 exports.addUser = function (req, res) {
 	var param = url.parse(req.url, true).query;
+		if(param.email) {
 	user.setUser(param, function (error, result) {
-		console.log("test");
+			console.log("test");
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type': 'text/plain'});
+			res.end(result);
+		}
+		});
+		} else {
+			res.render('addUser', {});
+		}
+		};
+
+exports.loginCheck = function (req, res) {
+	var param = {name : "tom", email : "tom@jack.no", password : "jack"};
+	user.passwordCheck(param, function (error, result) {
+		if(error) {
+			console.log("error" + error);
+		} else {
+			console.log("result" + result);
+		}
 	});
 };
 
