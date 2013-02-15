@@ -16,11 +16,13 @@ header#main-header.header.clearfix
 						input.rounded.border-box(type='text', placeholder='find beer')
 						button.search.button Search
 
-					.right
-						form(action="loginCheck")
-							input.right(name="email", placeholder="username", type="text")
-							input.right(name="password", type="password")
-							button.right Login biatch
+					//- .right
+					//- 	form(action="loginCheck")
+					//- 		input.right(name="email", placeholder="username", type="text")
+					//- 		input.right(name="password", type="password")
+					//- 		button.right Login biatch
+					if(locals.loggedUser)
+
 					//- #user-logged-in.user.image-middle.logged-in.header-user-administration.inline-block.offset-left-by-two.columns.no-padding
 					//- 	a(href='#user-logged-in')
 					//- 		img(src='/images/placeholder-avatar.png', alt='Username')
