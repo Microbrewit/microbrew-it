@@ -85,7 +85,13 @@ exports.addUser = function (req, res) {
 		if(param.email) {
 	user.setUser(param, function (error, result) {
 			console.log("test");
-
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type': 'text/plain'});
+			res.end(result);
+		}
 		});
 		} else {
 			res.render('addUser', {});
