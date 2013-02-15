@@ -81,6 +81,11 @@ app.get('/add/beer', routes.addBeer);
 
 app.get('/BeerStyle', routes.beerStyleQuery);
 
+
+// 404
+app.use(function(req,res){
+    res.render('404.jade');
+});
 http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));
 });
