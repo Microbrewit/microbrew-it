@@ -1,16 +1,15 @@
+"use strict";
 var http = require('http'),
 	url = require('url'),
-	mysql = require('mysql'),
+	pg = require('pg'),
 	config = require('../config'),
-	connection = mysql.createConnection({
-		'host'	: config.host,
-		'user'	: config.user,
-		'password' : config.password,
-		'database' : config.database
-	});
-	
+	postgresql = config.postgresql,
+	connectionString = "tcp://" + postgresql.user + ":" + postgresql.password + "@" +
+		postgresql.host + ":" + postgresql.port + "/" + postgresql.db;
+
 exports.save = function (options, callback) {
-	connection.connect();
-	connection.query('INSERT INTO subscribers SET email =?, name=?', [options.email, options.name]);
-	connection.close();
+
+	pg.connect(connectionString, function (client) {
+		client.query('INSERT INTO subscribers VALUES email=$1, name=$2', [options.email, options.name]);
+	});
 };
