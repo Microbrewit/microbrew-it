@@ -15,16 +15,22 @@ header#main-header.header.clearfix
 					form#main-search.search.inline-block(action='/find')
 						input.rounded.border-box(type='text', placeholder='find beer')
 						button.search.button Search
-					#user-logged-in.user.image-middle.logged-in.header-user-administration.inline-block.offset-left-by-two.columns.no-padding
-						a(href='#user-logged-in')
-							img(src='/images/placeholder-avatar.png', alt='Username')
-							img(src='/images/arrow-down-white.png', alt='')
-						nav.hidden.sub-navigation
-							ul
-								li
-									a(href='') Profile
-								li
-									a(href='') Settings
-								li
-									a(href='') Logout
+
+					.right
+						form(action="loginCheck")
+							input.right(name="email", placeholder="username", type="text")
+							input.right(name="password", type="password")
+							button.right Login biatch
+					//- #user-logged-in.user.image-middle.logged-in.header-user-administration.inline-block.offset-left-by-two.columns.no-padding
+					//- 	a(href='#user-logged-in')
+					//- 		img(src='/images/placeholder-avatar.png', alt='Username')
+					//- 		img(src='/images/arrow-down-white.png', alt='')
+					//- 	nav.hidden.sub-navigation
+					//- 		ul
+					//- 			li
+					//- 				a(href='') Profile
+					//- 			li
+					//- 				a(href='') Settings
+					//- 			li
+					//- 				a(href='') Logout
 				
