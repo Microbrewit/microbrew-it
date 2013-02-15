@@ -98,6 +98,17 @@ exports.addUser = function (req, res) {
 		}
 		};
 
+exports.loginCheck = function (req, res) {
+	var param = {name : "tom", email : "tom@jack.no", password : "jack"};
+	user.passwordCheck(param, function (error, result) {
+		if(error) {
+			console.log("error" + error);
+		} else {
+			console.log("result" + result);
+		}
+	});
+};
+
 exports.find = function (req, res) {
 	var beerName = req.params.searchTerms;
 

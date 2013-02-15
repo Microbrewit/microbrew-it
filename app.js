@@ -45,6 +45,7 @@ app.get('/ask', routes.ask);
 // users
 app.get('/user/:userName', routes.user);
 app.get('/add/user', routes.addUser);
+app.get('/login', routes.loginCheck);
 
 // searches
 app.get('/find/:searchTerms', routes.find);
