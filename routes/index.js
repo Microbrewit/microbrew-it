@@ -1,7 +1,8 @@
 'use strict';
 var query = require('../app/query'),
 	mb = require('../app/ontology').mb,
-	url = require('url');
+	url = require('url'),
+	user = require('../app/user');
 
 /*
  * GET home page.
@@ -77,6 +78,13 @@ exports.addBrewery = function (req, res) {
 exports.user = function (req, res) {
 	res.writeHead(500, {'Content-Type': 'text/plain'});
 	res.end('Exception: Mothefucking internal shit with arrays error'); // TODO: add error view
+};
+
+exports.addUser = function (req, res) {
+	var param = url.parse(req.url, true).query;
+	user.setUser(param, function (error, result) {
+		console.log("test");
+	});
 };
 
 exports.find = function (req, res) {
