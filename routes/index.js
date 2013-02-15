@@ -82,10 +82,15 @@ exports.user = function (req, res) {
 
 exports.addUser = function (req, res) {
 	var param = url.parse(req.url, true).query;
+		if(param.email) {
 	user.setUser(param, function (error, result) {
-		console.log("test");
-	});
-};
+			console.log("test");
+
+		});
+		} else {
+			res.render('addUser', {});
+		}
+		};
 
 exports.find = function (req, res) {
 	var beerName = req.params.searchTerms;
