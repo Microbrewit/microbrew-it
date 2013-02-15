@@ -44,6 +44,7 @@ app.get('/ask', routes.ask);
 // ================ FRONTEND ===============
 // users
 app.get('/user/:userName', routes.user);
+app.get('/add/user', routes.addUser);
 
 // searches
 app.get('/find/:searchTerms', routes.find);
@@ -59,6 +60,7 @@ app.get('/brewery/:id', routes.brewery);
 // add new beers and breweries
 // app.get('/add/brewery', routes.addBrewery);
 app.get('/add/beer', routes.addBeer);
+
 
 // ======================= BACKEND =====================
 // TODO: naming scheme for API routes functions
