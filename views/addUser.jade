@@ -1,0 +1,28 @@
+doctype 5
+html(lang='no')
+	head
+		include includes/head
+	body
+		include includes/header
+			
+		.container
+			h1.text-center.offset-top-by-two Register User
+			| Needs brewery to add beer to
+			| TODO: ADD FORM
+
+			form.no-margin(action="/add/user")
+				label(for="name") Username
+				input#name(name="name",type="text", placeholder="Username")
+				
+				label(for="email") Email
+				input#email(name="email",type="email")
+				
+				label(for="password") Password
+				input#password(name="password",type="text")
+				label(for="password2") Repeat password
+				input#password2(name="password2", type="text")
+				
+				button.right.no-margin Submit
+
+			
+		include includes/footer
