@@ -1,0 +1,16 @@
+doctype 5
+html(lang='no')
+	head
+		if(locals.uri)
+			script
+				window.location='#{uri}';
+		include includes/head
+	body
+		include includes/header
+			
+		.container
+			h1.text-center.offset-top-by-two Shit.
+			img.responsive.center.block(src="/img/404.jpg")
+
+			
+		include includes/footer
