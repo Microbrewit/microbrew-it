@@ -5,6 +5,39 @@ html(lang='no')
 	body
 		include includes/header
 
-		Search view
+		header#search.container
+			form
+				input(name="search").inline-block
+				button Search 
+
+		.further-info
+				.nav-chrome.offset-bottom-by-one
+					.container
+						ul#beerTabs.nav.nav-pills
+							li
+								a(href='#all', data-toggle='tab') All
+							li
+								a(href='#beers', data-toggle='tab') Beers
+							li
+								a(href='#breweries', data-toggle='tab') Breweries
+						
+
+				.tab-content.container
+					#all.tab-pane.active
+						.sixteen.columns.no-top-padding
+							| All
+					#beers.tab-pane.active
+						.sixteen.columns.no-top-padding
+							| Beers
+					#breweries.tab-pane.active
+						.sixteen.columns.no-top-padding
+							| Breweries
+
+		// Bootstrap tabs
+		script(src='/javascript/bootstrap.js')
+		script
+			$(function () {
+				$('#beerTabs li:first a:last').tab('show');
+			});
 
 		include includes/footer
