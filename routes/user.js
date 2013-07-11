@@ -20,15 +20,16 @@ var addUser = function (req, res) {
 		var userData = {
 			'username' : param.username,
 			'email' : param.email,
-			'password' : param.password
+			'password' : param.password,
+			'breweryname' : param.brewery_name
 		};
-		user.setUser(userData, function (err, res) {
-			console.log(err);
+		user.setUser(userData, function (err, result) {
 			res.writeHead(200, {'Content-Type': 'application/json'});
-			res.end(JSON.stringify({
-			'statuscode' : "200",
-			'message' : "User successfully created"
-			}));
+			if(err) {
+				res.end(JSON.stringify(err));
+			} else {
+				res.end(JSON.stringify(result));
+			}
 		});
 
 

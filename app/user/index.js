@@ -2,10 +2,15 @@ var bcrypt = require('bcrypt'),
 pg = require('pg'),
 config = require('../config');
 
+// Key value object for postgres error codes with appropriate error messages
+var errorCodes = {
+	23505 : 'User with provided values already exist in database'
+};
+
 
 exports.setUser = function (userData, callback) {
-	
-	var client = new pg.Client("tcp://" + config.postgresql.user + ":" + config.postgresql.password + "@" + config.postgresql.host + ":" + config.postgresql.port + "/" + config.postgresql.database);
+
+	var client = new pg.Client(config.postgresql);
 	client.connect();
 	bcrypt.genSalt(10, function(err, salt) {
 		bcrypt.hash(userData.password, salt, function (err, hash) {
@@ -13,13 +18,23 @@ exports.setUser = function (userData, callback) {
 				console.log("error in bcrypt");
 				return callback(err);
 			} else {
-				client.query('INSERT INTO users(username, password, email) values($1, $2, $3)', [userData.name, hash, userData.email], function (error, result) {
+
+				client.query('INSERT INTO users(username, password, email) values($1, $2, $3) RETURNING *',
+					[userData.username, hash, userData.email],
+					function (error, result) {
 					if(error) {
-						console.log("Error in query");
-						callback(error);
+						callback({
+							'error' : errorCodes[error.code],
+							'code' : error.code
+						});
 					} else {
+
 						console.log("Result: " + JSON.stringify(result));
-						callback(null, result);
+						callback(null, {
+							'username' : result.rows[0].username,
+							'email' : result.rows[0].email,
+							'breweryname' : userData.breweryname
+						});
 					}
 				});
 			}
@@ -36,7 +51,11 @@ exports.passwordCheck = function (userData, callback) {
 			callback(err);
 		} else {
 			if(res.rows.length > 0) {
+<<<<<<< HEAD
 				var hash = res.rows[0].password;			
+=======
+				var hash = res.rows[0].password;
+>>>>>>> master
 
 				bcrypt.compare(userData.password, hash, function (error, result) {
 					if(error) {
