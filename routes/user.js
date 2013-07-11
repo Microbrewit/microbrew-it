@@ -15,12 +15,13 @@ var userDetails = function () {
 
 var addUser = function (req, res) {
 	var param = url.parse(req.url, true).query;
-	if(param.username && param.email && param.brewery_name && param.password) {
+	if(param.username && param.email && param.brewery_name && param.password && param.settings) {
 		console.log('success');
 		var userData = {
 			'username' : param.username,
 			'email' : param.email,
 			'password' : param.password,
+			'settings' : param.settings,
 			'breweryname' : param.brewery_name
 		};
 		user.setUser(userData, function (err, result) {

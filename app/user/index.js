@@ -19,8 +19,8 @@ exports.setUser = function (userData, callback) {
 				return callback(err);
 			} else {
 
-				client.query('INSERT INTO users(username, password, email) values($1, $2, $3) RETURNING *',
-					[userData.username, hash, userData.email],
+				client.query('INSERT INTO users(username, password, email, settings) values($1, $2, $3, $4) RETURNING *',
+					[userData.username, hash, userData.email, userData.settings],
 					function (error, result) {
 					if(error) {
 						callback({
@@ -33,6 +33,7 @@ exports.setUser = function (userData, callback) {
 						callback(null, {
 							'username' : result.rows[0].username,
 							'email' : result.rows[0].email,
+							'settings' : result.rows[0].settings,
 							'breweryname' : userData.breweryname
 						});
 					}
@@ -51,12 +52,7 @@ exports.passwordCheck = function (userData, callback) {
 			callback(err);
 		} else {
 			if(res.rows.length > 0) {
-<<<<<<< HEAD
 				var hash = res.rows[0].password;			
-=======
-				var hash = res.rows[0].password;
->>>>>>> master
-
 				bcrypt.compare(userData.password, hash, function (error, result) {
 					if(error) {
 						callback(error);
