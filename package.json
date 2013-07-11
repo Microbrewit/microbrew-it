@@ -12,7 +12,8 @@
 	"pg": "0.10.x",
 	"passport": "0.1.x",
 	"bcrypt": "*",
-	"coffee-script": "1.4.x"
+	"coffee-script": "1.4.x",
+	"connect-redis": "*"
 	},
 	"devDependencies": {
 		"nock": "~0.14.2",
