@@ -25,15 +25,14 @@
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser('your secret here'));
-    app.use(express.session(
-        // {
+    app.use(express.session({
         // store: new RedisStore({
         //     host: 'localhost',
         //     port: 6379,
         //     db: 2,
-        //     pass: 'RedisPASS'
+        //     pass: ''
         //     }),
-        // secret: '987654321'}
+        secret: 'fortesting756498'}
     ));
     app.use(app.router);
 
@@ -44,9 +43,18 @@
         app.use(express.errorHandler());
     });
 
-    app.get('/', routes.index);
 
+// // === INDEX
+app.get('/', routes.index);
+
+// // === USER ROUTES
 app.get('/user/add', routes.user.addUser);
+app.get('/user/login/:username', routes.user.login);
+app.get('/user/logout/:username', routes.user.logout);
+app.get('/user/details/:username', routes.user.details);
+
+// // === Beer Routes
+// // Find out how to separate beer and recipees in api.
 
 // // testing TODO: remove when app works
 // app.get('/users', routes.list);

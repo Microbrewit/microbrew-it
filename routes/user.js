@@ -2,15 +2,18 @@ var url = require('url'),
 user = require('../app/user');
 
 var login = function () {
-
+	res.writeHead(200, {'Content-Type': 'application/json'});
+	res.end("{'message': 'Placeholder. Here comes user logins info'}");
 };
 
 var logout = function () {
-
+	res.writeHead(200, {'Content-Type': 'application/json'});
+	res.end("{'message': 'Placeholder. Here comes user logout infos'}");
 };
 
-var userDetails = function () {
-
+var details = function () {
+	res.writeHead(200, {'Content-Type': 'application/json'});
+	res.end("{'message': 'Here comes user info in time");
 };
 
 var addUser = function (req, res) {
@@ -48,6 +51,6 @@ var addUser = function (req, res) {
 exports = module.exports = {
 	'login' : login,
 	'logout' : logout,
-	'userDetails' : userDetails,
+	'details' : details,
 	'addUser' : addUser
 };
