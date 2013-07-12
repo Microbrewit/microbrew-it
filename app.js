@@ -24,15 +24,11 @@
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
-    app.use(express.cookieParser('your secret here'));
+    app.use(express.cookieParser());
     app.use(express.session({
-        // store: new RedisStore({
-        //     host: 'localhost',
-        //     port: 6379,
-        //     db: 2,
-        //     pass: ''
-        //     }),
-        secret: 'fortesting756498'}
+        store: new RedisStore(),
+        secret: 'fortesting756498',
+        }
     ));
     app.use(app.router);
 
@@ -45,13 +41,23 @@
 
 
 // // === INDEX
-app.get('/', routes.index);
+//app.get('/', routes.index);
 
 // // === USER ROUTES
 app.get('/user/add', routes.user.addUser);
-app.get('/user/login/:username', routes.user.login);
-app.get('/user/logout/:username', routes.user.logout);
+app.get('/user/update', routes.user.updateUser);
+app.get('/user/changepassword', routes.user.changePassword);
+app.get('/user/login', routes.user.login); //?username=...&password=...
+app.get('/user/logout', routes.user.logout);
 app.get('/user/details/:username', routes.user.details);
+
+// app.get('/', function(req, res){
+//     console.log(JSON.stringify(req.session));
+//     if(req.query.add !== undefined)
+//         req.session.counter = (req.session.counter)? req.session.counter + 1 : 10;
+//     res.writeHead(200, {'Content-Type': 'application/json'});
+//     res.end("{message: " + req.session.counter + "}");
+// });
 
 // // === Beer Routes
 // // Find out how to separate beer and recipees in api.
