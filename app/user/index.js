@@ -27,12 +27,10 @@ var setUser = function (userData, callback) {
 							'code' : error.code
 						});
 					} else {
-
-						console.log("Result: " + JSON.stringify(result));
 						callback(null, {
-							'username' : result.rows[0].username,
-							'email' : result.rows[0].email,
-							'breweryname' : userData.breweryname
+							'username': result.rows[0].username,
+							'email': result.rows[0].email,
+							'breweryname': userData.breweryname
 						});
 					}
 				});
@@ -50,22 +48,24 @@ var updateUser = function (userData, callback) {
 			callback(err);
 		} else {
 			if(userData.email && userData.email.length > 6 && userData.settings) {
-				client.query('UPDATE users SET (email, settings) = ($1, $2) WHERE username = $3 RETURNING *',
-					[userData.email, userData.settings], function (error, result) {
-					if(error) {
-						console.log(JSON.stringify(error));
-						callback({
-							'error' : errorCodes[error.code],
-							'code' : error.code
-						});
-					} else {
-						callback(null, {
-							'username' : result.rows[0].username,
-							'email' : result.rows[0].email,
-							'breweryname' : userData.breweryname
-						});
+				client.query('UPDATE users SET email = $1, settings = $2 WHERE username = $3 RETURNING *',
+					[userData.email, userData.settings, userData.username],
+					function (error, result) {
+						if(error) {
+							console.log(JSON.stringify(error));
+							callback({
+								'error' : errorCodes[error.code],
+								'code' : error.code
+							});
+						} else {
+							callback(null, {
+								'username' : result.rows[0].username,
+								'email' : result.rows[0].email,
+								'breweryname' : userData.breweryname
+							});
+						}
 					}
-				}); // End of client.query
+				); // End of client.query
 			} else { // Else for if userdata
 				callback({'error': 'Missing or invalid fields/values.'});
 			}

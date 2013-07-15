@@ -75,12 +75,12 @@ var addUser = function (req, res) {
 				if(err) {
 					res.end(JSON.stringify(err));
 				} else {
+					req.session.user = result.username;
 					res.end(JSON.stringify(
 					{
 						'message': 'User successfully created and logged in.',
 						'user': result
 					}));
-					req.session.user = result.username;
 				}
 			});
 		} else {
@@ -112,7 +112,10 @@ var updateUser = function (req, res) {
 					res.end(JSON.stringify(err));
 				} else {
 					res.writeHead(200, {'Content-Type': 'application/json'});
-					res.end(JSON.stringify(result));
+					res.end(JSON.stringify({
+						'message': 'User succesfully updated.',
+						'user': result
+					}));
 				}
 			});
 		} else {
