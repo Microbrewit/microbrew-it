@@ -1,52 +1,66 @@
 var url = require('url'),
-user = require('../app/user');
+user = require('../app/user'),
+utils = require('../app/util');
 
 var login = function (req, res) {
-	console.log(JSON.stringify(req.session));
+	var response = "";
+	var params = url.parse(req.url, true).query;	
 	if(!req.session.user) {
-		var param = url.parse(req.url, true).query;
-		if(param.username && param.password) {
+		if(params.username && params.password) {
 			user.passwordCheck(
 				{
-					'username': param.username,
-					'password': param.password
+					'username': params.username,
+					'password': params.password
 				},
 				function (err, result) {
 					if(err) {
 						res.writeHead(401, {'Content-Type': 'application/json'});
-						res.end("{'error': 'Unauthorized. Password and/or username is incorrect'}");
+						response = {'error': 'Unauthorized. Password and/or username is incorrect'};
 					} else {
-						req.session.user = param.username;
+						console.log("Else: Set session and write header");
+						req.session.user = params.username;
 						response = {
 							'message': 'User successfully logged in.',
 							'user': result.user
 							};
 						res.writeHead(200, {'Content-Type': 'application/json'});
-						res.end(JSON.stringify(response));
 					}
-				}
-			);
+					utils.formatJsonResponse(params, response, function (cbResponse) {
+						res.end(cbResponse);
+					});
+				});
 		} else {
 			res.writeHead(400, {'Content-Type': 'application/json'});
-			res.end("{'error': 'Bad Request. Username and/or password missing.'}");
+			response = {'error': 'Bad Request. Username and/or password missing.'};
+			utils.formatJsonResponse(params, response, function (cbResponse) {
+				res.end(cbResponse);
+			});
 		}
 	} else {
 		res.writeHead(400, {'Content-Type': 'application/json'});
-		res.end("{'error': 'Bad Request. A user is already logged in. Log out first.'}");
+		response = {'error': 'Bad Request. A user is already logged in. Log out first.'};
+		utils.formatJsonResponse(params, response, function (cbResponse) {
+			res.end(cbResponse);
+		});
 	}
 
 };
 
 var logout = function (req, res) {
+	var params = url.parse(req.url, true).query;
+	var response = {};	
 	if(req.session.user) {
 		req.session.destroy();
 		req.session = null;
 		res.writeHead(200, {'Content-Type': 'application/json'});
-		res.end("{'message': 'User successfully logged out.'}");
+		response = {'message': 'User successfully logged out.'};
 	} else {
 		res.writeHead(400, {'Content-Type': 'application/json'});
-		res.end("{'error': 'No user to log out.'}");
+		response = {'error': 'No user to log out.'};
 	}
+	utils.formatJsonResponse(params, response, function (cbResponse) {
+			res.end(cbResponse);
+	});
 
 };
 
@@ -56,75 +70,95 @@ var details = function (req, res) {
 };
 
 var addUser = function (req, res) {
+	var params = url.parse(req.url, true).query;
+	var response = {};	
 	if(req.session.user) {
 		res.writeHead(418, {'Content-Type': 'application/json'});
-		res.end("{'error': 'Cannot register a new user while logged in.'}");
+		response = {'error': 'Cannot register a new user while logged in.'};
+		utils.formatJsonResponse(params, response, function (cbResponse) {
+			res.end(cbResponse);
+		});
 	} else {
-		var param = url.parse(req.url, true).query;
-		if(param.username && param.email && param.brewery_name && param.password && param.settings) {
+		if(params.username && params.email && params.brewery_name && params.password && params.settings) {
 			console.log('success');
 			var userData = {
-				'username' : param.username,
-				'email' : param.email,
-				'password' : param.password,
-				'breweryname' : param.brewery_name,
-				'settings' : param.settings
+				'username' : params.username,
+				'email' : params.email,
+				'password' : params.password,
+				'breweryname' : params.brewery_name,
+				'settings' : params.settings
 			};
 			user.setUser(userData, function (err, result) {
 				res.writeHead(200, {'Content-Type': 'application/json'});
 				if(err) {
-					res.end(JSON.stringify(err));
+					response = err;
 				} else {
 					req.session.user = result.username;
-					res.end(JSON.stringify(
-					{
+					reponse = {
 						'message': 'User successfully created and logged in.',
 						'user': result
-					}));
+					};
 				}
+				utils.formatJsonResponse(params, response, function (cbResponse) {
+					res.end(cbResponse);
+				});
 			});
 		} else {
 			console.log('fail');
 			res.writeHead(400, {'Content-Type': 'application/json'});
-			res.end(JSON.stringify({
+			response = {
 				'statuscode' : "400",
 				'error' : "POST parameters missing."
-			}));
+			};
+			utils.formatJsonResponse(params, response, function (cbResponse) {
+				res.end(cbResponse);
+			});
 		}
 	}
 
 };
 
 var updateUser = function (req, res) {
+	var params = url.parse(req.url, true).query;
+	var response = {};
 	if(req.session.user) {
-		var param = url.parse(req.url, true).query;
-		if(param.email && param.settings && param.password) {
+		if(params.email && params.settings && params.password) {
 			var userData = {
 				'username': req.session.user,
-				'email': param.email,
-				'password': param.password,
-				'settings': param.settings
+				'email': params.email,
+				'password': params.password,
+				'settings': params.settings
 			};
 
 			user.updateUser(userData, function (err, result) {
 				if(err) {
 					res.writeHead(400, {'Content-Type': 'application/json'});
-					res.end(JSON.stringify(err));
+					response = err;
 				} else {
 					res.writeHead(200, {'Content-Type': 'application/json'});
-					res.end(JSON.stringify({
+					response = {
 						'message': 'User succesfully updated.',
 						'user': result
-					}));
+					};
 				}
+				utils.formatJsonResponse(params, response, function (cbResponse) {
+					res.end(cbResponse);
+				});
 			});
 		} else {
 			res.writeHead(400, {'Content-Type': 'application/json'});
-			res.end(JSON.stringify({'error': 'One or more missing params.'}));
+			response = {'error': 'One or more missing params.'};
+			utils.formatJsonResponse(params, response, function (cbResponse) {
+				res.end(cbResponse);
+			});
 		}
+
 	} else {
 		res.writeHead(400, {'Content-Type': 'application/json'});
-		res.end("{'error': 'Log in to update user.'}");
+		response = {'error': 'Log in to update user.'};
+		utils.formatJsonResponse(params, response, function (cbResponse) {
+			res.end(cbResponse);
+		});
 	}
 
 };

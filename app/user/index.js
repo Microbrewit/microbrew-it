@@ -60,8 +60,9 @@ var updateUser = function (userData, callback) {
 							});
 						} else {
 							callback(null, {
-								'username' : result.rows[0].username,
-								'email' : result.rows[0].email,
+								'username': result.rows[0].username,
+								'email': result.rows[0].email,
+								'settings': result.rows[0].settings,
 								'breweryname' : userData.breweryname
 							});
 						}
