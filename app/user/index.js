@@ -8,8 +8,8 @@ var errorCodes = {
 	42601: 'Microbrewit-backend messed up. Sorry. :('
 };
 
-
 var setUser = function (userData, callback) {
+
 	var client = new pg.Client(config.postgresql);
 	client.connect();
 	bcrypt.genSalt(10, function(err, salt) {
@@ -28,9 +28,10 @@ var setUser = function (userData, callback) {
 						});
 					} else {
 						callback(null, {
-							'username': result.rows[0].username,
-							'email': result.rows[0].email,
-							'breweryname': userData.breweryname
+							'username' : result.rows[0].username,
+							'email' : result.rows[0].email,
+							'settings' : result.rows[0].settings,
+							'breweryname' : userData.breweryname
 						});
 					}
 				});
@@ -85,8 +86,7 @@ var passwordCheck = function (userData, callback) {
 			callback(err);
 		} else {
 			if(res.rows.length > 0) {
-				var hash = res.rows[0].password;
-
+				var hash = res.rows[0].password;			
 				bcrypt.compare(userData.password, hash, function (error, result) {
 					if(error) {
 						callback(error);
