@@ -28,7 +28,7 @@
     app.use(express.session({
         store: new RedisStore(),
         secret: 'fortesting756498',
-        }
+        domain: '.microbrew.it'}
     ));
     app.use(app.router);
 

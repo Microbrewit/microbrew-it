@@ -8,12 +8,13 @@ exports.beget = function (o) {
     return new F();
 };
 
-exports.formatJsonResponse = function (params, response, callback) {
-	console.log("Yay, we got to jsonpCheck function");
+exports.formatJsonResponse = function (params, response) {
+	console.log(response);
 	if(params.callback && params.callback.length > 0) {
 		response = params.callback + "(" + JSON.stringify(response) + ");";
 	} else {
 		response = JSON.stringify(response);
 	}
-	callback(response);
+	console.log(response);
+	return response;
 };
