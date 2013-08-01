@@ -51,6 +51,9 @@ app.get('/user/login', routes.user.login); //?username=...&password=...
 app.get('/user/logout', routes.user.logout);
 app.get('/user/details/:username', routes.user.details);
 
+// // === INGREDIENTS ROUTES
+app.get('/fermentables', routes.ingredients.fermentables);
+
 // app.get('/', function(req, res){
 //     console.log(JSON.stringify(req.session));
 //     if(req.query.add !== undefined)

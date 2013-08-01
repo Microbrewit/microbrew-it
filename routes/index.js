@@ -6,7 +6,8 @@ var query = require('../app/query'),
 
 var beerRoute = require('./beer.js'),
  userRoute = require('./user.js'),
- breweryRoute = require('./brewery.js');
+ breweryRoute = require('./brewery.js'),
+ ingredientsRoute = require('./ingredients.js');
 
 
 
@@ -22,7 +23,8 @@ exports = module.exports = {
 	'index': index,
 	'beer': beerRoute,
 	'user': userRoute,
-	'brewery' : breweryRoute
+	'brewery' : breweryRoute,
+	'ingredients': ingredientsRoute
 };
 // };
 
