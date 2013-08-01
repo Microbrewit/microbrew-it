@@ -36,4 +36,32 @@ exports.fermentables = {
                           'maltsterid': '4321'
                         }
                       }]
+                      };
+
+exports.fermentable = {
+                      'meta': {
+                        'total': 123608,
+                        'returned': 1,
+                        'skip': 0,
+                        'size': 1
+                      },
+                      'links': {
+                          'fermentables.maltster': {
+                          'href': 'http://api.microbrew.it/maltsters/:maltsterid/',
+                          'type': 'maltster'
+                        }
+                      },
+                      'fermentables': {
+                        'id': 'http://microbrew.it/ontology/fermentables/Amber_Malt',
+                        'href': 'http://api.microbrew.it/fermentables/:Amber_Malt',
+                        'maltster': 'Best Malz',
+                        'fermentablename': 'Amber Malt',
+                        'colour': '20',
+                        'ppg': '34',
+                        'type': 'grain',
+                        'links': {
+                          'maltsterid': '1234'
+                        }
                       }
+                    };
+

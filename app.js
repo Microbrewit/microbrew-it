@@ -53,6 +53,7 @@ app.get('/user/details/:username', routes.user.details);
 
 // // === INGREDIENTS ROUTES
 app.get('/fermentables', routes.ingredients.fermentables);
+app.get('/fermentables/:fermentable', routes.ingredients.fermentable);
 
 // app.get('/', function(req, res){
 //     console.log(JSON.stringify(req.session));
