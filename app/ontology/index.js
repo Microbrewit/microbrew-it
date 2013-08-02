@@ -28,5 +28,8 @@ exports.mb = {
 	grain : ' <' + baseURI + 'Grain> ',
 	hasPPG : ' <' + baseURI + 'hasPPG> ',
 	hasColour : '<' + baseURI + 'hasColour>',
-	fermentables : '<' + baseURI + 'Fermentables>'
+	fermentables : '<' + baseURI + 'Fermentables>',
+	ingredient : '<' + baseURI + 'Ingredient>',
+	suppliedBy : '<' + baseURI + 'suppliedBy>',
+	extract : '<' + baseURI + 'Extract>'
 };
