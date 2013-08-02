@@ -1,5 +1,5 @@
 //Ontology export
-var baseURI = 'http://ontology.microbrew.it/';
+var baseURI = 'http://microbrew.it/beer.owl#';
 
 exports.mb = {
 //beer
@@ -24,5 +24,9 @@ exports.mb = {
 	barcode : ' <' + baseURI + 'barcode> ',
 	brewedBy : ' <' + baseURI + 'brewedBy> ',
 	brewery : ' <' + baseURI + 'Brewery> ',
-	beerstyle : ' <' + baseURI + 'BeerStyle> '
+	beerstyle : ' <' + baseURI + 'BeerStyle> ',
+	grain : ' <' + baseURI + 'Grain> ',
+	hasPPG : ' <' + baseURI + 'hasPPG> ',
+	hasColour : '<' + baseURI + 'hasColour>',
+	fermentables : '<' + baseURI + 'Fermentables>'
 };
