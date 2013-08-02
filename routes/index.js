@@ -1,9 +1,9 @@
 'use strict';
 var mb = require('../app/ontology').mb,
 	url = require('url'),
-	beerRoute = require('./beer.js'),
- 	userRoute = require('./user.js'),
- 	breweryRoute = require('./brewery.js'),
+	beersRoute = require('./beer.js'),
+ 	usersRoute = require('./user.js'),
+ 	breweriesRoute = require('./brewery.js'),
  	ingredientsRoute = require('./ingredients.js');
 
 
@@ -19,8 +19,8 @@ var index = function (req, res) {
 
 exports = module.exports = {
 	'index': index,
-	'beer': beerRoute,
-	'user': userRoute,
-	'brewery' : breweryRoute,
+	'beers': beersRoute,
+	'users': usersRoute,
+	'breweries' : breweriesRoute,
 	'ingredients': ingredientsRoute
 };
