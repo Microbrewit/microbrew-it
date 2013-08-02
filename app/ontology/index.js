@@ -3,6 +3,7 @@ var baseURI = 'http://microbrew.it/beer.owl#';
 
 exports.mb = {
 //beer
+	baseURI : baseURI,
 	beer  : ' <' + baseURI + 'Beer> ',
 	name : ' <' + baseURI + 'name> ',
 	style : ' <' + baseURI + 'hasStyle> ',
