@@ -53,6 +53,8 @@ app.get('/fermentables/:fermentable', routes.ingredients.fermentable);
 app.get('/hops', routes.ingredients.hops);
 app.get('/hops/:hop', routes.ingredients.hop)
 
+// Yeasts
+app.get('/yeasts', routes.yeasts.yeasts);
 
 
 // 404
