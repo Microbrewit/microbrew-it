@@ -29,9 +29,10 @@ var getFermentables = function (callback) {
 
 var getFermentable = function (ferm, callback) {
 	console.log(ferm);
+	if(ferm.indexOf(mb.baseURI) != -1 ) { 
 	var select =	' SELECT ?fermentable ?label ?ppg ?colour ?type ?typeuri ?supplier ?supplieruri';
 		select +=	' WHERE { ';
-		select +=	' ?fermentable rdfs:label "' + ferm + '"@en; rdfs:label ?label; rdf:type ?typeuri; ';
+		select +=	' <'+ ferm + '> rdfs:label ?label; rdf:type ?typeuri; ';
 		select +=	mb.hasPPG + ' ?ppg; ' + mb.hasColour + ' ?colour . ';
 		select +=	' OPTIONAL { ?fermentable' + mb.suppliedBy + ' ?supplieruri . ?supplieruri rdfs:label ?supplier . FILTER(LANG(?supplier) ="en") . } ';
 		select +=	' ?typeuri rdfs:label ?type . FILTER(LANG(?type) = "en") . ';
@@ -50,7 +51,10 @@ var getFermentable = function (ferm, callback) {
 			}
 		});
 
-
+	} else {
+		console.log('ERROR');
+		callback(null)
+	}
 };
 
 var apiFormattingFermentables = function (result) {
