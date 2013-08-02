@@ -32,5 +32,12 @@ exports.mb = {
 	fermentables : '<' + baseURI + 'Fermentables>',
 	ingredient : '<' + baseURI + 'Ingredient>',
 	suppliedBy : '<' + baseURI + 'suppliedBy>',
-	extract : '<' + baseURI + 'Extract>'
+	extract : '<' + baseURI + 'Extract>',
+	yeast : '<' + baseURI + 'Yeast>',
+	hops : '<' + baseURI + 'Hops>',
+	hasAlphaAcid : '<' + baseURI + 'hasAlphaAcid>',
+	recommendedUsage : '<' + baseURI + 'recommendedUsage>',
+	origin : '<' + baseURI + 'origin>',
+	flavorDescription : '<' + baseURI + 'flavorDescription>',
+	possibleSubstitutions : '<' + baseURI + 'possibleSubstitutions>'
 };
