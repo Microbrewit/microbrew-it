@@ -106,8 +106,54 @@ var apiFormattingFermentables = function (result) {
 	return apiJson;
 };
 
+var getHops = function (callback) {
+	var select = 	' SELECT DISTINCT ?hop ?label ?alphaacid ?recommendedUsage ?flavorDescription ?origin';
+		select += 	' WHERE { ' ;
+		select +=	' ?hop rdf:type ' + mb.hops + '; rdfs:label ?label ; ';
+		select +=	mb.hasAlphaAcid + '?alphaacid ; ' + mb.recommendedUsage +' ?recommendedUsage;';
+		select +=	mb.origin + '?origin . ';
+		select += 	' OPTIONAL {?hop ' + mb.flavorDescription +  ' ?flavorDescription . }';
+		select +=	' FILTER(LANG(?label) = "en") . }';
+	console.log(select);
+		ts.select(select, function (err, result) {
+			if(err) {
+				console.log(err);
+				callback(err);
+			} else {
+
+				callback(null, result);
+			}
+		});
+};
+
+var getHop = function (hop, callback) {
+	if(hop.indexOf(mb.baseURI) != -1 ) { 
+	var select = 	' SELECT DISTINCT ?hop ?label ?alphaacid ?recommendedUsage ?flavorDescription ?origin';
+		select +=	' WHERE { ';
+		select +=	'<' + hop + '> rdf:type ' + mb.hops + '; rdfs:label ?label ; ';
+		select +=	mb.hasAlphaAcid + '?alphaacid ; ' + mb.recommendedUsage +' ?recommendedUsage;';
+		select +=	mb.origin + '?origin . ';
+		select += 	' OPTIONAL {<' + hop + '> ' + mb.flavorDescription +  ' ?flavorDescription . }';
+		select +=	' FILTER(LANG(?label) = "en") . }';
+		console.log(select);
+		ts.select(select, function (err, result) {
+			if(err) {
+				console.log(err);
+				callback(err);
+			} else {
+
+				callback(null, result);
+			}
+		});
+	} else {
+		console.log('ERROR');
+		callback(null, 'Not a Hops');
+	}
+};
+
 exports = module.exports = {
 	'getFermentables': getFermentables,
-	'getFermentable': getFermentable
-
+	'getFermentable': getFermentable,
+	'getHops': getHops,
+	'getHop': getHop
 };
