@@ -2,7 +2,7 @@
 var mb = require('../app/ontology').mb,
 	url = require('url'),
 	beersRoute = require('./beer.js'),
- 	usersRoute = require('./user.js'),
+ 	usersRoute = require('./users.js'),
  	breweriesRoute = require('./brewery.js'),
  	ingredientsRoute = require('./ingredients.js');
 
