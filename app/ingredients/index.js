@@ -3,7 +3,8 @@ var http = require('http'),
 	config = require('../config'),
 	mb = require('../ontology').mb,
 	util = require('../util'),
-	ts = require('../triplestore');
+	ts = require('../triplestore'),
+	yeasts = require('./yeasts.js');
 
 
 var getFermentables = function (callback) {
@@ -152,6 +153,7 @@ var getHop = function (hop, callback) {
 };
 
 exports = module.exports = {
+	'yeasts': yeasts,
 	'getFermentables': getFermentables,
 	'getFermentable': getFermentable,
 	'getHops': getHops,

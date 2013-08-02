@@ -9,7 +9,7 @@ var login = function (req, res) {
 			'contentType': {'Content-Type': 'application/json'}
 		};
 	var params = url.parse(req.url, true).query;	
-	if(!req.session.user && params.username && params.password) {
+	if(typeof req.session !== "undefined" && !req.session.user && params.username && params.password) {
 		user.passwordCheck(
 			{
 				'username': params.username,
