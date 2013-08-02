@@ -34,7 +34,7 @@ var login = function (req, res) {
 			res.end(response);
 			});
 	} else {
-		if(req.session.user) {
+		if(typeof req.session !== "undefined" && req.session.user) {
 			head.statuscode = 400;
 			response = {'error': 'Bad Request. A user is already logged in. Log out first.'};
 			response = utils.formatJsonResponse(params, response);			
@@ -56,7 +56,7 @@ var logout = function (req, res) {
 			'statuscode': 0,
 			'contentType': {'Content-Type': 'application/json'}
 		};
-	if(req.session.user) {
+	if(typeof req.session !== "undefined" && req.session.user) {
 		req.session.destroy();
 		req.session = null;
 		head.statuscode = 200;
@@ -83,7 +83,7 @@ var addUser = function (req, res) {
 			'contentType': {'Content-Type': 'application/json'}
 		};
 
-	if(!req.session.user && params.username && params.email &&
+	if(typeof req.session !== "undefined" && !req.session.user && params.username && params.email &&
 		params.brewery_name && params.password && params.settings) {
 		var userData = {
 			'username' : params.username,
@@ -110,7 +110,7 @@ var addUser = function (req, res) {
 			res.end(response);
 		});
 	} else {
-		if(req.session.user) {
+		if(typeof req.session !== "undefined" && req.session.user) {
 			head.statuscode = 418;
 			response = {'error': 'Cannot register a new user while logged in.'};
 		} else {
@@ -134,7 +134,7 @@ var updateUser = function (req, res) {
 			'contentType': {'Content-Type': 'application/json'}
 		};
 
-	if(req.session.user && params.email && params.settings && params.password) {
+	if(typeof req.session !== "undefined" && req.session.user && params.email && params.settings && params.password) {
 		var userData = {
 			'username': req.session.user,
 			'email': params.email,
@@ -159,7 +159,7 @@ var updateUser = function (req, res) {
 		});
 	} else {
 		head.statuscode = 400;
-		if(req.session.user) {
+		if(typeof req.session !== "undefined" && req.session.user) {
 			response = {'error': 'One or more missing params.'};
 		} else {
 			response = {'error': 'Log in to update user.'};
