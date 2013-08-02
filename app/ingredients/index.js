@@ -53,7 +53,7 @@ var getFermentable = function (ferm, callback) {
 
 	} else {
 		console.log('ERROR');
-		callback(null)
+		callback(null,'Not a fermentable')
 	}
 };
 
