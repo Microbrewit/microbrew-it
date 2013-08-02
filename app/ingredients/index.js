@@ -32,7 +32,7 @@ var getFermentable = function (ferm, callback) {
 	if(ferm.indexOf(mb.baseURI) != -1 ) { 
 	var select =	' SELECT ?fermentable ?label ?ppg ?colour ?type ?typeuri ?supplier ?supplieruri';
 		select +=	' WHERE { ';
-		select +=	' <'+ ferm + '> rdfs:label ?label; rdf:type ?typeuri; ';
+		select +=	' <'+ ferm + '> rdfs:label ?label; rdf:type ?typeuri; rdf:type ' + mb.fermentables + ';' ;
 		select +=	mb.hasPPG + ' ?ppg; ' + mb.hasColour + ' ?colour . ';
 		select +=	' OPTIONAL { ?fermentable' + mb.suppliedBy + ' ?supplieruri . ?supplieruri rdfs:label ?supplier . FILTER(LANG(?supplier) ="en") . } ';
 		select +=	' ?typeuri rdfs:label ?type . FILTER(LANG(?type) = "en") . ';
