@@ -7,7 +7,8 @@ var http = require('http'),
 var getYeasts = function (callback) {
     var select =    'SELECT DISTINCT *';
         select +=   ' WHERE { ';
-        select +=   '?typeuri rdfs:subClassOf ' + mb.yeast + ' ; rdfs:label ?type . ?yeast a ?typeuri; rdfs:label ?yeastname';
+        select +=   '?typeuri rdfs:subClassOf ' + mb.yeast + ' ; rdfs:label ?type . ?yeast a ?typeuri; rdfs:label ?yeastname .';
+        select +=	'FILTER(?typeuri != ' + mb.yeast + ' ) .'
         select +=   '}';
         console.log(select);
         ts.select(select, function (err, result) {
