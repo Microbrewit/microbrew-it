@@ -10,7 +10,7 @@ var yeastList = function(req, res) {
             'statuscode': 0,
             'contentType': {'Content-Type': 'application/json'}
         };
-    
+
     yeasts.getYeasts(function (error, result) {
         if(error) {
             head.statuscode = error.statuscode;
@@ -25,6 +25,29 @@ var yeastList = function(req, res) {
     });
 };
 
+var yeast = function(req, res) {
+    var response = {},
+        head = {
+            'statuscode': 0,
+            'contentType': {'Content-Type': 'application/json'}
+        },
+        yeast = req.params.yeast;
+
+    yeasts.getYeast(yeast, function (error, result) {
+        if(error) {
+            head.statuscode = error.statuscode;
+            response = error;
+            res.writeHead(head.statuscode, head.contentType);
+            res.end(JSON.stringify(response));
+        } else {
+            head.statuscode = 200;
+            res.writeHead(head.statuscode, head.contentType);
+            res.end(JSON.stringify(result));
+        }
+    });
+};
+
 exports = module.exports = {
-    'yeasts': yeastList
+    'yeasts': yeastList,
+    'yeast' : yeast
 };
