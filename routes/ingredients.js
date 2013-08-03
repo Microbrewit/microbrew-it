@@ -4,7 +4,7 @@ mock = require('../app/mock'),
 ingredients = require('../app/ingredients');
 
 var fermentables = function (req, res) {
-	ingredients.getFermentables( function (error, result) {
+	ingredients.fermentables.getFermentables( function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
@@ -17,7 +17,7 @@ var fermentables = function (req, res) {
 
 var fermentable = function (req, res) {
 	var ferm = req.params.fermentable;
-	ingredients.getFermentable(ferm, function (error, result) {
+	ingredients.fermentables.getFermentable(ferm, function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
@@ -29,7 +29,7 @@ var fermentable = function (req, res) {
 };
 
 var hops = function (req, res) {
-	ingredients.getHops( function (error, result) {
+	ingredients.hops.getHops( function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
@@ -43,7 +43,7 @@ var hops = function (req, res) {
 var hop = function (req, res) {
 	var hop = req.params.hop;
 	console.log(hop);
-	ingredients.getHop(hop, function (error, result) {
+	ingredients.hops.getHop(hop, function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
