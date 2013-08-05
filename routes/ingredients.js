@@ -53,9 +53,28 @@ var hop = function (req, res) {
 			}
 	});
 };
+
+var updateHops = function (req, res) {
+	console.log(req);
+};
+
+var others = function (req, res) {
+	ingredients.others.getOthers( function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
+};
+
 exports = module.exports = {
 	'fermentables': fermentables,
 	'fermentable': fermentable,
 	'hops': hops,
-	'hop': hop
+	'hop': hop,
+	'updateHops' : updateHops,
+	'others': others
 };

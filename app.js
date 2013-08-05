@@ -51,9 +51,11 @@ app.get('/users/details/:username', routes.users.details);
 app.get('/fermentables', routes.ingredients.fermentables);
 app.get('/fermentables/:fermentable', routes.ingredients.fermentable);
 app.get('/hops', routes.ingredients.hops);
-app.get('/hops/:hop', routes.ingredients.hop)
+app.post('/hops', routes.ingredients.updateHops);
+app.get('/hops/:hop', routes.ingredients.hop);
 app.get('/yeasts', routes.yeasts.yeasts);
 app.get('/yeasts/:yeast', routes.yeasts.yeast);
+app.get('/others', routes.ingredients.others);
 
 
 // 404
