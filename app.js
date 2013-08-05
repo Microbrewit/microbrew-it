@@ -50,7 +50,6 @@ app.get('/', routes.index);
 
 // // === USER ROUTES
 app.post('/users/add', routes.users.addUser);
-app.get('/users/add', routes.ingredients.hops);
 app.get('/users/update', routes.users.updateUser);
 app.get('/users/changepassword', routes.users.changePassword);
 app.get('/users/login', routes.users.login); //?username=...&password=...
