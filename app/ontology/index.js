@@ -39,5 +39,8 @@ exports.mb = {
 	recommendedUsage : '<' + baseURI + 'recommendedUsage>',
 	origin : '<' + baseURI + 'origin>',
 	flavorDescription : '<' + baseURI + 'flavorDescription>',
-	possibleSubstitutions : '<' + baseURI + 'possibleSubstitutions>'
+	possibleSubstitutions : '<' + baseURI + 'possibleSubstitutions>',
+	fruit : '<' + baseURI + 'Fruit>',
+	spice : '<' + baseURI + 'Spice>',
+	other : '<' + baseURI + 'Other>'
 };
