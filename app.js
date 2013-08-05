@@ -40,7 +40,7 @@
 app.get('/', routes.index);
 
 // // === USER ROUTES
-app.get('/users/add', routes.users.addUser);
+app.post('/users/add', routes.users.addUser);
 app.get('/users/update', routes.users.updateUser);
 app.get('/users/changepassword', routes.users.changePassword);
 app.get('/users/login', routes.users.login); //?username=...&password=...
