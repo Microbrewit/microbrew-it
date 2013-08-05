@@ -8,7 +8,7 @@ var login = function (req, res) {
 			'statuscode': 0,
 			'contentType': {'Content-Type': 'application/json'}
 		};
-	var params = url.parse(req.url, true).query;	
+	var params = url.parse(req.url, true).query;
 	if(typeof req.session !== "undefined" && !req.session.user && params.username && params.password) {
 		user.passwordCheck(
 			{
@@ -37,7 +37,7 @@ var login = function (req, res) {
 		if(typeof req.session !== "undefined" && req.session.user) {
 			head.statuscode = 400;
 			response = {'error': 'Bad Request. A user is already logged in. Log out first.'};
-			response = utils.formatJsonResponse(params, response);			
+			response = utils.formatJsonResponse(params, response);
 		} else {
 			head.statuscode = 400;
 			response = {'error': 'Bad Request. Username and/or password missing.'};
@@ -83,7 +83,7 @@ var addUser = function (req, res) {
 			'contentType': {'Content-Type': 'application/json'}
 		};
 
-	if(typeof req.session !== "undefined" && !req.session.user && params.username && params.email &&
+	if(typeof req.session === "undefined" && params.username && params.email &&
 		params.brewery_name && params.password && params.settings) {
 		var userData = {
 			'username' : params.username,
@@ -163,7 +163,7 @@ var updateUser = function (req, res) {
 			response = {'error': 'One or more missing params.'};
 		} else {
 			response = {'error': 'Log in to update user.'};
-		}	
+		}
 		response = utils.formatJsonResponse(params, response);
 		res.writeHead(head.statuscode, head.contentType);
 		res.end(response);
