@@ -6,11 +6,13 @@ var http = require('http'),
 	ts = require('../triplestore'),
 	yeasts = require('./yeasts.js'),
 	hops = require('./hops.js'),
-	fermentables = require('./fermentables.js');
+	fermentables = require('./fermentables.js'),
+	others = require('./others.js');
 
 
 exports = module.exports = {
 	'yeasts': yeasts,
 	'fermentables': fermentables,
-	'hops': hops
+	'hops': hops,
+	'others': others
 };
