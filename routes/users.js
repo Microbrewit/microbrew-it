@@ -97,7 +97,9 @@ var addUser = function (req, res) {
 				head.statuscode = 500;
 				response = err;
 			} else {
-				req.session.user = result.username;
+				req.session = {
+					user: result.username
+				}
 				head.statuscode = 200;
 				response = {
 					'message': 'User successfully created and logged in.',
