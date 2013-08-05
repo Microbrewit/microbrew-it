@@ -11,6 +11,7 @@ var mb = require('../app/ontology').mb,
  */
 
 var index = function (req, res) {
+    console.log(JSON.stringify(req.session));
     res.writeHead(200, {'Content-Type' : 'application/json'});
     res.end('{"message" : "Hello world this is Microbrew.it api : )"}');
 };
