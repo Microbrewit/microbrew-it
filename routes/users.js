@@ -83,7 +83,7 @@ var addUser = function (req, res) {
 			'contentType': {'Content-Type': 'application/json'}
 		};
 
-	if(typeof req.session === "undefined" && params.username && params.email &&
+	if(typeof req.session.user === "undefined" && params.username && params.email &&
 		params.brewery_name && params.password && params.settings) {
 		var userData = {
 			'username' : params.username,
