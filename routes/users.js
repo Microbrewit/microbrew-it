@@ -29,6 +29,7 @@ var login = function (req, res) {
 					head.statuscode = 200;
 				}
 			response = utils.formatJsonResponse(params, response);
+			res.setHeader('Access-Control-Allow-Origin', '*');
 			console.log(response);
 			res.writeHead(head.statuscode, head.contentType);
 			res.end(response);
