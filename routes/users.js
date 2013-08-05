@@ -76,15 +76,15 @@ var details = function (req, res) {
 };
 
 var addUser = function (req, res) {
-	var params = url.parse(req.url, true).query;
+	var params = req.body
 	var response = {},
 		head = {
 			'statuscode': 0,
 			'contentType': {'Content-Type': 'application/json'}
 		};
-
-	if(params.username && params.email &&
-		params.brewery_name && params.password && params.settings) {
+	console.log(req.body);
+	if(typeof req.session === 'undefined' && params.username && params.email &&
+		params.breweryname && params.password && params.settings) {
 		var userData = {
 			'username' : params.username,
 			'email' : params.email,
