@@ -12,6 +12,14 @@
 
  var app = express();
 
+ var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', config.allowedDomains);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+
  app.configure(function () {
     app.set('port', process.env.PORT || 3000);
     app.configure('development', function () {
@@ -23,6 +31,7 @@
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
+    app.use(allowCrossDomain);
     app.use(express.session({
         store: new RedisStore(),
         secret: 'fortesting756498',
