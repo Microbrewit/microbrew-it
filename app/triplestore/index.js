@@ -25,6 +25,11 @@ exports.ask = function (query, callback) {
 			data += chunk;
 		});
 		response.on('end', function () {
+			if(data == "false") {
+				data = false;
+			} else if(data == "true") {
+				data = true;
+			}
 			callback(null, data);
 		});
 	});
@@ -33,6 +38,7 @@ exports.ask = function (query, callback) {
 	});
 	request.end('query=' + encodeURIComponent(query));
 };
+
 /**
 *	Takes a SPARQL INSERT statement and attempts to insert it into the triple store.
 *	Returns an object with the 204 statuscode, and the insertion query,
@@ -57,12 +63,11 @@ exports.insert = function (query, callback) {
 	request.on('error', function (e) {
 		callback(new Error(e.message));
 	});
-	console.log('update=' + encodeURIComponent(query));
 	request.end('update=' + encodeURIComponent(query));
 };
 /**
 *	Takes a SPARQL SELECT query, and returns the result set as a JSON object
-*	Throws an Exception if 
+*	Throws an Exception if
 there is something wrong with the connection
 **/
 exports.select = function (query, callback) {
@@ -74,7 +79,6 @@ exports.select = function (query, callback) {
 	request = http.request(options, function (response) {
 		response.setEncoding('utf8');
 		response.on('data', function (chunk) {
-			//console.log('chunk' + chunk);
 			returnedJSON += chunk;
 		});
 		response.on('end', function () {
