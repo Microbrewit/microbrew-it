@@ -23,7 +23,7 @@ var getHops = function (callback) {
 };
 
 var getHop = function (hop, callback) {
-	if(hop.indexOf(mb.baseURI) != -1 ) { 
+	if(hop.indexOf(mb.baseURI) != -1 ) {
 	var select = 	' SELECT *';
 		select +=	' WHERE { ';
 		select +=	'<' + hop + '> rdf:type ' + mb.hops + '; rdfs:label ?label ; ';
@@ -80,14 +80,54 @@ var apiFormattingHops = function (result) {
 				'recommendedUsage' : result.results.bindings[i].recommendedUsage.value,
 				'links': {
 				'originid': result.results.bindings[i].originid.value,
-				'recommendedUsage': result.results.bindings[i].recommendedUsageid.value			
+				'recommendedUsage': result.results.bindings[i].recommendedUsageid.value
 			}
 		}
 	}
 	return apiJson;
 };
 
+var updateHop = function (hop, callback) {
+	console.log(hop);
+	var hopURI = '<' + mb.baseURI + hop.name + '>';
+		ask = ' ASK { ?hop rdf:type ' + mb.hops + '; rdfs:label "' + hop.name + '" }',
+		ts.ask(ask, function (err, result) {
+			if(err) {
+				console.log(err);
+				callback(err);
+			} else {
+			console.log(typeof result + result);
+			if(result === false) {
+				console.log('lol');
+			var insert =	' INSERT DATA { ' + hopURI + ' rdf:type ' + mb.hops + '; ';
+				insert +=	' rdfs:label "' + hop.name + '"; ' + mb.hasAlphaAcid + ' ' + hop.aa + '; ';
+				//optinal does hops addition containd flavor decribtion
+				if(mb.origin.length < 0) {
+				insert +=	mb.flavorDescription + ' "' + hop.flavor + '" ;';
+				}
+				//optional value, does hops contain origin.
+				if(mb.origin.indexOf(mb.baseURI) === -1) {
+					insert += mb.origin + ' ' + mb.originuri;
+				}
+				insert +=	' } '
+
+				console.log(insert);
+			ts.insert(insert, function (error, insertResult) {
+				if(err) {
+					console.log(error);
+					callback(error);
+				} else {
+					callback(null, insertResult);
+				}
+			});
+			} else {
+				callback(null,'Already exists');
+			}
+		}
+		});
+};
 exports = module.exports = {
     'getHops': getHops,
-    'getHop' : getHop
+    'getHop' : getHop,
+    'updateHop': updateHop
 };
