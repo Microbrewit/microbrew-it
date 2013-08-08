@@ -1,13 +1,14 @@
 var config = require('../config'),
-	mb = require('../ontology').mb,
-	ts = require('../triplestore');
+    mb = require('../ontology').mb,
+    util = require('../util'),
+    ts = require('../triplestore');
 
 var getHops = function (callback) {
 	var select = 	' SELECT *';
 		select += 	' WHERE { ' ;
-		select +=	' ?hop rdf:type ' + mb.hops + '; rdfs:label ?label ; ';
-		select +=	mb.hasAlphaAcid + '?alphaacid ; ' + mb.recommendedUsage +' ?recommendedUsageid;';
-		select +=	mb.origin + '?originid; ' + mb.flavorDescription +  ' ?flavorDescription . ';
+		select +=	' ?hop rdf:type ' + mb.hops + '; rdfs:label ?label ;' + mb.hasID + ' ?id ; ';
+		select +=	mb.aalow + '?aalow ; ' + mb.aahigh + ' ?aahigh ; ' + mb.recommendedUsage +' ?recommendedUsageid;';
+		select +=	mb.origin + '?originid; ' + mb.flavourDescription +  ' ?flavourDescription . ';
 		select += 	'?originid rdfs:label ?origin . ?recommendedUsageid rdfs:label ?recommendedUsage ';
 		select +=	' FILTER(LANG(?label) = "en") . }';
 	console.log(select);
@@ -71,16 +72,17 @@ var apiFormattingHops = function (result) {
 
 	for (var i = 0; i < result.results.bindings.length; i++) {
 		apiJson.hops[i] = {
-				'id': result.results.bindings[i].hop.value,
+				'id': result.results.bindings[i].id.value,
 				'href': result.results.bindings[i].hop.value,
 				'name': result.results.bindings[i].label.value,
-				'alphaacid': result.results.bindings[i].alphaacid.value,
-				'flavor' : result.results.bindings[i].flavorDescription.value,
+				'aalow': result.results.bindings[i].aalow.value,
+				'aahigh': result.results.bindings[i].aahigh.value,
+				'flavour' : result.results.bindings[i].flavourDescription.value,
 				'origin' : result.results.bindings[i].origin.value,
-				'recommendedUsage' : result.results.bindings[i].recommendedUsage.value,
+				'recommendedusage' : result.results.bindings[i].recommendedUsage.value,
 				'links': {
 				'originid': result.results.bindings[i].originid.value,
-				'recommendedUsage': result.results.bindings[i].recommendedUsageid.value
+				'recommendedusageid': result.results.bindings[i].recommendedUsageid.value
 			}
 		}
 	}
@@ -89,7 +91,8 @@ var apiFormattingHops = function (result) {
 
 var updateHop = function (hop, callback) {
 	console.log(hop);
-	var hopURI = '<' + mb.baseURI + hop.name + '>';
+	var hopURI = '<' + mb.baseURI + hop.name + '>',
+		hopID = util.createID();
 		ask = ' ASK { ?hop rdf:type ' + mb.hops + '; rdfs:label "' + hop.name + '" }',
 		ts.ask(ask, function (err, result) {
 			if(err) {
@@ -98,9 +101,8 @@ var updateHop = function (hop, callback) {
 			} else {
 			console.log(typeof result + result);
 			if(result === false) {
-				console.log('lol');
-			var insert =	' INSERT DATA { ' + hopURI + ' rdf:type ' + mb.hops + '; ';
-				insert +=	' rdfs:label "' + hop.name + '"; ' + mb.hasAlphaAcid + ' ' + hop.aa + '; ';
+			var insert =	' INSERT DATA { ' + hopURI + ' rdf:type ' + mb.hops + '; ' + mb.hasID + ' ' + hopID + ' ;';
+				insert +=	' rdfs:label "' + hop.name + '"; ' + mb.aalow + ' ' + hop.aalow + '; ';
 				//optinal does hops addition containd flavor decribtion
 				if(mb.origin.length < 0) {
 				insert +=	mb.flavorDescription + ' "' + hop.flavor + '" ;';
@@ -110,7 +112,6 @@ var updateHop = function (hop, callback) {
 					insert += mb.origin + ' ' + mb.originuri;
 				}
 				insert +=	' } '
-
 				console.log(insert);
 			ts.insert(insert, function (error, insertResult) {
 				if(err) {
@@ -121,11 +122,50 @@ var updateHop = function (hop, callback) {
 				}
 			});
 			} else {
-				callback(null,'Already exists');
+				console.log("softUpdateHop");
+				softUpdateHop(hop);
 			}
 		}
 		});
 };
+
+var softUpdateHop = function (hop, callback) {
+
+	var insert = 	' INSERT { ?hop rdfs:label "' + hop.name + '" ;'
+	if(hop.origin.length > 0 ) {
+		insert +=	mb.origin + ' ' + hop.origin + '; ';
+	}
+	if(hop.aalow.length > 0 ) {
+		insert +=	mb.aalow + ' ' + hop.aalow + '; ';
+	}
+	if(hop.aahigh.length > 0 ) {
+		insert +=	mb.aahigh + ' ' + hop.aahigh + '; ';
+	}
+	if(hop.flavourdescription.length > 0 ) {
+		insert +=	mb.flavourDescription + ' "' + hop.flavourdescription + '"; ';
+	}
+	if(hop.flavours.length > 0 ) {
+		var flavours = JSON.parse(hop.flavours);
+		for (var i = 0; i < flavours.length; i++) {
+
+		insert +=	mb.flavour + ' "' + flavours[i] + '"; ';
+		}
+	}
+	if(hop.recommendedusageid.length > 0 ) {
+		insert +=	mb.recommendedUsage + ' ' + hop.recommendedusageid + '; ';
+	}
+	if(hop.substitutions.length > 0 ) {
+		var substitutions = JSON.parse(hops.substitutions);
+		for (var i = 0; i < substitutions.length; i++) {
+		insert +=	mb.recommendedUsage + ' ' + substitutions[i] + '; ';
+		}
+	}
+	insert +=	' }'
+	var where = 	' WHERE { ?hops rdfs:label "' + hop.name + '"" .';
+		where +=	' FILTER(?hops ' + mb.origin + ' ?origin || ?hops ' + mb.aalow + ' ?aalow )';
+		where +=	' }'
+	console.log(insert + where);
+}
 exports = module.exports = {
     'getHops': getHops,
     'getHop' : getHop,
