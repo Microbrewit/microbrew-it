@@ -7,9 +7,12 @@ var getHops = function (callback) {
 	var select = 	' SELECT *';
 		select += 	' WHERE { ' ;
 		select +=	' ?hop rdf:type ' + mb.hops + '; rdfs:label ?label ;' + mb.hasID + ' ?id ; ';
-		select +=	mb.aalow + '?aalow ; ' + mb.aahigh + ' ?aahigh ; ' + mb.recommendedUsage +' ?recommendedUsageid;';
-		select +=	mb.origin + '?originid; ' + mb.flavourDescription +  ' ?flavourDescription . ';
-		select += 	'?originid rdfs:label ?origin . ?recommendedUsageid rdfs:label ?recommendedUsage ';
+		select +=	mb.aalow + '?aalow ; ' + mb.aahigh + ' ?aahigh ; ' + mb.recommendedUsage +' ?recommendedUsageid; ';
+		select +=	mb.origin + '?originid . '
+		select +=	' OPTIONAL {?hop ' + mb.flavourDescription +  ' ?flavourDescription } .';
+		select +=	' OPTIONAL {?hop ' + mb.flavour + ' ?flavour } .';
+		select +=	' OPTIONAL {?hop ' + mb.substitutions + ' ?substitutionsid . ?substitutionsid rdfs:label ?substitutions } . ';
+		select += 	' ?originid rdfs:label ?origin . ?recommendedUsageid rdfs:label ?recommendedUsage . ';
 		select +=	' FILTER(LANG(?label) = "en") . }';
 	console.log(select);
 		ts.select(select, function (err, result) {
@@ -69,23 +72,37 @@ var apiFormattingHops = function (result) {
 
 
 	};
-
+	console.log('before for loop:')
 	for (var i = 0; i < result.results.bindings.length; i++) {
-		apiJson.hops[i] = {
-				'id': result.results.bindings[i].id.value,
-				'href': result.results.bindings[i].hop.value,
-				'name': result.results.bindings[i].label.value,
-				'aalow': result.results.bindings[i].aalow.value,
-				'aahigh': result.results.bindings[i].aahigh.value,
-				'flavour' : result.results.bindings[i].flavourDescription.value,
-				'origin' : result.results.bindings[i].origin.value,
-				'recommendedusage' : result.results.bindings[i].recommendedUsage.value,
-				'links': {
-				'originid': result.results.bindings[i].originid.value,
-				'recommendedusageid': result.results.bindings[i].recommendedUsageid.value
+			apiJson.hops[i] = {
+						'id': result.results.bindings[i].id.value,
+						'href': result.results.bindings[i].hop.value,
+						'name': result.results.bindings[i].label.value,
+						'aalow': result.results.bindings[i].aalow.value,
+						'aahigh': result.results.bindings[i].aahigh.value,
+						'origin' : result.results.bindings[i].origin.value,
+						'recommendedusage' : result.results.bindings[i].recommendedUsage.value,
+						'substitutions':[],
+						'flavour': [],
+						'links': {
+						'originid': result.results.bindings[i].originid.value,
+						'recommendedusageid': result.results.bindings[i].recommendedUsageid.value,
+						'substitutionsid':[]
+
 			}
 		}
-	}
+			if(typeof result.results.bindings[i].flavourDescription.value !== 'undefined') {
+				apiJson.hops[i].flavourdescription = result.results.bindings[i].flavourDescription.value
+
+			}
+			if (typeof result.results.bindings[i].flavour !== 'undefined') {
+				apiJson.hops[i].flavour.push(result.results.bindings[i].flavour.value);
+				}
+			if (typeof result.results.bindings[i].substitutions !== 'undefined') {
+				apiJson.hops[i].substitutions.push(result.results.bindings[i].substitutions.value);
+				apiJson.hops[i].links.substitutionsid.push(result.results.bindings[i].substitutionsid.value);
+				}
+			}
 	return apiJson;
 };
 
