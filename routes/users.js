@@ -6,9 +6,6 @@ utils = require('../app/util');
  * Function maps to /users/login
  * Request type: POST
  * Request params: id, password
- * head.statuscode = 400;
-			response = {'error': 'Bad Request. A user is already logged in. Log out first.'};
-			response = utils.formatJsonResponse(params, response);
  */
 var login = function (req, res) {
 	var response = {},
@@ -16,43 +13,69 @@ var login = function (req, res) {
 			'statuscode': 0,
 			'contentType': {'Content-Type': 'application/json'}
 		};
-	console.log(JSON.stringify(req.session));
-	console.log(JSON.stringify(typeof req.session !== "undefined" && req.session.user));
 	var params = req.body;
-	if(typeof req.session !== "undefined" && req.session.user) {
+	console.log(req.session);
+	if(typeof req.session !== "undefined" && req.session.user && req.session.user.length > 0) {
+		console.log("User is logged in!");
 			head.statuscode = 400;
-			response = {'error': 'Bad Request. A user is already logged in. Log out first.'};
+			response = {
+				error: {
+					message: 'Bad Request. A user is already logged in. Log out first.',
+					code: 0
+				},
+				meta: {
+					returned: 0
+				}
+			};
 			response = utils.formatJsonResponse(params, response);
+			res.writeHead(head.statuscode, head.contentType);
+			res.end(response);
 	} else { // User not logged in
 		if(typeof req.session !== null && params.id && params.password) {
 			user.passwordCheck(
 				{
-					'username': params.id,
-					'password': params.password
+					username: params.id,
+					password: params.password
 				},
 			function (err, result) {
 				if(err) {
 					head.statuscode = 401;
-					response = {error: 'Unauthorized. Password and/or id (username) is incorrect'};
+					response = {
+						error: {
+							message: 'Unauthorized. Password and/or id (username) is incorrect',
+							code: 0
+						},
+						meta: {
+							returned: 0
+						}
+					};
 				} else {
 					req.session.user = params.id;
 					response = {
-						'message': 'User successfully logged in.',
-						'user': result.user
-						};
+						meta: {
+							message: 'User successfully logged in.',
+							returned: 1
+						},
+						'users': [result.user]
+					};
 					head.statuscode = 200;
 				}
-				console.log("After callback function for passwordCheck" + JSON.stringify(req.session));
 				response = utils.formatJsonResponse(params, response);
 				res.header('Access-Control-Allow-Origin', '*');
-				console.log(response);
 				res.writeHead(head.statuscode, head.contentType);
 				res.end(response);
 
 			});
 		} else { // Missing params
 			head.statuscode = 400;
-			response = {'error': 'Bad Request. id (username) and/or password missing.'};
+			response = {
+				error: {
+					message: 'Bad Request. id (username) and/or password missing.'
+				},
+				meta: {
+					returned: 0
+				}
+			};
 			response = utils.formatJsonResponse(params, response);
 			res.writeHead(head.statuscode, head.contentType);
 			res.end(response);
@@ -72,14 +95,23 @@ var logout = function (req, res) {
 			'contentType': {'Content-Type': 'application/json'}
 		};
 	console.log(JSON.stringify(req.session));
-	if(typeof req.session !== "undefined" && req.session.user) {
+	if(typeof req.session !== "undefined" && typeof req.session.user !== "undefined" && req.session.user) {
 		req.session.destroy();
 		req.session = null;
 		head.statuscode = 200;
-		response = {'message': 'User successfully logged out.'};
+		response = {
+			meta: {
+				message: 'User successfully logged out.'
+			}
+		};
 	} else {
 		head.statuscode = 400;
-		response = {'error': 'No user to log out.'};
+		response = {
+			error: {
+				message: 'No user to log out.',
+				code: 0
+			}
+		};
 	}
 	response = utils.formatJsonResponse({}, response);
 	res.writeHead(head.statuscode, head.contentType);
@@ -121,10 +153,11 @@ var addUpdateUser = function (req, res) {
 		};
 
 		var addUser = function (userData, callback) {
-			console.log(JSON.stringify(req.session));
-			console.log(JSON.stringify(typeof req.session !== undefined && typeof req.session.user !== undefined));
 			if(typeof req.session !== undefined && req.session.user) { // User is logged in
-				callback({error: "Can not register new user while logged in."});
+				callback({
+						message: "Can not register new user while logged in.",
+						code: 0
+					});
 			} else { // User is not logged in
 				user.setUser(userData, callback);
 			}
@@ -134,7 +167,10 @@ var addUpdateUser = function (req, res) {
 			if(typeof req.session !== undefined && req.session.user === userData.username) { // Logged in and correct username
 				user.updateUser(userData, callback);
 			} else { // Not logged in
-				callback({err: 'Cannot update user while not logged in'});
+				callback({
+						message: 'Cannot update user while not logged in',
+						code: 0
+					});
 			}
 
 		};
@@ -161,10 +197,7 @@ var addUpdateUser = function (req, res) {
 						if(updateErr) { // Could not update the user
 							head.statuscode = 500;
 							response = {
-								error: {
-									message: 'Could not update user.',
-									code: 0
-								},
+								error: updateErr,
 								meta: {
 									returned: 0
 								}
@@ -189,10 +222,7 @@ var addUpdateUser = function (req, res) {
 						if(addErr) {
 							head.statuscode = 500;
 							response = {
-								error: {
-									message: 'Could not add user.',
-									code: 0
-								},
+								error: addErr,
 								meta: {
 									returned: 0
 								}
