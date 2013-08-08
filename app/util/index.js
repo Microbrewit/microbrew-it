@@ -19,3 +19,8 @@ exports.formatJsonResponse = function (params, response) {
 	return response;
 };
 
+exports.createID = function () {
+var	id = new Date().getTime() + Math.floor(Math.random()*100);
+	console.log(id);
+	return id;
+};
