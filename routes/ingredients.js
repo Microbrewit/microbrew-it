@@ -55,7 +55,20 @@ var hop = function (req, res) {
 };
 
 var updateHops = function (req, res) {
-	console.log(req);
+	var hop = {	'name': req.body.name,
+				'aa': req.body.aa,
+				'origin': req.body.origin,
+				'flavor': req.body.flavor
+				};
+	ingredients.hops.updateHop(hop, function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
 };
 
 var others = function (req, res) {

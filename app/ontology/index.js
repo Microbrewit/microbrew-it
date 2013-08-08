@@ -42,5 +42,6 @@ exports.mb = {
 	possibleSubstitutions : '<' + baseURI + 'possibleSubstitutions>',
 	fruit : '<' + baseURI + 'Fruit>',
 	spice : '<' + baseURI + 'Spice>',
-	other : '<' + baseURI + 'Other>'
+	other : '<' + baseURI + 'Other>',
+	userName : '<' + baseURI + 'userName>'
 };

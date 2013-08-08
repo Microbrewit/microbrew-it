@@ -56,14 +56,14 @@ app.post('/users/logout', routes.users.logout);
 app.get('/users/details/:ids', routes.users.details);
 
 // // === INGREDIENTS ROUTES
-app.get('/fermentables', routes.ingredients.fermentables);
-app.get('/fermentables/:fermentable', routes.ingredients.fermentable);
-app.get('/hops', routes.ingredients.hops);
-app.post('/hops', routes.ingredients.updateHops);
-app.get('/hops/:hop', routes.ingredients.hop);
+app.get('/fermentables', routes.fermentables.fermentables);
+app.get('/fermentables/:fermentable', routes.fermentables.fermentable);
+app.get('/hops', routes.hops.hops);
+app.post('/hops', routes.hops.updateHops);
+app.get('/hops/:hop', routes.hops.hop);
 app.get('/yeasts', routes.yeasts.yeasts);
 app.get('/yeasts/:yeast', routes.yeasts.yeast);
-app.get('/others', routes.ingredients.others);
+app.get('/others', routes.others.others);
 
 
 // 404
