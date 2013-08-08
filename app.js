@@ -58,8 +58,8 @@ app.get('/users/details/:ids', routes.users.details);
 // // === INGREDIENTS ROUTES
 app.get('/fermentables', routes.fermentables.fermentables);
 app.get('/fermentables/:fermentable', routes.fermentables.fermentable);
-app.post('/hops', routes.hops.hops);
-app.put('/hops', routes.hops.updateHops);
+app.get('/hops', routes.hops.hops);
+app.post('/hops', routes.hops.updateHops);
 app.get('/hops/:hop', routes.hops.hop);
 app.get('/yeasts', routes.yeasts.yeasts);
 app.get('/yeasts/:yeast', routes.yeasts.yeast);
