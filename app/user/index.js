@@ -28,11 +28,12 @@ var setUser = function (userData, callback) {
 						});
 					} else {
 						callback(null, [{
-							'id': result.rows[0].username,
-							'username': result.rows[0].username,
-							'email': result.rows[0].email,
-							'settings': result.rows[0].settings,
-							'breweryname': userData.breweryname
+							id: result.rows[0].username,
+							href: config.hostname + "/users/" + result.rows[0].username,
+							username: result.rows[0].username,
+							email: result.rows[0].email,
+							settings: result.rows[0].settings,
+							breweryname: userData.breweryname
 						}]);
 					}
 				});
@@ -60,10 +61,12 @@ var updateUser = function (userData, callback) {
 							});
 						} else {
 							callback(null, {
-								'username': result.rows[0].username,
-								'email': result.rows[0].email,
-								'settings': result.rows[0].settings,
-								'breweryname' : userData.breweryname
+								id: result.rows[0].id,
+								href: config.hostname + "/users/" + result.rows[0].username,
+								username: result.rows[0].username,
+								email: result.rows[0].email,
+								settings: result.rows[0].settings,
+								breweryname : userData.breweryname
 							});
 						}
 					}
@@ -94,10 +97,11 @@ var passwordCheck = function (userData, callback) {
 					} else {
 						callback(false, {
 							'user': {
-								'id': res.rows[0].username,
-								'username': res.rows[0].username,
-								'email': res.rows[0].email,
-								'settings': res.rows[0].settings
+								id: res.rows[0].username,
+								href: config.hostname + "/users/" + res.rows[0].username,
+								username: res.rows[0].username,
+								email: res.rows[0].email,
+								settings: res.rows[0].settings
 							}
 						});
 					}
