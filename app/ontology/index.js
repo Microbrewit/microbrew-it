@@ -35,13 +35,17 @@ exports.mb = {
 	extract : '<' + baseURI + 'Extract>',
 	yeast : '<' + baseURI + 'Yeast>',
 	hops : '<' + baseURI + 'Hops>',
-	hasAlphaAcid : '<' + baseURI + 'hasAlphaAcid>',
+	aalow : '<' + baseURI + 'hasAlphaAcidLowRange>',
+	aahigh : '<' + baseURI + 'hasAlphaAcidHighRange>',
 	recommendedUsage : '<' + baseURI + 'recommendedUsage>',
 	origin : '<' + baseURI + 'origin>',
-	flavorDescription : '<' + baseURI + 'flavorDescription>',
+	flavourDescription : '<' + baseURI + 'flavourDescription>',
+	flavour : '<' + baseURI + 'hasFlavour>',
 	possibleSubstitutions : '<' + baseURI + 'possibleSubstitutions>',
 	fruit : '<' + baseURI + 'Fruit>',
 	spice : '<' + baseURI + 'Spice>',
 	other : '<' + baseURI + 'Other>',
-	userName : '<' + baseURI + 'userName>'
+	userName : '<' + baseURI + 'userName>',
+	substitutions : '<' + baseURI + 'possibleSubstitutions>',
+	hasID : '<' + baseURI + 'hasID>'
 };
