@@ -1,6 +1,6 @@
 var bcrypt = require('bcrypt'),
-pg = require('pg'),
-config = require('../config');
+	pg = require('pg'),
+	config = require('../config');
 
 // Key value object for postgres error codes with appropriate error messages
 var errorCodes = {
@@ -27,12 +27,13 @@ var setUser = function (userData, callback) {
 							'code' : error.code
 						});
 					} else {
-						callback(null, {
-							'username' : result.rows[0].username,
-							'email' : result.rows[0].email,
-							'settings' : result.rows[0].settings,
-							'breweryname' : userData.breweryname
-						});
+						callback(null, [{
+							'id': result.rows[0].username,
+							'username': result.rows[0].username,
+							'email': result.rows[0].email,
+							'settings': result.rows[0].settings,
+							'breweryname': userData.breweryname
+						}]);
 					}
 				});
 			}
@@ -53,7 +54,6 @@ var updateUser = function (userData, callback) {
 					[userData.email, userData.settings, userData.username],
 					function (error, result) {
 						if(error) {
-							console.log(JSON.stringify(error));
 							callback({
 								'error' : errorCodes[error.code],
 								'code' : error.code
@@ -87,13 +87,14 @@ var passwordCheck = function (userData, callback) {
 			callback(err);
 		} else {
 			if(res.rows.length > 0) {
-				var hash = res.rows[0].password;			
+				var hash = res.rows[0].password;
 				bcrypt.compare(userData.password, hash, function (error, result) {
 					if(error) {
 						callback(error);
 					} else {
 						callback(false, {
 							'user': {
+								'id': res.rows[0].username,
 								'username': res.rows[0].username,
 								'email': res.rows[0].email,
 								'settings': res.rows[0].settings
@@ -109,9 +110,26 @@ var passwordCheck = function (userData, callback) {
 	});
 };
 
+var userExistsCheck = function (userId, callback) {
+	var client = new pg.Client(config.postgresql);
+	client.connect();
+	client.query('SELECT * FROM users WHERE username = $1', [userId], function (err, res) {
+		if (err) {
+			callback(err);
+		} else {
+			if(res.rows.length === 1) {
+				callback(false, true);
+			} else {
+				callback(false, false);
+			}
+		}
+	});
+};
+
 
 exports = module.exports = {
 	'setUser': setUser,
 	'updateUser': updateUser,
-	'passwordCheck': passwordCheck
+	'passwordCheck': passwordCheck,
+	'userExistsCheck': userExistsCheck
 };

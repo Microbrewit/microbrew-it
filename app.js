@@ -30,8 +30,8 @@
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
-    app.use(express.cookieParser());
     app.use(allowCrossDomain);
+    app.use(express.cookieParser());
     app.use(express.session({
         store: new RedisStore(),
         secret: 'fortesting756498',
@@ -49,12 +49,11 @@
 app.get('/', routes.index);
 
 // // === USER ROUTES
-app.post('/users/add', routes.users.addUser);
-app.get('/users/update', routes.users.updateUser);
-app.get('/users/changepassword', routes.users.changePassword);
-app.get('/users/login', routes.users.login); //?username=...&password=...
-app.get('/users/logout', routes.users.logout);
-app.get('/users/details/:username', routes.users.details);
+app.post('/users', routes.users.addUpdateUser);
+app.post('/users/changepassword', routes.users.changePassword);
+app.post('/users/login', routes.users.login); //?username=...&password=...
+app.post('/users/logout', routes.users.logout);
+app.get('/users/details/:ids', routes.users.details);
 
 // // === INGREDIENTS ROUTES
 app.get('/fermentables', routes.fermentables.fermentables);
