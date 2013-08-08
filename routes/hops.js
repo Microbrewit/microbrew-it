@@ -33,10 +33,16 @@ var hop = function (req, res) {
 
 var updateHops = function (req, res) {
 	var hop = {	'name': req.body.name,
-				'aa': req.body.aa,
+				'aalow': req.body.aalow,
+				'aahigh': req.body.aahigh,
+				'flavours': req.body.flavours,
+				'flavourdescription': req.body.flavourdescription,
 				'origin': req.body.origin,
-				'flavor': req.body.flavor
+				'recommendedusageid': req.body.recommendedusageid,
+				'substitutions': req.body.substitutions
 				};
+			console.log(hop);
+			console.log(hop.aalow.length);
 	hops.updateHop(hop, function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
