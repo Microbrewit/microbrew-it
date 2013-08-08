@@ -9,13 +9,11 @@ exports.beget = function (o) {
 };
 
 exports.formatJsonResponse = function (params, response) {
-	console.log(response);
 	if(params.callback && params.callback.length > 0) {
 		response = params.callback + "(" + JSON.stringify(response) + ");";
 	} else {
 		response = JSON.stringify(response);
 	}
-	console.log(response);
 	return response;
 };
 
