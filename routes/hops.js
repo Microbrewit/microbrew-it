@@ -4,6 +4,7 @@ var url = require('url'),
     hops = require('../app/ingredients').hops;
 
     var hopsList = function (req, res) {
+    console.log(JSON.stringify(req.session));
 	hops.getHops( function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
@@ -18,7 +19,6 @@ var url = require('url'),
 
 var hop = function (req, res) {
 	var hop = req.params.hop;
-	console.log(hop);
 	hops.getHop(hop, function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
