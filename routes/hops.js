@@ -9,8 +9,10 @@ var url = require('url'),
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
+			console.log(req);
+			response = utils.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
-    		res.end(JSON.stringify(result));
+    		res.end(response);
 			}
 	});
 };
@@ -23,8 +25,9 @@ var hop = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
+			response = utils.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
-    		res.end(JSON.stringify(result));
+    		res.end(response);
 			}
 	});
 };
