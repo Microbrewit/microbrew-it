@@ -37,6 +37,7 @@ var apiFormatOthers = function (result) {
 			]
 		};
 	for (var i = 0; i < result.results.bindings.length; i++) {
+		
 			apiJson.others[i] = {
 				'id':	result.results.bindings[i].other.value,
 				'href': result.results.bindings[i].other.value,
