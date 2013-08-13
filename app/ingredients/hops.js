@@ -10,8 +10,8 @@ var getHops = function (callback) {
 		select +=	mb.aalow + '?aalow ; ' + mb.aahigh + ' ?aahigh ; ' + mb.recommendedUsage +' ?recommendedUsageid; ';
 		select +=	mb.origin + '?originid . '
 		select +=	' OPTIONAL {?hop ' + mb.flavourDescription +  ' ?flavourDescription } .';
-		select +=	' OPTIONAL {?hop ' + mb.flavour + ' ?flavour } .';
-		select +=	' OPTIONAL {?hop ' + mb.substitutions + ' ?substitutionsid . ?substitutionsid rdfs:label ?substitutions } . ';
+		//select +=	' OPTIONAL {?hop ' + mb.flavour + ' ?flavour } .';
+		//select +=	' OPTIONAL {?hop ' + mb.substitutions + ' ?substitutionsid . ?substitutionsid rdfs:label ?substitutions } . ';
 		select += 	' ?originid rdfs:label ?origin . ?recommendedUsageid rdfs:label ?recommendedUsage . ';
 		select +=	' FILTER(LANG(?label) = "en") . }';
 	console.log(select);
@@ -52,6 +52,7 @@ var getHop = function (hop, callback) {
 };
 
 var apiFormattingHops = function (result) {
+	var idArray = [];
 	var apiJson = {
 			'meta': {
 			'size':	result.results.bindings.length
@@ -72,9 +73,12 @@ var apiFormattingHops = function (result) {
 
 
 	};
-	console.log('before for loop:')
 	for (var i = 0; i < result.results.bindings.length; i++) {
-			apiJson.hops[i] = {
+		if(idArray.indexOf(result.results.bindings[i].id.value) === -1) {
+			var hopID = result.results.bindings[i].id.value;
+			console.log('i: ' + i);
+			idArray.push(result.results.bindings[i].id.value);
+			apiJson.hops.push({
 						'id': result.results.bindings[i].id.value,
 						'href': result.results.bindings[i].hop.value,
 						'name': result.results.bindings[i].label.value,
@@ -87,23 +91,44 @@ var apiFormattingHops = function (result) {
 						'links': {
 						'originid': result.results.bindings[i].originid.value,
 						'recommendedusageid': result.results.bindings[i].recommendedUsageid.value,
-						'substitutionsid':[]
 
 			}
+		});
+
+		if(typeof result.results.bindings[i].flavourDescription !== 'undefined' && result.results.bindings[i].flavourDescription.value.length > 0 ) {
+				apiJson.hops[i].flavourdescription = result.results.bindings[i].flavourDescription.value;
+				}
+			//var flavours = { 'results' : { 'bindings' : [ { 'flavour': 'test'},{'flavour':'test2'},{'flavour' :'test3'}]}};
+			// for (var j = flavours.results.bindings.length - 1; j >= 0; j--) {
+			// 			if(typeof flavours.results.bindings[j].flavour !== 'undefined' ) {
+			// 			apiJson.hops[i].flavour.push(flavours.results.bindings[j].flavour.value);
+			// 			}
+			// 		};
 		}
-			if(typeof result.results.bindings[i].flavourDescription.value !== 'undefined') {
-				apiJson.hops[i].flavourdescription = result.results.bindings[i].flavourDescription.value
-
-			}
-			if (typeof result.results.bindings[i].flavour !== 'undefined') {
-				apiJson.hops[i].flavour.push(result.results.bindings[i].flavour.value);
-				}
-			if (typeof result.results.bindings[i].substitutions !== 'undefined') {
-				apiJson.hops[i].substitutions.push(result.results.bindings[i].substitutions.value);
-				apiJson.hops[i].links.substitutionsid.push(result.results.bindings[i].substitutionsid.value);
-				}
-			}
+	}
+	console.log('length: ' + apiJson.hops.length)
+	for (var a = apiJson.hops.length - 1; a >= 0; a--) {
+		console.log('id: ' + apiJson.hops[a].id);
+	var	flavours = getHopFlavour(apiJson.hops[a].id);
+	console.log(flavours);
+		// for (var b = flavours.results.bindings.length - 1; b >= 0; b--) {
+		// 				if(typeof flavours.results.bindings[b].flavour !== 'undefined' ) {
+		// 				apiJson.hops[a].flavour.push(flavours.results.bindings[b].flavour.value);
+		// 				}
+		// 			};
+	};
 	return apiJson;
+};
+
+var getHopFlavour = function (hopID) {
+	var select =	' SELECT * ';
+		select +=	' WHERE { ?hop ' + mb.hasID + ' "' + hopID + '" ; ' + mb.hasID + ' ?id . ';
+		select +=	' OPTIONAL { ?hop ' + mb.flavour + ' ?flavour } .';
+		select +=	' } ';
+		console.log(select);
+	var result = ts.selectSync(select);
+		console.log('result: ' + JSON.stringify(result));
+			return result;
 };
 
 var updateHop = function (hop, callback) {

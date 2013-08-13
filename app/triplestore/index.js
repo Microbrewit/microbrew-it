@@ -91,3 +91,26 @@ exports.select = function (query, callback) {
 	});
 	request.end('query=' + encodeURIComponent(query));
 };
+
+exports.selectSync = function (query) {
+	var options = until.beget(opts),
+		returnedJSON = '',
+		request;
+
+	option.path = config.ts.path.query;
+	options.headers.accept = 'application/sparql-results+json';
+	request = http.request(options, function (response) {
+		response.setEncoding('utf8');
+		response.on('data', function (chunk) {
+			returnedJSON += chunk;
+		});
+		response.on('end', function () {
+			var json = JSON.parse(returnedJSON);
+			return(null, json);
+		});
+	});
+	request.on('error', function (e) {
+		console.log(new Error(e.message));
+	});
+	request.end('query=' + encodeURIComponent(query));
+}
