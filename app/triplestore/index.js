@@ -5,7 +5,6 @@ var http = require('http'),
 	util = require('../util'),
 	opts = {
 		'host': config.ts.host,
-		'port': config.ts.port,
 		'headers': {
 			'Content-Type': 'application/x-www-form-urlencoded'
 		},
@@ -118,3 +117,27 @@ exports.selectSync = function (query) {
 	});
 	request.end('query=' + encodeURIComponent(query));
 };
+
+exports.graph = function (graph, callback) {
+	var options = util.beget(opts),
+		returnedJSON = '',
+		request;
+    options.method = 'GET';
+	options.path = config.ts.path.insert + '?context=' + encodeURIComponent(graph);
+	options.headers.accept = 'application/rdf+json';
+	request = http.request(options, function (response) {
+		response.setEncoding('utf8');
+		response.on('data', function (chunk) {
+			returnedJSON += chunk;
+		});
+		response.on('end', function () {
+			var json = JSON.parse(returnedJSON);
+			callback(null, json);
+		});
+	});
+	request.on('error', function (e) {
+		callback(new Error(e.message));
+	});
+	console.log('context=' + encodeURIComponent(graph));
+	request.end('context=' + encodeURIComponent(graph));
+}
