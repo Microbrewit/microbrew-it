@@ -33,7 +33,7 @@ var getHops = function (callback) {
 var getHop = function (hopID, callback) {
 	var apiJson = {
 			'meta': {
-			'size':	1;
+			'size':	1
 			},
 			'links': {
 				'hops.maltster': {
