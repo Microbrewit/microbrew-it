@@ -11,11 +11,9 @@ var getHops = function (callback) {
     select +=   mb.aalow + '?aalow ; ' + mb.aahigh + ' ?aahigh ; ' + mb.recommendedUsage + ' ?recommendedUsageid; ';
     select +=   mb.origin + '?originid . ';
     select +=   ' OPTIONAL {?hop ' + mb.flavourDescription +  ' ?flavourDescription } .';
-    //select += ' OPTIONAL {?hop ' + mb.flavour + ' ?flavour } .';
-    //select += ' OPTIONAL {?hop ' + mb.substitutions + ' ?substitutionsid . ?substitutionsid rdfs:label ?substitutions } . ';
     select +=   ' ?originid rdfs:label ?origin . ?recommendedUsageid rdfs:label ?recommendedUsage . ';
     select +=   ' FILTER(LANG(?label) = "en") . }';
-    //console.log(select);
+    console.log(select);
     ts.graph('<' + mb.baseURI + 'HopsGraph>', function (err, hopGraph) {
       if (err) {
         console.log(err);
@@ -32,30 +30,38 @@ var getHops = function (callback) {
     });
   };
 
-var getHop = function (hop, callback) {
-    if (hop.indexOf(mb.baseURI) !== -1) {
-      var select =   ' SELECT DISTINCT *';
-      select +=   ' WHERE { ';
-      select +=   '<' + hop + '> rdf:type ' + mb.hops + '; rdfs:label ?label ; ';
-      select +=   mb.hasAlphaAcid + '?alphaacid ; ' + mb.recommendedUsage + ' ?recommendedUsageid;';
-      select +=   mb.origin + '?originid ; ' + mb.flavorDescription +  ' ?flavorDescription . ?hop rdfs:label ?label . ';
-      select +=   ' ?recommendedUsageid rdfs:label ?recommendedUsage . ?originid rdfs:label ?origin';
-      select +=   ' FILTER(LANG(?label) = "en") . }';
-      console.log(select);
-      ts.select(select, function (err, res) {
-        if (err) {
-          console.log(err);
-          callback(err);
-      	} else {
-      		apiFormattingHops(res, function (error, result) {
-      			if(error) {
-      				callback(error)
-      			} else {
-      				callback(null, result);
-      			}
-      		});
-      	}
-      });
+var getHop = function (hopID, callback) {
+	var apiJson = {
+			'meta': {
+			'size':	1;
+			},
+			'links': {
+				'hops.maltster': {
+					'href': 'http://api.microbrew.it/hops/recommendeduses/:recommendeduseid',
+    				'type': 'recommendedUses'
+				},
+				'hops.origin': {
+   					'href': 'http://api.microbrew.it/origin/:originid',
+   					'type': 'origin'
+  				},
+
+			},
+			'hops' :[
+			]
+		}
+    if (hopID.length > 12) {
+	getHops(function (err, res) {
+		if(err) {
+			callback(err);
+		} else {
+			for (var i = res.hops.length - 1; i >= 0; i--) {
+				if(res.hops[i].id === hopID) {
+					apiJson.hops.push(res.hops[i]);
+					callback(null, apiJson);
+				}
+			};
+		}
+	})
   } else {
   	console.log('ERROR');
   	callback(null, 'Not a Hops');
