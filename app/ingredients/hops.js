@@ -1,61 +1,73 @@
 var config = require('../config'),
-    mb = require('../ontology').mb,
-    util = require('../util'),
-    ts = require('../triplestore');
+  async = require('async'),
+  mb = require('../ontology').mb,
+  util = require('../util'),
+  ts = require('../triplestore');
 
 var getHops = function (callback) {
-	var select = 	' SELECT *';
-		select += 	' WHERE { ' ;
-		select +=	' ?hop rdf:type ' + mb.hops + '; rdfs:label ?label ;' + mb.hasID + ' ?id ; ';
-		select +=	mb.aalow + '?aalow ; ' + mb.aahigh + ' ?aahigh ; ' + mb.recommendedUsage +' ?recommendedUsageid; ';
-		select +=	mb.origin + '?originid . '
-		select +=	' OPTIONAL {?hop ' + mb.flavourDescription +  ' ?flavourDescription } .';
-		//select +=	' OPTIONAL {?hop ' + mb.flavour + ' ?flavour } .';
-		//select +=	' OPTIONAL {?hop ' + mb.substitutions + ' ?substitutionsid . ?substitutionsid rdfs:label ?substitutions } . ';
-		select += 	' ?originid rdfs:label ?origin . ?recommendedUsageid rdfs:label ?recommendedUsage . ';
-		select +=	' FILTER(LANG(?label) = "en") . }';
-	console.log(select);
-		ts.select(select, function (err, result) {
-			if(err) {
-				console.log(err);
-				callback(err);
-			} else {
-
-				callback(null, apiFormattingHops(result));
-			}
-		});
-};
+    var select =    ' SELECT *';
+    select +=   ' WHERE { ';
+    select +=   ' ?hop rdf:type ' + mb.hops + '; rdfs:label ?label ;' + mb.hasID + ' ?id ; ';
+    select +=   mb.aalow + '?aalow ; ' + mb.aahigh + ' ?aahigh ; ' + mb.recommendedUsage + ' ?recommendedUsageid; ';
+    select +=   mb.origin + '?originid . ';
+    select +=   ' OPTIONAL {?hop ' + mb.flavourDescription +  ' ?flavourDescription } .';
+    //select += ' OPTIONAL {?hop ' + mb.flavour + ' ?flavour } .';
+    //select += ' OPTIONAL {?hop ' + mb.substitutions + ' ?substitutionsid . ?substitutionsid rdfs:label ?substitutions } . ';
+    select +=   ' ?originid rdfs:label ?origin . ?recommendedUsageid rdfs:label ?recommendedUsage . ';
+    select +=   ' FILTER(LANG(?label) = "en") . }';
+    //console.log(select);
+    ts.graph('<' + mb.baseURI + 'HopsGraph>', function (err, hopGraph) {
+      if (err) {
+        console.log(err);
+        callback(err);
+      } else {
+        apiFormattingHops(hopGraph, function (error, result) {
+      			if(error) {
+      				callback(error)
+      			} else {
+      				callback(null, result);
+      			}
+      		});
+      }
+    });
+  };
 
 var getHop = function (hop, callback) {
-	if(hop.indexOf(mb.baseURI) != -1 ) {
-	var select = 	' SELECT *';
-		select +=	' WHERE { ';
-		select +=	'<' + hop + '> rdf:type ' + mb.hops + '; rdfs:label ?label ; ';
-		select +=	mb.hasAlphaAcid + '?alphaacid ; ' + mb.recommendedUsage +' ?recommendedUsageid;';
-		select +=	mb.origin + '?originid ; ' + mb.flavorDescription +  ' ?flavorDescription . ?hop rdfs:label ?label . ';
-		select +=	' ?recommendedUsageid rdfs:label ?recommendedUsage . ?originid rdfs:label ?origin'
-		select +=	' FILTER(LANG(?label) = "en") . }';
-		console.log(select);
-		ts.select(select, function (err, result) {
-			if(err) {
-				console.log(err);
-				callback(err);
-			} else {
-
-				callback(null, apiFormattingHops(result));
-			}
-		});
-	} else {
-		console.log('ERROR');
-		callback(null, 'Not a Hops');
-	}
+    if (hop.indexOf(mb.baseURI) !== -1) {
+      var select =   ' SELECT DISTINCT *';
+      select +=   ' WHERE { ';
+      select +=   '<' + hop + '> rdf:type ' + mb.hops + '; rdfs:label ?label ; ';
+      select +=   mb.hasAlphaAcid + '?alphaacid ; ' + mb.recommendedUsage + ' ?recommendedUsageid;';
+      select +=   mb.origin + '?originid ; ' + mb.flavorDescription +  ' ?flavorDescription . ?hop rdfs:label ?label . ';
+      select +=   ' ?recommendedUsageid rdfs:label ?recommendedUsage . ?originid rdfs:label ?origin';
+      select +=   ' FILTER(LANG(?label) = "en") . }';
+      console.log(select);
+      ts.select(select, function (err, res) {
+        if (err) {
+          console.log(err);
+          callback(err);
+      	} else {
+      		apiFormattingHops(res, function (error, result) {
+      			if(error) {
+      				callback(error)
+      			} else {
+      				callback(null, result);
+      			}
+      		});
+      	}
+      });
+  } else {
+  	console.log('ERROR');
+  	callback(null, 'Not a Hops');
+  }
 };
 
-var apiFormattingHops = function (result) {
+var apiFormattingHops = function (hopGraph, callback) {
+
 	var idArray = [];
 	var apiJson = {
 			'meta': {
-			'size':	result.results.bindings.length
+			'size':	hopGraph.length
 			},
 			'links': {
 				'hops.maltster': {
@@ -73,62 +85,58 @@ var apiFormattingHops = function (result) {
 
 
 	};
-	for (var i = 0; i < result.results.bindings.length; i++) {
-		if(idArray.indexOf(result.results.bindings[i].id.value) === -1) {
-			var hopID = result.results.bindings[i].id.value;
-			console.log('i: ' + i);
-			idArray.push(result.results.bindings[i].id.value);
-			apiJson.hops.push({
-						'id': result.results.bindings[i].id.value,
-						'href': result.results.bindings[i].hop.value,
-						'name': result.results.bindings[i].label.value,
-						'aalow': result.results.bindings[i].aalow.value,
-						'aahigh': result.results.bindings[i].aahigh.value,
-						'origin' : result.results.bindings[i].origin.value,
-						'recommendedusage' : result.results.bindings[i].recommendedUsage.value,
+	var j = 0;
+	for (var key in hopGraph) {
+			if(typeof hopGraph[key][mb.baseURI + 'hasID'] !== 'undefined') {
+			apiJson.hops[j] = {
+						'id': hopGraph[key][mb.baseURI + 'hasID'][0].value,
+						'href': key,
+						'name': hopGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
+						'aalow': hopGraph[key][mb.baseURI + 'hasAlphaAcidLowRange'][0].value,
+						'aahigh': hopGraph[key][mb.baseURI + 'hasAlphaAcidHighRange'][0].value,
 						'substitutions':[],
 						'flavour': [],
-						'links': {
-						'originid': result.results.bindings[i].originid.value,
-						'recommendedusageid': result.results.bindings[i].recommendedUsageid.value,
+			 		'links': {
+						'originid': hopGraph[key][mb.baseURI + 'origin'][0].value,
+						'recommendedusageid': hopGraph[key][mb.baseURI + 'recommendedUsage'][0].value,
 
-			}
-		});
-
-		if(typeof result.results.bindings[i].flavourDescription !== 'undefined' && result.results.bindings[i].flavourDescription.value.length > 0 ) {
-				apiJson.hops[i].flavourdescription = result.results.bindings[i].flavourDescription.value;
-				}
-			//var flavours = { 'results' : { 'bindings' : [ { 'flavour': 'test'},{'flavour':'test2'},{'flavour' :'test3'}]}};
-			// for (var j = flavours.results.bindings.length - 1; j >= 0; j--) {
-			// 			if(typeof flavours.results.bindings[j].flavour !== 'undefined' ) {
-			// 			apiJson.hops[i].flavour.push(flavours.results.bindings[j].flavour.value);
-			// 			}
-			// 		};
+			   }
 		}
-	}
-	console.log('length: ' + apiJson.hops.length)
-	for (var a = apiJson.hops.length - 1; a >= 0; a--) {
-		console.log('id: ' + apiJson.hops[a].id);
-	var	flavours = getHopFlavour(apiJson.hops[a].id);
-	console.log(flavours);
-		// for (var b = flavours.results.bindings.length - 1; b >= 0; b--) {
-		// 				if(typeof flavours.results.bindings[b].flavour !== 'undefined' ) {
-		// 				apiJson.hops[a].flavour.push(flavours.results.bindings[b].flavour.value);
-		// 				}
-		// 			};
-	};
-	return apiJson;
-};
 
-var getHopFlavour = function (hopID) {
-	var select =	' SELECT * ';
-		select +=	' WHERE { ?hop ' + mb.hasID + ' "' + hopID + '" ; ' + mb.hasID + ' ?id . ';
+
+		if(typeof hopGraph[key][mb.baseURI + 'flavourDescription'] !== 'undefined') {
+				console.log(hopGraph[key][mb.baseURI + 'flavourDescription'][0].value);
+	 			apiJson.hops[j].flavourdescription = hopGraph[key][mb.baseURI + 'flavourDescription'][0].value;
+			}
+	 	if(typeof hopGraph[key][mb.baseURI + 'hasFlavour'] !== 'undefined') {
+	 	for (var i = hopGraph[key][mb.baseURI + 'hasFlavour'].length - 1; i >= 0; i--) {
+	 		apiJson.hops[j].flavour.push(hopGraph[key][mb.baseURI + 'hasFlavour'][i].value);
+	 	};
+	 }
+	  	if(typeof hopGraph[key][mb.baseURI + 'possibleSubstitutions'] !== 'undefined') {
+	 	for (var i = hopGraph[key][mb.baseURI + 'possibleSubstitutions'].length - 1; i >= 0; i--) {
+	 		apiJson.hops[j].substitutions.push(hopGraph[key][mb.baseURI + 'possibleSubstitutions'][i].value);
+	 	};
+	 }
+	}
+	j++
+
+}
+	callback(null,apiJson);
+}
+
+var getHopFlavour = function (hop, callback) {
+	var select =	' SELECT DISTINCT * ';
+		select +=	' WHERE { ?hop ' + mb.hasID + ' "' + hop.id + '" ; ' + mb.hasID + ' ?id . ';
 		select +=	' OPTIONAL { ?hop ' + mb.flavour + ' ?flavour } .';
 		select +=	' } ';
 		console.log(select);
-	var result = ts.selectSync(select);
-		console.log('result: ' + JSON.stringify(result));
-			return result;
+	ts.select(select, function (err, res) {
+		if (err) {
+			callback(err);
+		} else
+		callback(null, res);
+	});
 };
 
 var updateHop = function (hop, callback) {
