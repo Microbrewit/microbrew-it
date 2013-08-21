@@ -138,6 +138,5 @@ exports.graph = function (graph, callback) {
 	request.on('error', function (e) {
 		callback(new Error(e.message));
 	});
-	console.log('context=' + encodeURIComponent(graph));
-	request.end('context=' + encodeURIComponent(graph));
+	request.end();
 }
