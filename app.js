@@ -57,6 +57,11 @@ app.get('/users/details/:ids', routes.users.details);
 
 // // === INGREDIENTS ROUTES
 app.get('/fermentables', routes.fermentables.fermentables);
+app.get('/fermentables/grains', routes.fermentables.grains);
+app.get('/fermentables/sugars', routes.fermentables.sugars);
+app.get('/fermentables/extracts', routes.fermentables.extracts);
+app.get('/fermentables/extracts/dryextracts', routes.fermentables.dryExtracts);
+app.get('/fermentables/extracts/liquidextracts', routes.fermentables.liquidExtracts);
 app.get('/fermentables/:fermentable', routes.fermentables.fermentable);
 app.get('/hops', routes.hops.hops);
 app.post('/hops', routes.hops.updateHops);

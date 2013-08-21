@@ -1,26 +1,53 @@
 var config = require('../config'),
 	mb = require('../ontology').mb,
-	ts = require('../triplestore');
+	ts = require('../triplestore'),
+	async = require('async');
 
 var getFermentables = function (callback) {
-	var select = 	' SELECT DISTINCT ?fermentable ?label ?ppg ?colour ?type ?typeuri ?supplier ?supplieruri';
-		select += 	' WHERE { ' ;
-		select +=	' ?typeuri rdfs:subClassOf ' + mb.fermentables + '; rdfs:label ?type . ?fermentable a ?typeuri; rdfs:label ?label; ';
-		select +=	mb.hasPPG + ' ?ppg; ' + mb.hasColour + ' ?colour .';
-		select +=	' OPTIONAL {?fermentable ' + mb.suppliedBy + ' ?supplieruri . ';
-		select +=	' ?supplieruri rdfs:label ?supplier . FILTER(LANG(?supplier) ="en") . } ';
-		select += 	' FILTER(?typeuri != ' + mb.fermentables + ') . FILTER(?typeuri != ' + mb.extract + ')';
-		select +=	' FILTER(LANG(?type) = "en") . }';
-	console.log(select);
-		ts.select(select, function (err, result) {
-			if(err) {
-				console.log(err);
-				callback(err);
-			} else {
+	async.parallel({
+		grains : function(callback) {
+			getGrains(function (error,result) {
+				if(error) {
+					callback(error)
+				} else {
+					callback(null,result);
+				}
+			});
+		},
+		sugars : function(callback) {
+			getSugars(function (error,result) {
+				if(error) {
+					callback(error);
+				} else {
+					callback(null,result);
+				}
+			});
+		},
+		extracts : function(callback) {
+			getExtracts(function (error, result) {
+				if(error){
+					callback(error);
+				} else {
+					callback(null,result);
+				}
+			});
+		}
+	}, function(error, result) {
+		if(error) {
+			callback(error);
+		} else {
+		var apiJson = {
+        'meta': {
+          'size': result.sugars.length + result.extracts.length + result.grains.length
+        },
+        'links': {
 
-				callback(null, apiFormattingFermentables(result));
-			}
-		});
+          },
+      };
+      	apiJson.fermentables = result;
+		callback(null, apiJson);
+		}
+	});
 };
 
 var getFermentable = function (ferm, callback) {
@@ -53,56 +80,132 @@ var getFermentable = function (ferm, callback) {
 	}
 };
 
-var apiFormattingFermentables = function (result) {
-	console.log(result);
-	var apiJson = {
-			'meta': {
-			'size':	result.results.bindings.length
-			},
-			'links': {
-				'fermentables.maltster': {
-					'href': 'http://api.microbrew.it/maltsters/:maltsterid/',
-    				'type': 'maltster'
-				}
+var apiFormattingFermentables = function (fermentableGraph, callback) {
 
-			},
-			'fermentables' :[
-			]
-
-
-	};
-	for (var i = 0; i < result.results.bindings.length; i++) {
-		if(result.results.bindings[i].supplieruri != null) {
-			apiJson.fermentables[i] = {
-				'id': result.results.bindings[i].fermentable.value,
-				'href': result.results.bindings[i].fermentable.value,
-				'name': result.results.bindings[i].label.value,
-				'colour': result.results.bindings[i].colour.value,
-				'ppg' : result.results.bindings[i].ppg.value,
-				'type': result.results.bindings[i].type.value,
-				'maltster': result.results.bindings[i].supplier.value,
-				'links': {
-				'maltsterid': result.results.bindings[i].supplieruri.value
-				}
-
-			}
-
-		} else {
-			apiJson.fermentables[i] = {
-				'id': result.results.bindings[i].fermentable.value,
-				'href': result.results.bindings[i].fermentable.value,
-				'fermentablename': result.results.bindings[i].label.value,
-				'colour': result.results.bindings[i].colour.value,
-				'ppg' : result.results.bindings[i].ppg.value,
-				'type': result.results.bindings[i].type.value
-
-			}
+	var fermentablesArray = [],
+	j = 0;
+	for(key in fermentableGraph) {
+		fermentablesArray.push({
+		'id' : fermentableGraph[key][mb.baseURI + 'hasID'][0].value,
+		'href': key,
+		'name': fermentableGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
+		'colour' : fermentableGraph[key][mb.baseURI + 'hasColour'][0].value,
+		'ppg': fermentableGraph[key][mb.baseURI + 'hasPPG'][0].value,
+		});
+		if(typeof fermentableGraph[key][mb.baseURI + 'suppliedBy'] !== 'undefined') {
+			fermentablesArray[j].suppliedbyid = fermentableGraph[key][mb.baseURI + 'suppliedBy'][0].value
 		}
+		j++
 	}
-	return apiJson;
+	callback(null,fermentablesArray);
 };
+
+var getGrains = function (callback) {
+	ts.graph('<' + mb.baseURI + 'Grain>', function(error, grainGraph) {
+		if(error) {
+			callback(error);
+		} else {
+			apiFormattingFermentables(grainGraph, function(err, apiJson){
+				if(err) {
+					callback(err);
+				} else {
+					callback(null, apiJson);
+				}
+			});
+
+			//callback(null,grainGraph);
+		}
+	});
+};
+
+var getSugars = function (callback) {
+	ts.graph('<' + mb.baseURI + 'Sugar>', function(error, sugarGraph) {
+		if(error) {
+			callback(error);
+		} else {
+			apiFormattingFermentables(sugarGraph, function(err, apiJson){
+				if(err) {
+					callback(err);
+				} else {
+					callback(null, apiJson);
+				}
+			});
+
+			//callback(null,sugarGraph);
+		}
+	});
+};
+
+var getDryExtracts = function (callback) {
+	ts.graph('<' + mb.baseURI + 'Dry_Extract>', function(error, dryExtractGraph) {
+		if(error) {
+			callback(error);
+		} else {
+			apiFormattingFermentables(dryExtractGraph, function(err, apiJson){
+				if(err) {
+					callback(err);
+				} else {
+					callback(null, apiJson);
+				}
+			});
+
+			//callback(null,dryExtractGraph);
+		}
+	});
+};
+
+var getLiquidExtracts = function (callback) {
+	ts.graph('<' + mb.baseURI + 'Liquid_Extract>', function(error, liquidExtractGraph) {
+		if(error) {
+			callback(error);
+		} else {
+			apiFormattingFermentables(liquidExtractGraph, function(err, apiJson){
+				if(err) {
+					callback(err);
+				} else {
+					callback(null, apiJson);
+				}
+			});
+
+			//callback(null,liquidExtractGraph);
+		}
+	});
+};
+
+var getExtracts = function (callback) {
+	console.log('getExtracts');
+	async.parallel({
+		liquidextract : function (callback) {
+			getLiquidExtracts( function(error, result) {
+				if(error) {
+					console.log('Liquid Error');
+					callback(error);
+				} else {
+					callback(null,result);
+				}
+			});
+		},
+		dryextract : function (callback) {
+			getDryExtracts( function(error, result) {
+				if(error) {
+					callback(error);
+					console.log('Dry Error');
+				} else {
+					callback(null,result);
+				}
+			});
+		},
+	}, function (err, res) {
+		callback(null,res);
+	});
+}
 
 exports = module.exports = {
     'getFermentables': getFermentables,
-    'getFermentable': getFermentable
+    'getFermentable': getFermentable,
+    'getGrains': getGrains,
+    'getSugars': getSugars,
+    'getDryExtracts' : getDryExtracts,
+    'getLiquidExtracts' : getLiquidExtracts,
+    'getExtracts': getExtracts,
 };
