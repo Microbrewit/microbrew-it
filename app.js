@@ -64,6 +64,7 @@ app.get('/hops/:hop', routes.hops.hop);
 app.get('/yeasts', routes.yeasts.yeasts);
 app.get('/yeasts/:yeast', routes.yeasts.yeast);
 app.get('/others', routes.others.others);
+app.get('/origins', routes.origins);
 
 
 // 404
