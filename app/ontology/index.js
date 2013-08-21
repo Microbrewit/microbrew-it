@@ -47,5 +47,6 @@ exports.mb = {
 	other : '<' + baseURI + 'Other>',
 	userName : '<' + baseURI + 'userName>',
 	substitutions : '<' + baseURI + 'possibleSubstitutions>',
-	hasID : '<' + baseURI + 'hasID>'
+	hasID : '<' + baseURI + 'hasID>',
+	country : '<' + baseURI + 'Country>'
 };
