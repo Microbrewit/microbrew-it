@@ -7,7 +7,6 @@ var config = require('../config'),
   origin = require('../origin');
 
 var apiFormattingHops = function (hopGraph, callback) {
-    var idArray = [];
     var j = 0;
     var apiJson = {
         'meta': {
