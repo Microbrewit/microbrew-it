@@ -1,6 +1,7 @@
 var config = require('../config'),
   async = require('async'),
   mb = require('../ontology').mb,
+  prefix = require('../ontology').prefix,
   util = require('../util'),
   ts = require('../triplestore'),
   origin = require('../origin');
@@ -84,9 +85,9 @@ var apiFormattingHops = function (hopGraph, callback) {
 	},
 	tree : function(callback) {
 		var	select = ' SELECT DISTINCT ?recommendeduses ?label ';
-		select +=    ' WHERE { ?hop ' + mb.recommendedUsage + ' ?recommendeduses . ?recommendeduses rdfs:label ?label . }';
-		console.log(select);
-		ts.select(select, function(error, result) {
+		select +=    ' WHERE { ?hop mb:recommendedUsage ?recommendeduses . ?recommendeduses rdfs:label ?label . }';
+		console.log(prefix + select);
+		ts.select(prefix + select, function(error, result) {
 			if(error) {
 				callback(error);
 			} else {
@@ -102,7 +103,11 @@ var apiFormattingHops = function (hopGraph, callback) {
 		});
 	}
 }, function(err){
+	if(err) {
+		callback(err)
+	} else {
 	callback(null, apiJson);
+	}
 });
 }
 
@@ -182,42 +187,47 @@ var getHopFlavour = function (hop, callback) {
 
 var updateHop = function (hop, callback) {
 	console.log(hop);
-	var hopURI = '<' + mb.baseURI + hop.name + '>',
-		hopID = util.createID();
-		ask = ' ASK { ?hop rdf:type ' + mb.hops + '; rdfs:label "' + hop.name + '" }',
-		ts.ask(ask, function (err, result) {
-			if(err) {
-				console.log(err);
-				callback(err);
-			} else {
-			console.log(typeof result + result);
-			if(result === false) {
-			var insert =	' INSERT DATA { ' + hopURI + ' rdf:type ' + mb.hops + '; ' + mb.hasID + ' ' + hopID + ' ;';
-				insert +=	' rdfs:label "' + hop.name + '"; ' + mb.aalow + ' ' + hop.aalow + '; ';
-				//optinal does hops addition containd flavor decribtion
-				if(mb.origin.length < 0) {
-				insert +=	mb.flavorDescription + ' "' + hop.flavor + '" ;';
-				}
-				//optional value, does hops contain origin.
-				if(mb.origin.indexOf(mb.baseURI) === -1) {
-					insert += mb.origin + ' ' + mb.originuri;
-				}
-				insert +=	' } '
-				console.log(insert);
-			ts.insert(insert, function (error, insertResult) {
-				if(err) {
-					console.log(error);
-					callback(error);
-				} else {
-					callback(null, insertResult);
-				}
-			});
-			} else {
-				console.log("softUpdateHop");
-				softUpdateHop(hop);
-			}
+	hardUpdateHop(hop,function (err, res) {
+		if(err) {
+			callback(err);
+		} else {
+			callback(null,res);
 		}
-		});
+	})
+	// var hopURI = '<' + mb.baseURI + hop.name + '>',
+	// 	hopID = util.createID();
+	// 	ask = ' ASK { ?hop rdf:type ' + mb.hops + '; rdfs:label "' + hop.name + '" }',
+	// 	ts.ask(ask, function (err, result) {
+	// 		if(err) {
+	// 			console.log(err);
+	// 			callback(err);
+	// 		} else {
+	// 		console.log(typeof result + result);
+	// 		if(result === false) {
+	// 		var insert =	' INSERT DATA { ' + hopURI + ' rdf:type ' + mb.hops + '; ' + mb.hasID + ' ' + hopID + ' ;';
+	// 			insert +=	' rdfs:label "' + hop.name + '"; ' + mb.aalow + ' ' + hop.aalow + '; ';
+	// 			if(mb.origin.length < 0) {
+	// 			insert +=	mb.flavorDescription + ' "' + hop.flavor + '" ;';
+	// 			}
+	// 			if(mb.origin.indexOf(mb.baseURI) === -1) {
+	// 				insert += mb.origin + ' ' + mb.originuri;
+	// 			}
+	// 			insert +=	' } '
+	// 			console.log(insert);
+	// 		ts.insert(insert, function (error, insertResult) {
+	// 			if(err) {
+	// 				console.log(error);
+	// 				callback(error);
+	// 			} else {
+	// 				callback(null, insertResult);
+	// 			}
+	// 		});
+	// 		} else {
+	// 			console.log("softUpdateHop");
+	// 			softUpdateHop(hop);
+	// 		}
+	// 	}
+	// 	});
 };
 
 var softUpdateHop = function (hop, callback) {
@@ -257,6 +267,58 @@ var softUpdateHop = function (hop, callback) {
 		where +=	' }'
 	console.log(insert + where);
 }
+
+var hardUpdateHop = function (hop, callback) {
+var	hopID = util.createID(),
+    update,
+    insert,
+    where,
+    del =  ' DELETE { GRAPH mb:HopsGraph { ';
+	del += ' ?hop mb:hasID ?id; rdfs:label ?label; mb:hasAlphaAcidLowRange ?aalow; mb:hasAlphaAcidHighRange ?aahigh; ' ;
+	del += ' mb:possibleSubstitutions ?substitutions; mb:flavourDescription ?flavourdescription; ';
+	del += ' mb:origin ?origin; mb:flavour ?flavour; mb:recommendedUsage ?recommendeduses }} ';
+	insert = ' INSERT { GRAPH mb:HopsGraph {?hop mb:hasID ' + hopID + ';';
+	insert += ' rdfs:label "' + hop.name + '"; mb:hasAlphaAcidLowRange ' + hop.aalow + ';';
+	insert += ' mb:hasAlphaAcidHighRange ' + hop.aahigh + ';';
+	insert += ' mb:origin ' + hop.origin + '; ';
+	insert += ' mb:recommendedUsage ' + hop.recommendedusageid + ';'
+	if(typeof hop.flavourdescription !== 'undefined') {
+		insert += ' mb:flavourDescription "' + hop.flavourdescription + '"; ';
+	}
+	if(typeof hop.substitutions !== 'undefined') {
+		for(i = 0; i < hop.substitutions.length; i++) {
+			insert += 'mb:possibleSubstitutions ' + hop.substitutions[i] + '; ';
+		}
+	}
+	if(typeof hop.flavour !== 'undefined') {
+		for(i = 0; i < hop.flavour.length; i++) {
+			insert += 'mb:hasFlavour "' + hop.flavour[i] + '"; ';
+		}
+	}
+	insert += '}}';
+	where = ' WHERE { GRAPH mb:HopsGraph { ';
+	where += ' ?hop rdfs:label "' + hop.name + '"@en; rdf:type mb:Hops . ';
+	where += ' OPTIONAL {?hop mb:hasID ?id} .';
+	where += ' OPTIONAL {?hop mb:hasAlphaAcidLowRange ?aalow } .';
+	where += ' OPTIONAL { ?hop mb:hasAlphaAcidHighRange ?aahigh} . ';
+	where += ' OPTIONAL {?hop mb:possibleSubstitutions ?substitutions } .';
+	where += ' OPTIONAL {?hop mb:flavourDescription ?flavourdescription } . ';
+	where += ' OPTIONAL {?hop mb:origin ?origin } .';
+	where += ' OPTIONAL {?hop mb:flavour ?flavour } .';
+	where += ' OPTIONAL {?hop mb:recommendedUsage ?recommendeduses } . ';
+	where += '  }}'
+
+	update = prefix + del + insert + where;
+	console.log(update);
+	ts.insert(update, function (error, result) {
+		if(error) {
+			callback(error)
+		} else {
+			callback(null,result);
+		}
+	});
+}
+
 exports = module.exports = {
     'getHops': getHops,
     'getHop' : getHop,
