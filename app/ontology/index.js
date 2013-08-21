@@ -1,6 +1,8 @@
 //Ontology export
 var baseURI = 'http://microbrew.it/beer.owl#';
 
+exports.prefix = 'PREFIX mb:<http://microbrew.it/beer.owl#> ';
+
 exports.mb = {
 //beer
 	baseURI : baseURI,
