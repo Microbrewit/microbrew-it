@@ -2,18 +2,111 @@ var config = require('../config'),
   async = require('async'),
   mb = require('../ontology').mb,
   util = require('../util'),
-  ts = require('../triplestore');
+  ts = require('../triplestore'),
+  origin = require('../origin');
+
+var apiFormattingHops = function (hopGraph, callback) {
+    var idArray = [];
+    var j = 0;
+    var apiJson = {
+        'meta': {
+          'size': hopGraph.length
+        },
+        'links': {
+          'hops.maltster': {
+            'href': 'http://api.microbrew.it/hops/recommendeduses/:recommendeduseid',
+            'type': 'recommendedUses'
+          },
+          'hops.origin': {
+            'href': 'http://api.microbrew.it/origin/:originid',
+            'type': 'origin'
+          }
+        },
+        'hops' : []
+      };
+
+    async.series({
+     one: function (callback) {
+        for (var key in hopGraph) {
+			if(typeof hopGraph[key][mb.baseURI + 'hasID'] !== 'undefined') {
+
+			apiJson.hops[j] = {
+						'id': hopGraph[key][mb.baseURI + 'hasID'][0].value,
+						'href': key,
+						'name': hopGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
+						'aalow': hopGraph[key][mb.baseURI + 'hasAlphaAcidLowRange'][0].value,
+						'aahigh': hopGraph[key][mb.baseURI + 'hasAlphaAcidHighRange'][0].value,
+						'substitutions':[],
+						'flavour': [],
+			 			'links': {
+							'originid': hopGraph[key][mb.baseURI + 'origin'][0].value,
+							'recommendedusageid': hopGraph[key][mb.baseURI + 'recommendedUsage'][0].value,
+					}
+				}
+		      if(typeof hopGraph[key][mb.baseURI + 'flavourDescription'] !== 'undefined') {
+			  	console.log(hopGraph[key][mb.baseURI + 'flavourDescription'][0].value);
+	 		  	apiJson.hops[j].flavourdescription = hopGraph[key][mb.baseURI + 'flavourDescription'][0].value;
+	 		  }
+	 	      if(typeof hopGraph[key][mb.baseURI + 'hasFlavour'] !== 'undefined') {
+	 	        for (var i = hopGraph[key][mb.baseURI + 'hasFlavour'].length - 1; i >= 0; i--) {
+	 	        	apiJson.hops[j].flavour.push(hopGraph[key][mb.baseURI + 'hasFlavour'][i].value);
+	 	        }
+	 	      }
+	  	      if(typeof hopGraph[key][mb.baseURI + 'possibleSubstitutions'] !== 'undefined') {
+	 	         for (var i = hopGraph[key][mb.baseURI + 'possibleSubstitutions'].length - 1; i >= 0; i--) {
+	 		       apiJson.hops[j].substitutions.push(hopGraph[key][mb.baseURI + 'possibleSubstitutions'][i].value);
+	 		     }
+	          }
+	      	j++
+	        }
+        }
+       callback();
+    },
+    two: function (callback) {
+    	console.log(apiJson.hops.length);
+	    origin.getOrigins(function (err, originJson) {
+			if (err) {
+				console.log('ERROR');
+				callback(err);
+			} else {
+			for (var h = 0; h < apiJson.hops.length; h++) {
+				for (var i = originJson.origins.length - 1; i >= 0; i--) {
+					//console.log(originJson.origins[i].href + ' = ' + apiJson.hops[k].links.originid);
+					//console.log(originJson.origins[i].href === apiJson.hops[k].links.originid);
+				  if(typeof originJson.origins !== 'undefined' && originJson.origins[i].href === apiJson.hops[h].links.originid) {
+					apiJson.hops[h].origin = originJson.origins[i].name;
+				}
+			};
+			}
+			}
+	callback();
+		});
+	},
+	tree : function(callback) {
+		var	select = ' SELECT DISTINCT ?recommendeduses ?label ';
+		select +=    ' WHERE { ?hop ' + mb.recommendedUsage + ' ?recommendeduses . ?recommendeduses rdfs:label ?label . }';
+		console.log(select);
+		ts.select(select, function(error, result) {
+			if(error) {
+				callback(error);
+			} else {
+			for(h = 0; h < apiJson.hops.length; h ++) {
+				for(i = 0; i < result.results.bindings.length; i++) {
+				if(result.results.bindings[i].recommendeduses.value === apiJson.hops[h].links.recommendedusageid) {
+					apiJson.hops[h].recommendedusage = result.results.bindings[i].label.value;
+				  }
+			    }
+			  }
+			}
+		callback();
+		});
+	}
+}, function(err){
+	callback(null, apiJson);
+});
+}
 
 var getHops = function (callback) {
-    var select =    ' SELECT *';
-    select +=   ' WHERE { ';
-    select +=   ' ?hop rdf:type ' + mb.hops + '; rdfs:label ?label ;' + mb.hasID + ' ?id ; ';
-    select +=   mb.aalow + '?aalow ; ' + mb.aahigh + ' ?aahigh ; ' + mb.recommendedUsage + ' ?recommendedUsageid; ';
-    select +=   mb.origin + '?originid . ';
-    select +=   ' OPTIONAL {?hop ' + mb.flavourDescription +  ' ?flavourDescription } .';
-    select +=   ' ?originid rdfs:label ?origin . ?recommendedUsageid rdfs:label ?recommendedUsage . ';
-    select +=   ' FILTER(LANG(?label) = "en") . }';
-    console.log(select);
     ts.graph('<' + mb.baseURI + 'HopsGraph>', function (err, hopGraph) {
       if (err) {
         console.log(err);
@@ -26,6 +119,7 @@ var getHops = function (callback) {
       				callback(null, result);
       			}
       		});
+    	//callback(null, hopGraph);
       }
     });
   };
@@ -68,68 +162,9 @@ var getHop = function (hopID, callback) {
   }
 };
 
-var apiFormattingHops = function (hopGraph, callback) {
-
-	var idArray = [];
-	var apiJson = {
-			'meta': {
-			'size':	hopGraph.length
-			},
-			'links': {
-				'hops.maltster': {
-					'href': 'http://api.microbrew.it/hops/recommendeduses/:recommendeduseid',
-    				'type': 'recommendedUses'
-				},
-				'hops.origin': {
-   					'href': 'http://api.microbrew.it/origin/:originid',
-   					'type': 'origin'
-  				},
-
-			},
-			'hops' :[
-			]
 
 
-	};
-	var j = 0;
-	for (var key in hopGraph) {
-			if(typeof hopGraph[key][mb.baseURI + 'hasID'] !== 'undefined') {
-			apiJson.hops[j] = {
-						'id': hopGraph[key][mb.baseURI + 'hasID'][0].value,
-						'href': key,
-						'name': hopGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
-						'aalow': hopGraph[key][mb.baseURI + 'hasAlphaAcidLowRange'][0].value,
-						'aahigh': hopGraph[key][mb.baseURI + 'hasAlphaAcidHighRange'][0].value,
-						'substitutions':[],
-						'flavour': [],
-			 		'links': {
-						'originid': hopGraph[key][mb.baseURI + 'origin'][0].value,
-						'recommendedusageid': hopGraph[key][mb.baseURI + 'recommendedUsage'][0].value,
 
-			   }
-		}
-
-
-		if(typeof hopGraph[key][mb.baseURI + 'flavourDescription'] !== 'undefined') {
-				console.log(hopGraph[key][mb.baseURI + 'flavourDescription'][0].value);
-	 			apiJson.hops[j].flavourdescription = hopGraph[key][mb.baseURI + 'flavourDescription'][0].value;
-			}
-	 	if(typeof hopGraph[key][mb.baseURI + 'hasFlavour'] !== 'undefined') {
-	 	for (var i = hopGraph[key][mb.baseURI + 'hasFlavour'].length - 1; i >= 0; i--) {
-	 		apiJson.hops[j].flavour.push(hopGraph[key][mb.baseURI + 'hasFlavour'][i].value);
-	 	};
-	 }
-	  	if(typeof hopGraph[key][mb.baseURI + 'possibleSubstitutions'] !== 'undefined') {
-	 	for (var i = hopGraph[key][mb.baseURI + 'possibleSubstitutions'].length - 1; i >= 0; i--) {
-	 		apiJson.hops[j].substitutions.push(hopGraph[key][mb.baseURI + 'possibleSubstitutions'][i].value);
-	 	};
-	 }
-	}
-	j++
-
-}
-	callback(null,apiJson);
-}
 
 var getHopFlavour = function (hop, callback) {
 	var select =	' SELECT DISTINCT * ';
