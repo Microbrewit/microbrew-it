@@ -8,53 +8,49 @@ var config = require('../config'),
 
 var apiFormattingHops = function (hopGraph, callback) {
     var j = 0;
-    var apiJson = {
-        'meta': {
-          'size': hopGraph.length
-        },
-        'links': {
-          'hops.maltster': {
-            'href': 'http://api.microbrew.it/hops/recommendeduses/:recommendeduseid',
-            'type': 'recommendedUses'
-          },
-          'hops.origin': {
-            'href': 'http://api.microbrew.it/origin/:originid',
-            'type': 'origin'
-          }
-        },
-        'hops' : []
-      };
+    var hopsArray = [];
 
     async.series({
      one: function (callback) {
         for (var key in hopGraph) {
 			if(typeof hopGraph[key][mb.baseURI + 'hasID'] !== 'undefined') {
 
-			apiJson.hops[j] = {
+			hopsArray[j] = {
 						'id': hopGraph[key][mb.baseURI + 'hasID'][0].value,
 						'href': key,
 						'name': hopGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
-						'aalow': hopGraph[key][mb.baseURI + 'hasAlphaAcidLowRange'][0].value,
-						'aahigh': hopGraph[key][mb.baseURI + 'hasAlphaAcidHighRange'][0].value,
 						'substitutions':[],
 						'flavour': [],
-			 			'links': {
-							'originid': hopGraph[key][mb.baseURI + 'origin'][0].value,
-							'recommendedusageid': hopGraph[key][mb.baseURI + 'recommendedUsage'][0].value,
-					}
+						'links': {},
 				}
+
+			  if(typeof hopGraph[key][mb.baseURI + 'origin'] !== 'undefined') {
+			  	hopsArray[j].links.originid = hopGraph[key][mb.baseURI + 'origin'][0].value
+			  		}
+
+               if(typeof hopGraph[key][mb.baseURI + 'recommendedUsage'] !== 'undefined') {
+			  	hopsArray[j].links.recommendedusageid = hopGraph[key][mb.baseURI + 'recommendedUsage'][0].value
+			  		}
+
+			  if(typeof hopGraph[key][mb.baseURI + 'hasAlphaAcidLowRange'] !== 'undefined') {
+			    hopsArray[j].aalow = hopGraph[key][mb.baseURI + 'hasAlphaAcidLowRange'][0].value;
+			  	}
+			  if(typeof hopGraph[key][mb.baseURI + 'hasAlphaAcidHighRange'] !== 'undefined') {
+				hopsArray[j].aahigh = hopGraph[key][mb.baseURI + 'hasAlphaAcidHighRange'][0].value
+				}
+
 		      if(typeof hopGraph[key][mb.baseURI + 'flavourDescription'] !== 'undefined') {
 			  	console.log(hopGraph[key][mb.baseURI + 'flavourDescription'][0].value);
-	 		  	apiJson.hops[j].flavourdescription = hopGraph[key][mb.baseURI + 'flavourDescription'][0].value;
+	 		  	hopsArray[j].flavourdescription = hopGraph[key][mb.baseURI + 'flavourDescription'][0].value;
 	 		  }
 	 	      if(typeof hopGraph[key][mb.baseURI + 'hasFlavour'] !== 'undefined') {
 	 	        for (var i = hopGraph[key][mb.baseURI + 'hasFlavour'].length - 1; i >= 0; i--) {
-	 	        	apiJson.hops[j].flavour.push(hopGraph[key][mb.baseURI + 'hasFlavour'][i].value);
+	 	        	hopsArray[j].flavour.push(hopGraph[key][mb.baseURI + 'hasFlavour'][i].value);
 	 	        }
 	 	      }
 	  	      if(typeof hopGraph[key][mb.baseURI + 'possibleSubstitutions'] !== 'undefined') {
 	 	         for (var i = hopGraph[key][mb.baseURI + 'possibleSubstitutions'].length - 1; i >= 0; i--) {
-	 		       apiJson.hops[j].substitutions.push(hopGraph[key][mb.baseURI + 'possibleSubstitutions'][i].value);
+	 		       hopsArray[j].substitutions.push(hopGraph[key][mb.baseURI + 'possibleSubstitutions'][i].value);
 	 		     }
 	          }
 	      	j++
@@ -63,18 +59,18 @@ var apiFormattingHops = function (hopGraph, callback) {
        callback();
     },
     two: function (callback) {
-    	console.log(apiJson.hops.length);
+    	console.log(hopsArray.length);
 	    origin.getOrigins(function (err, originJson) {
 			if (err) {
 				console.log('ERROR');
 				callback(err);
 			} else {
-			for (var h = 0; h < apiJson.hops.length; h++) {
+			for (var h = 0; h < hopsArray.length; h++) {
 				for (var i = originJson.origins.length - 1; i >= 0; i--) {
-					//console.log(originJson.origins[i].href + ' = ' + apiJson.hops[k].links.originid);
-					//console.log(originJson.origins[i].href === apiJson.hops[k].links.originid);
-				  if(typeof originJson.origins !== 'undefined' && originJson.origins[i].href === apiJson.hops[h].links.originid) {
-					apiJson.hops[h].origin = originJson.origins[i].name;
+					//console.log(originJson.origins[i].href + ' = ' + hopsArray[k].links.originid);
+					//console.log(originJson.origins[i].href === hopsArray[k].links.originid);
+				  if(typeof originJson.origins !== 'undefined' && originJson.origins[i].href === hopsArray[h].links.originid) {
+					hopsArray[h].origin = originJson.origins[i].name;
 				}
 			};
 			}
@@ -90,10 +86,10 @@ var apiFormattingHops = function (hopGraph, callback) {
 			if(error) {
 				callback(error);
 			} else {
-			for(h = 0; h < apiJson.hops.length; h ++) {
+			for(h = 0; h < hopsArray.length; h ++) {
 				for(i = 0; i < result.results.bindings.length; i++) {
-				if(result.results.bindings[i].recommendeduses.value === apiJson.hops[h].links.recommendedusageid) {
-					apiJson.hops[h].recommendedusage = result.results.bindings[i].label.value;
+				if(result.results.bindings[i].recommendeduses.value === hopsArray[h].links.recommendedusageid) {
+					hopsArray[h].recommendedusage = result.results.bindings[i].label.value;
 				  }
 			    }
 			  }
@@ -105,7 +101,7 @@ var apiFormattingHops = function (hopGraph, callback) {
 	if(err) {
 		callback(err)
 	} else {
-	callback(null, apiJson);
+	callback(null, hopsArray);
 	}
 });
 }
@@ -120,7 +116,23 @@ var getHops = function (callback) {
       			if(error) {
       				callback(error)
       			} else {
-      				callback(null, result);
+      			 var apiJson = {
+      				 'meta': {
+          			 'size': result.length
+				        },
+				      'links': {
+				         'hops.maltster': {
+				            'href': 'http://api.microbrew.it/hops/recommendeduses/:recommendeduseid',
+				            'type': 'recommendedUses'
+				          },
+				     'hops.origin': {
+				            'href': 'http://api.microbrew.it/origin/:originid',
+				            'type': 'origin'
+				          }
+				        }
+				      };
+				   apiJson.hops =result
+      				callback(null, apiJson);
       			}
       		});
     	//callback(null, hopGraph);
@@ -129,7 +141,7 @@ var getHops = function (callback) {
   };
 
 var getHop = function (hopID, callback) {
-	var apiJson = {
+	var apiHop = {
 			'meta': {
 			'size':	1
 			},
@@ -154,12 +166,12 @@ var getHop = function (hopID, callback) {
 		} else {
 			for (var i = res.hops.length - 1; i >= 0; i--) {
 				if(res.hops[i].id === hopID) {
-					apiJson.hops.push(res.hops[i]);
-					callback(null, apiJson);
+					apiHop.hops.push(res.hops[i]);
+					callback(null, apiHop);
 				}
 			};
 		}
-	})
+	});
   } else {
   	console.log('ERROR');
   	callback(null, 'Not a Hops');
