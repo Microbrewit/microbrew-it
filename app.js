@@ -58,15 +58,23 @@ app.get('/users/details/:ids', routes.users.details);
 // // === INGREDIENTS ROUTES
 app.get('/fermentables', routes.fermentables.fermentables);
 app.get('/fermentables/grains', routes.fermentables.grains);
+app.get('/fermentables/grains/:grain', routes.fermentables.grain);
 app.get('/fermentables/sugars', routes.fermentables.sugars);
+app.get('/fermentables/sugars/:sugar', routes.fermentables.sugar);
 app.get('/fermentables/extracts', routes.fermentables.extracts);
 app.get('/fermentables/extracts/dryextracts', routes.fermentables.dryExtracts);
+app.get('/fermentables/extracts/dryextracts/:dryextract', routes.fermentables.dryExtract);
 app.get('/fermentables/extracts/liquidextracts', routes.fermentables.liquidExtracts);
+app.get('/fermentables/extracts/liquidextracts/:liquidextract', routes.fermentables.liquidExtract);
+app.get('/fermentables/extracts/:extract', routes.fermentables.extract);
+
 app.get('/fermentables/:fermentable', routes.fermentables.fermentable);
 app.get('/hops', routes.hops.hops);
 app.post('/hops', routes.hops.updateHops);
 app.get('/hops/:hop', routes.hops.hop);
 app.get('/yeasts', routes.yeasts.yeasts);
+app.get('/yeasts/liquidyeasts', routes.yeasts.liquidYeasts);
+app.get('/yeasts/dryyeasts', routes.yeasts.dryYeasts);
 app.get('/yeasts/:yeast', routes.yeasts.yeast);
 app.get('/others', routes.others.others);
 app.get('/origins', routes.origins);
