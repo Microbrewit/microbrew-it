@@ -30,7 +30,6 @@ var fermentable = function (req, res) {
 };
 
 var grains = function (req, res) {
-	var ferm = req.params.fermentable;
 	fermentables.getGrains(function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
@@ -42,8 +41,20 @@ var grains = function (req, res) {
 	});
 };
 
+var grain = function (req, res) {
+	var grainID = req.params.grain;
+	fermentables.getGrain(grainID, function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
+};
+
 var sugars = function (req, res) {
-	var ferm = req.params.fermentable;
 	fermentables.getSugars(function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
@@ -55,8 +66,20 @@ var sugars = function (req, res) {
 	});
 };
 
+var sugar = function (req, res) {
+	var sugarID = req.params.sugar;
+	fermentables.getSugar(sugarID, function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
+};
+
 var dryExtracts = function (req, res) {
-	var ferm = req.params.fermentable;
 	fermentables.getDryExtracts(function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
@@ -68,8 +91,20 @@ var dryExtracts = function (req, res) {
 	});
 };
 
+var dryExtract = function (req, res) {
+	var dryID = req.params.dryextract;
+	fermentables.getDryExtract(dryID, function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
+};
+
 var liquidExtracts = function (req, res) {
-	var ferm = req.params.fermentable;
 	fermentables.getLiquidExtracts(function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
@@ -81,9 +116,34 @@ var liquidExtracts = function (req, res) {
 	});
 };
 
+var liquidExtract = function (req, res) {
+	var liquidID = req.params.liquidextract;
+	fermentables.getLiquidExtract(liquidID, function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
+};
+
 var extracts = function (req, res) {
-	var ferm = req.params.fermentable;
 	fermentables.getExtracts(function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
+};
+
+var extract = function (req, res) {
+	var extractID = req.params.extract;
+	fermentables.getExtract(extractID, function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
@@ -99,10 +159,15 @@ exports = module.exports = {
     'fermentables': fermentablesList,
     'fermentable' : fermentable,
     'grains': grains,
+    'grain': grain,
     'sugars': sugars,
+    'sugar': sugar,
     'dryExtracts': dryExtracts,
+    'dryExtract': dryExtract,
     'liquidExtracts': liquidExtracts,
+    'liquidExtract': liquidExtract,
     'extracts': extracts,
+    'extract': extract,
 
 
 };
