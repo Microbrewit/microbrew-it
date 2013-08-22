@@ -10,7 +10,8 @@
 	"express": "3.0.x",
 	"pg": "0.10.x",
 	"bcrypt": "*",
-	"connect-redis": "*"
+	"connect-redis": "*",
+	"async": "*"
 	},
 	"devDependencies": {
 		"nock": "~0.14.2",
