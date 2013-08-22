@@ -47,7 +47,33 @@ var yeast = function(req, res) {
     });
 };
 
+var liquidYeasts = function (req, res) {
+	yeasts.getLiquidYeasts(function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
+};
+
+var dryYeasts = function (req, res) {
+	yeasts.getDryYeasts(function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(JSON.stringify(result));
+			}
+	});
+};
+
 exports = module.exports = {
     'yeasts': yeastList,
-    'yeast' : yeast
+    'yeast' : yeast,
+    'liquidYeasts' : liquidYeasts,
+    'dryYeasts' : dryYeasts,
 };
