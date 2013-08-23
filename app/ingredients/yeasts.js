@@ -48,15 +48,13 @@ var getYeasts = function (callback) {
 		if(error) {
 			callback(error);
 		} else {
-			console.log(result.dryyeasts.length)
 		var apiJson = {
-        	'meta': {
-          		'size': result.dryyeasts.length + result.liquidyeasts.length
-        		},
-        	'links': {
-
-          	},
-      		};
+			'meta': {
+				'size': result.dryyeasts.length + result.liquidyeasts.length
+			},
+			'links': {
+			},
+		};
 		apiJson.yeasts = result;
 			callback(null,apiJson);
 		}
@@ -65,21 +63,29 @@ var getYeasts = function (callback) {
 };
 
 var getYeast = function (yeast, callback) {
-	var select =	' SELECT DISTINCT * ';
-		select +=	' WHERE { ';
-		select +=	' <' + yeast + '> rdf:type ' + mb.yeast + ' ; rdfs:label ?label; rdf:type ?typeuri . ?yeast rdfs:label ?label . ';
-		select +=	' FILTER(?typeuri != ' + mb.yeast + ') . FILTER(?typeuri != rdfs:Resource) .' ;
-		select +=	' FILTER(?typeuri != owl:NamedIndividual) . FILTER(?typeuri != ' + mb.ingredient + ') .'
-		select +=	' }';
-		console.log(select);
-		ts.select(select, function (err, result) {
-			if(err) {
-				console.log(err);
-				callback({'statuscode': 500, 'error': err});
-			} else {
-				callback(null, {'statuscode': 200, 'result': result});
-			}
-		});
+		console.log('getExtracts');
+	async.parallel({
+		liquidyeasts : function (callback) {
+			getLiquidYeast( function(error, result) {
+				if(error) {
+					callback(error);
+				} else {
+					callback(null,result);
+				}
+			});
+		},
+		dryyeasts : function (callback) {
+			getDryYeast( function(error, result) {
+				if(error) {
+					callback(error);
+				} else {
+					callback(null,result);
+				}
+			});
+		},
+	}, function (err, res) {
+		callback(null,res);
+	});
 };
 
 var getLiquidYeasts = function (callback) {
@@ -97,7 +103,91 @@ var getLiquidYeasts = function (callback) {
 		//callback(null, liquidYeastGraph);
 		}
 	});
-}
+};
+
+var getLiquidYeast = function (liquidID, callback) {
+	var apiLiquid = {
+			'meta': {
+			'size':	1
+			},
+			'links': {
+				'fermentables.maltster': {
+					'href': 'http://api.microbrew.it/supplier/:supplierid',
+					'type': 'recommendedUses'
+				},
+				'fermentables.origin': {
+					'href': 'http://api.microbrew.it/origin/:originid',
+					'type': 'origin'
+				},
+
+			},
+			'liquidyeasts' :[]
+		};
+
+	getLiquidYeasts(function (err, res) {
+		if(err) {
+			callback(err);
+		} else {
+			for (var i = res.length - 1; i >= 0; i--) {
+				if(res[i].id === liquidID) {
+					apiLiquid.liquidyeasts.push(res[i]);
+					}
+		}
+		if(apiLiquid.liquidyeasts.length === 0) {
+			callback(null, {'error': {
+								'message' : 'Not a liquid yeast.',
+								'code': 234567
+							}
+						});
+		} else {
+		callback(null, apiLiquid);
+		}
+	}
+	});
+
+};
+
+var getDryYeast = function (dryID, callback) {
+	var apiDry = {
+			'meta': {
+			'size':	1
+			},
+			'links': {
+				'fermentables.maltster': {
+					'href': 'http://api.microbrew.it/supplier/:supplierid',
+					'type': 'recommendedUses'
+				},
+				'fermentables.origin': {
+					'href': 'http://api.microbrew.it/origin/:originid',
+					'type': 'origin'
+				},
+
+			},
+			'dryyeasts' :[]
+		};
+
+	getDryYeasts(function (err, res) {
+		if(err) {
+			callback(err);
+		} else {
+			for (var i = res.length - 1; i >= 0; i--) {
+				if(res[i].id === dryID) {
+					apiDry.dryyeasts.push(res[i]);
+					}
+		}
+		if(apiDry.dryyeasts.length === 0) {
+			callback(null, {'error': {
+								'message' : 'Not a dry yeast.',
+								'code': 234568
+							}
+						});
+		} else {
+		callback(null, apiDry);
+		}
+	}
+	});
+
+};
 
 var getDryYeasts = function (callback) {
 	ts.graph('<' + mb.baseURI + 'Dry_Yeast>', function (error, dryYeastGraph) {
@@ -114,11 +204,13 @@ var getDryYeasts = function (callback) {
 		//callback(null, liquidYeastGraph);
 		}
 	});
-}
+};
 
 exports = module.exports = {
     'getYeasts': getYeasts,
     'getYeast': getYeast,
     'getLiquidYeasts': getLiquidYeasts,
+    'getLiquidYeast': getLiquidYeast,
     'getDryYeasts': getDryYeasts,
+    'getDryYeast': getDryYeast,
 };
