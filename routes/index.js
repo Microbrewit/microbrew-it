@@ -27,6 +27,20 @@ var origins = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
+		var	response = util.formatJsonResponse(req.query, result);
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+    		res.end(response);
+			}
+	});
+};
+
+var suppliers = function (req, res) {
+    console.log(JSON.stringify(req.session));
+	origin.getSuppliers( function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
 		var	response = utils.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
@@ -43,5 +57,6 @@ exports = module.exports = {
     'hops': hopsRoute,
     'fermentables': fermentablesRoute,
     'others': othersRoute,
-    'origins': origins
+    'origins': origins,
+    'suppliers': suppliers,
 };
