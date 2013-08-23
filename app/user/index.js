@@ -55,17 +55,17 @@ var setUser = function (userData, callback) {
 		triplestore: function (callback) {
 			var unixID = util.createID();
 			console.log(unixID);
-			var insert = ' INSERT DATA { GRAPH  <' + storedUserData[0].href + '> {';
-			insert += ' <' + storedUserData[0].href + '> a mb:User, owl:NamedIndividual, foaf:Person ; ';
+			var insert = ' INSERT DATA { GRAPH  mbu:' + storedUserData[0].id + ' {';
+			insert += ' mbu:' + storedUserData[0].id + ' a mb:User, owl:NamedIndividual, foaf:Person ; ';
 			insert += ' mb:hasID "' + unixID +'" ; mb:hasEmail  "' + storedUserData[0].email + '" ; ';
 			insert += ' mb:userName "' + storedUserData[0].id + '" ;';
-			insert += ' mb:partOfBrewery <' + mb.breweryURI + storedUserData[0].breweryname + '> .' ;
+			insert += ' mb:partOfBrewery mbb:' + storedUserData[0].breweryname + ' .' ;
 			insert += ' }';
-			insert += ' GRAPH <'  + mb.breweryURI + storedUserData[0].breweryname + '> { ';
-			insert += ' <' + storedUserData[0].href + '> a mb:Brewery, owl:NamedIndividual ; ';
-			insert += ' rdfs:label "' + storedUserData[0].breweryname + '" }';
+			insert += ' GRAPH mbb:' + encodeURIComponent(storedUserData[0].breweryname) + ' { ';
+			insert += ' mbb:' + storedUserData[0].id + ' a mb:Brewery, owl:NamedIndividual ; ';
+			insert += ' rdfs:label "' + encodeURIComponent(storedUserData[0].breweryname) + '" }';
 			insert += ' }';
-			console.log(insert);
+			console.log(prefix + insert);
 			ts.insert(prefix + insert, function (error, result) {
 				if(error) {
 					callback(error);
