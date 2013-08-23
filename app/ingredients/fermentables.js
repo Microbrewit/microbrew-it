@@ -1,8 +1,11 @@
 var config = require('../config'),
 	mb = require('../ontology').mb,
 	ts = require('../triplestore'),
+	prefix = require('../ontology').prefix,
+	origin = require('../origin'),
 	async = require('async');
 
+//Gets all fermentables from the triplestore
 var getFermentables = function (callback) {
 	async.parallel({
 		grains : function(callback) {
@@ -53,8 +56,8 @@ var getFermentables = function (callback) {
 var getFermentable = function (fermID, callback) {
 	async.parallel({
 		extract : function (callback) {
-			getExtract(fermID, function(error, result) {
-				if(error) {
+			getExtract(fermID, function(err, result) {
+				if(err) {
 					callback(error);
 				} else {
 					callback(null,result);
@@ -62,8 +65,8 @@ var getFermentable = function (fermID, callback) {
 			});
 		},
 		grain : function (callback) {
-			getGrain(fermID, function(error, result) {
-				if(error) {
+			getGrain(fermID, function(err, result) {
+				if(err) {
 					callback(error);
 				} else {
 					callback(null,result);
@@ -71,8 +74,8 @@ var getFermentable = function (fermID, callback) {
 			});
 		},
 		sugar : function (callback) {
-			getSugar(fermID, function(error, result) {
-				if(error) {
+			getSugar(fermID, function(err, result) {
+				if(err) {
 					callback(error);
 				} else {
 					callback(null,result);
@@ -80,37 +83,76 @@ var getFermentable = function (fermID, callback) {
 			});
 		},
 	}, function (err, res) {
-		if(res.extract.status) {
+		if(typeof res.extract.error === 'undefined') {
 		callback(null,res.extract);
-		} else if (res.grain.status) {
+		} else if (typeof res.grain.error === 'undefined') {
 		callback(null,res.grain);
-		} else if (res.sugar.status) {
+		} else if (typeof res.sugar.error === 'undefined') {
 		callback(null,res.sugar);
 		} else {
 			console.log('res');
-			callback(null, {'status': false, 'message':'Not an fermentable'});
+			callback(null, {'error': {
+								'message' : 'Not a fermentalbe.',
+								'code': 234531
+							}
+						});
 		}
 	});
 };
 
 var apiFormattingFermentables = function (fermentableGraph, callback) {
-	console.log(fermentableGraph);
 	var fermentablesArray = [],
 	j = 0;
-	for(key in fermentableGraph) {
-		fermentablesArray.push({
-		'id' : fermentableGraph[key][mb.baseURI + 'hasID'][0].value,
-		'href': key,
-		'name': fermentableGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
-		'colour' : fermentableGraph[key][mb.baseURI + 'hasColour'][0].value,
-		'ppg': fermentableGraph[key][mb.baseURI + 'hasPPG'][0].value,
-		});
-		if(typeof fermentableGraph[key][mb.baseURI + 'suppliedBy'] !== 'undefined') {
-			fermentablesArray[j].suppliedbyid = fermentableGraph[key][mb.baseURI + 'suppliedBy'][0].value
+	async.series({
+		one : function(callback) {
+			for(key in fermentableGraph) {
+				fermentablesArray.push({
+				'id' : fermentableGraph[key][mb.baseURI + 'hasID'][0].value,
+				'href': key,
+				'name': fermentableGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
+				'colour' : fermentableGraph[key][mb.baseURI + 'hasColour'][0].value,
+				'ppg': fermentableGraph[key][mb.baseURI + 'hasPPG'][0].value,
+				});
+				if(typeof fermentableGraph[key][mb.baseURI + 'suppliedBy'] !== 'undefined') {
+					fermentablesArray[j].suppliedbyid = fermentableGraph[key][mb.baseURI + 'suppliedBy'][0].value;
+				}
+				if(typeof fermentableGraph[key][mb.baseURI + 'origin'] !== 'undefined') {
+					fermentablesArray[j].originid = fermentableGraph[key][mb.baseURI + 'origin'][0].value;
+				}
+				j++;
+			}
+			callback();
+		},
+		two : function (callback) {
+			origin.getSuppliers(function (err,suppliers) {
+						if(err) {
+							callback(err);
+						} else {
+							for (var i = fermentablesArray.length - 1; i >= 0; i--) {
+								if(typeof fermentablesArray[i].suppliedbyid !== 'undefined') {
+
+									for (var h = suppliers.suppliers.length - 1; h >= 0; h--) {
+										console.log(suppliers.suppliers[h].href + ' == ' + fermentablesArray[i].suppliedbyid);
+										if(suppliers.suppliers[h].href === fermentablesArray[i].suppliedbyid) {
+											fermentablesArray[i].suppliedby = suppliers.suppliers[h].name;
+										}
+										if(typeof fermentablesArray[i].origin === 'undefined' && suppliers.suppliers.locatedin !== 'undefined') {
+											fermentablesArray[i].origin = suppliers.suppliers[h].locatedin;
+										}
+									}
+								}
+							}
+						}
+					callback();
+					});
+		},
+	},function(err){
+		if(err){
+			callback(err);
+		} else {
+			callback(null,fermentablesArray);
 		}
-		j++
-	}
-	callback(null,fermentablesArray);
+	});
 };
 
 var getGrains = function (callback) {
@@ -138,13 +180,12 @@ var getGrain = function (grainID, callback) {
 			'links': {
 				'fermentables.maltster': {
 					'href': 'http://api.microbrew.it/maltsters/:maltsterid',
-    				'type': 'recommendedUses'
+					'type': 'recommendedUses'
 				},
 				'fermentables.origin': {
-   					'href': 'http://api.microbrew.it/origin/:originid',
-   					'type': 'origin'
-  				},
-
+					'href': 'http://api.microbrew.it/origin/:originid',
+					'type': 'origin'
+				},
 			},
 			'grains' :[
 			]
@@ -162,9 +203,13 @@ var getGrain = function (grainID, callback) {
 			}
 		}
 		if(apiGrain.grains.length === 0) {
-			callback(null, {'message':'Not a grain.','status': false})
+			callback(null,  {'error': {
+								'message' : 'Not a dry  extract.',
+								'code': 234531
+							}
+						});
 		} else {
-		callback(null, {'status': true, 'result' : apiGrain});
+		callback(null, apiGrain);
 		}
 		}
 	});
@@ -197,12 +242,12 @@ var getSugar = function (sugarID, callback) {
 			'links': {
 				'fermentables.maltster': {
 					'href': 'http://api.microbrew.it/maltsters/:maltsterid',
-    				'type': 'recommendedUses'
+					'type': 'recommendedUses'
 				},
 				'fermentables.origin': {
-   					'href': 'http://api.microbrew.it/origin/:originid',
-   					'type': 'origin'
-  				},
+					'href': 'http://api.microbrew.it/origin/:originid',
+					'type': 'origin'
+				},
 
 			},
 			'sugars' :[]
@@ -218,9 +263,13 @@ var getSugar = function (sugarID, callback) {
 					}
 		}
 		if(apiSugar.sugars.length === 0) {
-			callback(null, {'message':'Not a sugar.','status': false})
+			callback(null,  {'error': {
+								'message' : 'Not a sugar.',
+								'code': 234531
+							}
+						});
 		} else {
-		callback(null, {'status': true, 'result' : apiSugar});
+		callback(null, apiSugar);
 		}
 	}
 	});
@@ -253,12 +302,12 @@ var getDryExtract = function (dryID, callback) {
 			'links': {
 				'fermentables.maltster': {
 					'href': 'http://api.microbrew.it/maltsters/:maltsterid',
-    				'type': 'recommendedUses'
+					'type': 'recommendedUses'
 				},
 				'fermentables.origin': {
-   					'href': 'http://api.microbrew.it/origin/:originid',
-   					'type': 'origin'
-  				},
+					'href': 'http://api.microbrew.it/origin/:originid',
+					'type': 'origin'
+				},
 
 			},
 			'dryextracts' :[]
@@ -274,9 +323,13 @@ var getDryExtract = function (dryID, callback) {
 					}
 		}
 		if(apiDry.dryextracts.length === 0) {
-			callback(null, {'message':'Not a dry extract.','status': false})
+			callback(null, {'error': {
+								'message' : 'Not a dry  extract.',
+								'code': 234531
+							}
+						});
 		} else {
-		callback(null, {'status': true, 'result' : apiDry});
+		callback(null, apiDry);
 		}
 	}
 	});
@@ -291,12 +344,12 @@ var getLiquidExtract = function (liquidID, callback) {
 			'links': {
 				'fermentables.maltster': {
 					'href': 'http://api.microbrew.it/maltsters/:maltsterid',
-    				'type': 'recommendedUses'
+					'type': 'recommendedUses'
 				},
 				'fermentables.origin': {
-   					'href': 'http://api.microbrew.it/origin/:originid',
-   					'type': 'origin'
-  				},
+					'href': 'http://api.microbrew.it/origin/:originid',
+					'type': 'origin'
+				},
 
 			},
 			'liquidextracts' :[]
@@ -312,9 +365,13 @@ var getLiquidExtract = function (liquidID, callback) {
 					}
 		}
 		if(apiLiquid.liquidextracts.length === 0) {
-			callback(null, {'message': 'Not a liquid extract.', status: false})
+			callback(null, {'error': {
+								'message' : 'Not a liquid extract.',
+								'code': 234530
+							}
+						});
 		} else {
-		callback(null, {'status': true, 'result' : apiLiquid});
+		callback(null, apiLiquid);
 		}
 	}
 	});
@@ -345,7 +402,6 @@ var getExtracts = function (callback) {
 		liquidextracts : function (callback) {
 			getLiquidExtracts( function(error, result) {
 				if(error) {
-					console.log('Liquid Error');
 					callback(error);
 				} else {
 					callback(null,result);
@@ -356,7 +412,6 @@ var getExtracts = function (callback) {
 			getDryExtracts( function(error, result) {
 				if(error) {
 					callback(error);
-					console.log('Dry Error');
 				} else {
 					callback(null,result);
 				}
@@ -365,41 +420,43 @@ var getExtracts = function (callback) {
 	}, function (err, res) {
 		callback(null,res);
 	});
-}
+};
 
 var getExtract = function (extractID, callback) {
 	async.parallel({
 		liquidextract : function (callback) {
-			getLiquidExtract(extractID, function(error, result) {
-				if(error) {
-					callback(error);
+			getLiquidExtract(extractID, function(err, result) {
+				if(err) {
+					callback(err);
 				} else {
 					callback(null,result);
 				}
 			});
 		},
 		dryextract : function (callback) {
-			getDryExtract(extractID, function(error, result) {
-				if(error) {
-					callback(error);
+			getDryExtract(extractID, function(err, result) {
+				if(err) {
+					callback(err);
 				} else {
 					callback(null,result);
 				}
 			});
 		},
 	}, function (err, res) {
-		if(res.liquidextract.status) {
-			console.log('liquidextract');
+		if(typeof res.liquidextract.error === 'undefined') {
 		callback(null,res.liquidextract);
-		} else if (res.dryextract.status) {
-			console.log('dryextract');
-		callback(null,res.dryextract);
+		} else if (typeof res.dryextract.error === 'undefined') {
+			callback(null,res.dryextract);
 		} else {
 			console.log('res');
-			callback(null, 'Not an extract');
+			callback(null, {'error': {
+								'message' : 'Not a extract.',
+								'code': 234100
+							}
+						});
 		}
 	});
-}
+};
 
 exports = module.exports = {
     'getFermentables': getFermentables,
