@@ -74,10 +74,13 @@ app.post('/hops', routes.hops.updateHops);
 app.get('/hops/:hop', routes.hops.hop);
 app.get('/yeasts', routes.yeasts.yeasts);
 app.get('/yeasts/liquidyeasts', routes.yeasts.liquidYeasts);
+app.get('/yeasts/liquidyeasts/:liquidyeast', routes.yeasts.liquidYeast);
 app.get('/yeasts/dryyeasts', routes.yeasts.dryYeasts);
+app.get('/yeasts/dryyeasts/:dryyeast', routes.yeasts.dryYeast);
 app.get('/yeasts/:yeast', routes.yeasts.yeast);
 app.get('/others', routes.others.others);
 app.get('/origins', routes.origins);
+app.get('/suppliers', routes.suppliers);
 
 
 // 404
