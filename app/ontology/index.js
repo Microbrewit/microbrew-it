@@ -1,11 +1,13 @@
 //Ontology export
 var baseURI = 'http://microbrew.it/beer.owl#';
 
-exports.prefix = 'PREFIX mb:<http://microbrew.it/beer.owl#> ';
+exports.prefix = 'PREFIX mb:<http://microbrew.it/beer.owl#> PREFIX foaf:<http://xmlns.com/foaf/0.1/> ';
 
 exports.mb = {
 //beer
 	baseURI : baseURI,
+	userURI : 'http://microbrew.it/users/',
+	breweryURI : 'http://microbrew.it/brewery/',
 	beer  : ' <' + baseURI + 'Beer> ',
 	name : ' <' + baseURI + 'name> ',
 	style : ' <' + baseURI + 'hasStyle> ',
