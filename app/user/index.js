@@ -4,6 +4,10 @@
 var bcrypt = require('bcrypt'),
     pg = require('pg'),
 	async = require('async'),
+	mb = require('../ontology').mb,
+	prefix = require('../ontology').prefix,
+	ts = require('../triplestore'),
+	util = require('../util'),
 	config = require('../config');
 
 // Key value object for postgres error codes with appropriate error messages
@@ -13,38 +17,70 @@ var errorCodes = {
 };
 
 var setUser = function (userData, callback) {
-
-	var client = new pg.Client(config.postgresql);
-	client.connect();
-	bcrypt.genSalt(10, function(err, salt) {
-		bcrypt.hash(userData.password, salt, function (err, hash) {
-			if (err) {
-				console.log('error in bcrypt');
-				return callback(err);
-			} else {
-				client.query('INSERT INTO users(username, password, email, settings) values($1, $2, $3, $4) RETURNING *',
-					[userData.username, hash, userData.email, userData.settings],
-					function (error, result) {
-					if(error) {
-						callback({
-							'error' : errorCodes[error.code],
-							'code' : error.code
-						});
+	var storedUserData;
+	async.series({
+		postgres: function(callback) {
+			var client = new pg.Client(config.postgresql);
+			client.connect();
+			bcrypt.genSalt(10, function(err, salt) {
+				bcrypt.hash(userData.password, salt, function (err, hash) {
+					if (err) {
+						console.log('error in bcrypt');
+						return callback(err);
 					} else {
-						callback(null, [{
-							id: result.rows[0].username,
-							href: config.hostname + '/users/' + result.rows[0].username,
-							username: result.rows[0].username,
-							email: result.rows[0].email,
-							settings: result.rows[0].settings,
-							breweryname: userData.breweryname
-						}]);
+						client.query('INSERT INTO users(username, password, email, settings) values($1, $2, $3, $4) RETURNING *',
+							[userData.username, hash, userData.email, userData.settings],
+							function (error, result) {
+							if(error) {
+								callback({
+									'error' : errorCodes[error.code],
+									'code' : error.code
+								});
+							} else {
+								storedUserData = [{
+									'id': result.rows[0].username,
+									'href': mb.userURI + result.rows[0].username,
+									'username': result.rows[0].username,
+									'email': result.rows[0].email,
+									'settings': result.rows[0].settings,
+									'breweryname': userData.breweryname
+								}];
+								callback();
+							}
+						});
 					}
 				});
-			}
-		});
+			});
+		},
+		triplestore: function (callback) {
+			var unixID = util.createID();
+			console.log(unixID);
+			var insert = ' INSERT DATA { GRAPH  <' + storedUserData[0].href + '> {';
+			insert += ' <' + storedUserData[0].href + '> a mb:User, owl:NamedIndividual, foaf:Person ; ';
+			insert += ' mb:hasID "' + unixID +'" ; mb:hasEmail  "' + storedUserData[0].email + '" ; ';
+			insert += ' mb:userName "' + storedUserData[0].id + '" ;';
+			insert += ' mb:partOfBrewery <' + mb.breweryURI + storedUserData[0].breweryname + '> .' ;
+			insert += ' }';
+			insert += ' GRAPH <'  + mb.breweryURI + storedUserData[0].breweryname + '> { ';
+			insert += ' <' + storedUserData[0].href + '> a mb:Brewery, owl:NamedIndividual ; ';
+			insert += ' rdfs:label "' + storedUserData[0].breweryname + '" }';
+			insert += ' }';
+			console.log(insert);
+			ts.insert(prefix + insert, function (error, result) {
+				if(error) {
+					callback(error);
+				} else {
+					callback(null,result);
+				}
+			});
+		}
+	}, function(error,result) {
+		if(error) {
+			callback(error);
+		} else {
+			callback(null,storedUserData);
+		}
 	});
-
 };
 
 var updateUser = function (userData, callback) {
