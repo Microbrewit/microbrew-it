@@ -51,8 +51,8 @@ app.get('/', routes.index);
 // // === USER ROUTES
 app.post('/users', routes.users.addUpdateUser);
 app.post('/users/changepassword', routes.users.changePassword);
-app.post('/users/login', routes.users.login); //?username=...&password=...
-app.post('/users/logout', routes.users.logout);
+app.get('/users/login', routes.users.login); //?username=...&password=...
+app.get('/users/logout', routes.users.logout);
 app.get('/users/details/:ids', routes.users.details);
 
 // // === INGREDIENTS ROUTES
@@ -81,6 +81,7 @@ app.get('/yeasts/:yeast', routes.yeasts.yeast);
 app.get('/others', routes.others.others);
 app.get('/origins', routes.origins);
 app.get('/suppliers', routes.suppliers);
+app.get('/beerstyles', routes.beer.beerStyles);
 
 
 // 404
