@@ -81,7 +81,7 @@ app.get('/yeasts/:yeast', routes.yeasts.yeast);
 app.get('/others', routes.others.others);
 app.get('/origins', routes.origins);
 app.get('/suppliers', routes.suppliers);
-app.get('/beerstyles', routes.beer.beerStyles);
+//app.get('/beerstyles', routes.beer.beerStyles);
 
 
 // 404
