@@ -10,7 +10,7 @@ var fermentablesList = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -24,7 +24,7 @@ var fermentable = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -37,7 +37,7 @@ var grains = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -51,7 +51,7 @@ var grain = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -64,7 +64,7 @@ var sugars = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -78,7 +78,7 @@ var sugar = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -91,7 +91,7 @@ var dryExtracts = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -105,7 +105,7 @@ var dryExtract = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -118,7 +118,7 @@ var liquidExtracts = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -132,7 +132,7 @@ var liquidExtract = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -145,7 +145,7 @@ var extracts = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -159,7 +159,7 @@ var extract = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
