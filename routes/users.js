@@ -120,7 +120,7 @@ var logout = function (req, res) {
 
 /*
  * Maps to: /users/dtails/:ids
- * 
+ *
  */
 var details = function (req, res) {
 	res.writeHead(200, {'Content-Type': 'application/json'});
@@ -139,13 +139,13 @@ var addUpdateUser = function (req, res) {
 			'statuscode': 0,
 			'contentType': {'Content-Type': 'application/json'}
 		};
-	console.log(JSON.stringify(req.body));
+	//console.log(JSON.stringify(req.body));
 
-	if(params.id && params.email &&
+	if(params.username && params.email &&
 		params.breweryname && params.password && params.settings) {
 
 		var userData = {
-			'username' : params.id,
+			'username' : params.username,
 			'email' : params.email,
 			'password' : params.password,
 			'breweryname' : params.breweryname,
@@ -153,18 +153,19 @@ var addUpdateUser = function (req, res) {
 		};
 
 		var addUser = function (userData, callback) {
-			if(typeof req.session !== undefined && req.session.user) { // User is logged in
+			if(typeof req.session !== 'undefined' && req.session.user) { // User is logged in
 				callback({
 						message: "Can not register new user while logged in.",
 						code: 0
 					});
 			} else { // User is not logged in
+				console.log(userData);
 				user.setUser(userData, callback);
 			}
 		};
 
 		var updateUser = function (userData, callback) {
-			if(typeof req.session !== undefined && req.session.user === userData.username) { // Logged in and correct username
+			if(typeof req.session !== 'undefined' && req.session.user === userData.username) { // Logged in and correct username
 				user.updateUser(userData, callback);
 			} else { // Not logged in
 				callback({
