@@ -1,5 +1,5 @@
 var url = require('url'),
-    utils = require('../app/util'),
+    util = require('../app/util'),
     mock = require('../app/mock'),
     yeasts = require('../app/ingredients').yeasts;
 
@@ -18,7 +18,7 @@ var yeastList = function(req, res) {
             res.writeHead(head.statuscode, head.contentType);
             res.end(JSON.stringify(response));
         } else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -40,7 +40,7 @@ var yeast = function(req, res) {
             res.writeHead(head.statuscode, head.contentType);
             res.end(JSON.stringify(response));
         } else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -53,7 +53,7 @@ var liquidYeasts = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -67,7 +67,7 @@ var liquidYeast = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -80,7 +80,7 @@ var dryYeasts = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
@@ -94,7 +94,7 @@ var dryYeast = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-			response = utils.formatJsonResponse(req.query, result);
+			response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
     		res.end(response);
 			}
