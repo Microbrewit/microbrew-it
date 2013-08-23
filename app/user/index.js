@@ -1,5 +1,9 @@
+(function(){
+  'use strict';
+
 var bcrypt = require('bcrypt'),
-	pg = require('pg'),
+    pg = require('pg'),
+	async = require('async'),
 	config = require('../config');
 
 // Key value object for postgres error codes with appropriate error messages
@@ -15,7 +19,7 @@ var setUser = function (userData, callback) {
 	bcrypt.genSalt(10, function(err, salt) {
 		bcrypt.hash(userData.password, salt, function (err, hash) {
 			if (err) {
-				console.log("error in bcrypt");
+				console.log('error in bcrypt');
 				return callback(err);
 			} else {
 				client.query('INSERT INTO users(username, password, email, settings) values($1, $2, $3, $4) RETURNING *',
@@ -29,7 +33,7 @@ var setUser = function (userData, callback) {
 					} else {
 						callback(null, [{
 							id: result.rows[0].username,
-							href: config.hostname + "/users/" + result.rows[0].username,
+							href: config.hostname + '/users/' + result.rows[0].username,
 							username: result.rows[0].username,
 							email: result.rows[0].email,
 							settings: result.rows[0].settings,
@@ -62,7 +66,7 @@ var updateUser = function (userData, callback) {
 						} else {
 							callback(null, {
 								id: result.rows[0].id,
-								href: config.hostname + "/users/" + result.rows[0].username,
+								href: config.hostname + '/users/' + result.rows[0].username,
 								username: result.rows[0].username,
 								email: result.rows[0].email,
 								settings: result.rows[0].settings,
@@ -98,7 +102,7 @@ var passwordCheck = function (userData, callback) {
 						callback(false, {
 							'user': {
 								id: res.rows[0].username,
-								href: config.hostname + "/users/" + res.rows[0].username,
+								href: config.hostname + '/users/' + res.rows[0].username,
 								username: res.rows[0].username,
 								email: res.rows[0].email,
 								settings: res.rows[0].settings
@@ -137,3 +141,4 @@ exports = module.exports = {
 	'passwordCheck': passwordCheck,
 	'userExistsCheck': userExistsCheck
 };
+})();
