@@ -54,6 +54,7 @@ app.post('/users/changepassword', routes.users.changePassword);
 app.post('/users/login', routes.users.login); //?username=...&password=...
 app.get('/users/logout', routes.users.logout);
 app.get('/users/details/:ids', routes.users.details);
+app.get('/users', routes.users.check);
 
 // // === INGREDIENTS ROUTES
 app.get('/fermentables', routes.fermentables.fermentables);

@@ -14,9 +14,8 @@ var login = function (req, res) {
 			'contentType': {'Content-Type': 'application/json'}
 		};
 	var params = req.body;
-	console.log(req.session);
-	if(typeof req.session !== "undefined" && req.session.user && req.session.user.length > 0) {
-		console.log("User is logged in!");
+	if(typeof req.session !== 'undefined' && req.session.user && req.session.user.length > 0) {
+		console.log('User is logged in!');
 			head.statuscode = 400;
 			response = {
 				error: {
@@ -50,7 +49,10 @@ var login = function (req, res) {
 						}
 					};
 				} else {
+					console.log(params);
 					req.session.user = params.id;
+					req.session.userObj = result.user;
+					console.log(result);
 					response = {
 						meta: {
 							message: 'User successfully logged in.',
@@ -59,6 +61,7 @@ var login = function (req, res) {
 						'users': [result.user]
 					};
 					head.statuscode = 200;
+					console.log(req.session);
 				}
 				response = utils.formatJsonResponse(params, response);
 				res.header('Access-Control-Allow-Origin', '*');
@@ -95,7 +98,7 @@ var logout = function (req, res) {
 			'contentType': {'Content-Type': 'application/json'}
 		};
 	console.log(JSON.stringify(req.session));
-	if(typeof req.session !== "undefined" && typeof req.session.user !== "undefined" && req.session.user) {
+	if(typeof req.session !== 'undefined' && typeof req.session.user !== 'undefined' && req.session.user) {
 		req.session.destroy();
 		req.session = null;
 		head.statuscode = 200;
@@ -109,13 +112,44 @@ var logout = function (req, res) {
 		response = {
 			error: {
 				message: 'No user to log out.',
-				code: 0
+				code: 'U104'
 			}
 		};
 	}
 	response = utils.formatJsonResponse({}, response);
 	res.writeHead(head.statuscode, head.contentType);
 	res.end(response);
+};
+
+var check = function (req, res) {
+	var response = {},
+		head = {
+			'statuscode': 0,
+			'contentType': {'Content-Type': 'application/json'}
+		};
+	var params = req.body;
+		if(typeof req.session !== 'undefined' && typeof req.session.user !== 'undefined' && req.session.user) {
+			head.statuscode = 200;
+							response = {
+								meta: {
+									message: 'Here is the user information',
+									returned: 1
+								},
+								users: req.session.userObj
+							};
+			} else {
+				head.statuscode = 400;
+				response = {
+					error: {
+						message: 'No users logged in.',
+						code: 'U105'
+					}
+				};
+			}
+			response = utils.formatJsonResponse(req.query, response);
+			res.header('Access-Control-Allow-Origin', '*');
+			res.writeHead(head.statuscode, head.contentType);
+			res.end(response);
 };
 
 /*
@@ -271,5 +305,6 @@ exports = module.exports = {
 	'logout': logout,
 	'details': details,
 	'addUpdateUser': addUpdateUser,
-	'changePassword': changePassword
+	'changePassword': changePassword,
+	'check': check,
 };
