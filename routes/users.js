@@ -135,7 +135,7 @@ var check = function (req, res) {
 									message: 'Here is the user information',
 									returned: 1
 								},
-								users: req.session.userObj
+								users: [req.session.userObj]
 							};
 			} else {
 				head.statuscode = 400;
