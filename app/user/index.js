@@ -42,7 +42,7 @@ var setUser = function (userData, callback) {
 									'href': mb.userURI + result.rows[0].username,
 									'username': result.rows[0].username,
 									'email': result.rows[0].email,
-									'settings': result.rows[0].settings,
+									'settings': JSON.parse(result.rows[0].settings),
 									'breweryname': userData.breweryname
 								}];
 								callback();
