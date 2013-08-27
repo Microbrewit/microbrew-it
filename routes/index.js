@@ -9,6 +9,7 @@ var mb = require('../app/ontology').mb,
     hopsRoute = require('./hops.js'),
     fermentablesRoute = require('./fermentables.js'),
     othersRoute = require('./others.js'),
+    beer = require('./beer.js'),
     origin = require('../app/origin');
 /*
  * GET home page.
@@ -59,4 +60,5 @@ exports = module.exports = {
     'others': othersRoute,
     'origins': origins,
     'suppliers': suppliers,
+    'beer': beer,
 };
