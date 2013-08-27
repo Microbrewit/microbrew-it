@@ -51,7 +51,7 @@ app.get('/', routes.index);
 // // === USER ROUTES
 app.post('/users', routes.users.addUpdateUser);
 app.post('/users/changepassword', routes.users.changePassword);
-app.get('/users/login', routes.users.login); //?username=...&password=...
+app.post('/users/login', routes.users.login); //?username=...&password=...
 app.get('/users/logout', routes.users.logout);
 app.get('/users/details/:ids', routes.users.details);
 
@@ -82,6 +82,9 @@ app.get('/others', routes.others.others);
 app.get('/origins', routes.origins);
 app.get('/suppliers', routes.suppliers);
 app.get('/beerstyles', routes.beer.beerStyles);
+
+//RECIPE ROUTES
+//app.post('/recipe', routes.recipe.addRecipe);
 
 
 // 404
