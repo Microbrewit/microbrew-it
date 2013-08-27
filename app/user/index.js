@@ -42,7 +42,7 @@ var setUser = function (userData, callback) {
 									'href': mb.userURI + result.rows[0].username,
 									'username': result.rows[0].username,
 									'email': result.rows[0].email,
-									'settings': result.rows[0].settings,
+									'settings': JSON.stringfy(result.rows[0].settings),
 									'breweryname': userData.breweryname
 								}];
 								callback();
@@ -62,8 +62,8 @@ var setUser = function (userData, callback) {
 			insert += ' mb:partOfBrewery mbb:' + encodeURIComponent(storedUserData[0].breweryname) + ' .' ;
 			insert += ' }';
 			insert += ' GRAPH mbb:' + encodeURIComponent(storedUserData[0].breweryname) + ' { ';
-			insert += ' mbb:' + storedUserData[0].id + ' a mb:Brewery, owl:NamedIndividual ; ';
-			insert += ' rdfs:label "' + encodeURIComponent(storedUserData[0].breweryname) + '" }';
+			insert += ' mbb:' + encodeURIComponent(storedUserData[0].breweryname) + ' a mb:Brewery, owl:NamedIndividual ; ';
+			insert += ' rdfs:label "' + storedUserData[0].breweryname + '" }';
 			insert += ' }';
 			console.log(prefix + insert);
 			ts.insert(prefix + insert, function (error, result) {
