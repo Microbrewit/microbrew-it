@@ -29,7 +29,7 @@ var setUser = function (userData, callback) {
 						return callback(err);
 					} else {
 						client.query('INSERT INTO users(username, password, email, settings) values($1, $2, $3, $4) RETURNING *',
-							[userData.username, hash, userData.email, userData.settings],
+							[userData.username, hash, userData.email, JSON.stringify(userData.settings)],
 							function (error, result) {
 							if(error) {
 								callback({
@@ -42,7 +42,7 @@ var setUser = function (userData, callback) {
 									'href': mb.userURI + result.rows[0].username,
 									'username': result.rows[0].username,
 									'email': result.rows[0].email,
-									'settings': JSON.parse(result.rows[0].settings),
+									'settings': result.rows[0].settings,
 									'breweryname': userData.breweryname
 								}];
 								callback();
