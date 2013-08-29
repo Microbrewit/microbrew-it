@@ -3,25 +3,94 @@ var http = require('http'),
     config = require('../config'),
     mb = require('../ontology').mb,
     async = require('async'),
+    origin = require('../origin'),
     ts = require('../triplestore');
 
 var apiFormattingYeasts = function (yeastGraph, callback) {
+	var yeastArray = [];
+	async.series({
+		one: function(callback) {
+			var j = 0;
+			for(var key in yeastGraph){
+				yeastArray.push({
+					'id': yeastGraph[key][mb.baseURI + 'hasID'][0].value,
+					'href': key,
+					'name': yeastGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
+					'suppliedbyid': yeastGraph[key][mb.baseURI + 'suppliedBy'][0].value,
+					'description': yeastGraph[key]['http://www.w3.org/2000/01/rdf-schema#comment'][0].value
+			});
+				if(typeof yeastGraph[key][mb.baseURI + 'attenuationLow'] !== 'undefined') {
+					yeastArray[j].attenuationlow = yeastGraph[key][mb.baseURI + 'attenuationLow'][0].value;
+				}
+				if(typeof yeastGraph[key][mb.baseURI + 'attenuationHigh'] !== 'undefined') {
+					yeastArray[j].attenuationhigh = yeastGraph[key][mb.baseURI + 'attenuationHigh'][0].value;
+				}
+				if(typeof yeastGraph[key][mb.baseURI + 'productCode'] !== 'undefined') {
+					yeastArray[j].productcode = yeastGraph[key][mb.baseURI + 'productCode'][0].value;
+				}
+				if(typeof yeastGraph[key][mb.baseURI + 'temperatureLow'] !== 'undefined') {
+					yeastArray[j].temperaturelow = yeastGraph[key][mb.baseURI + 'temperatureLow'][0].value;
+				}
+				if(typeof yeastGraph[key][mb.baseURI + 'temperatureHigh'] !== 'undefined') {
+					yeastArray[j].temperaturehigh = yeastGraph[key][mb.baseURI + 'temperatureHigh'][0].value;
+				}
+				if(typeof yeastGraph[key][mb.baseURI + 'hasFlocculation'] !== 'undefined') {
+					yeastArray[j].flocculationid = yeastGraph[key][mb.baseURI + 'hasFlocculation'][0].value;
+				}
+				if(typeof yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'] !== 'undefined') {
+					console.log(yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'][0].value);
+					yeastArray[j].alcoholtoleranceid = yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'][0].value;
+				}
 
-	var yeastArray = [],
-	j = 0;
-	for(var key in yeastGraph){
-		yeastArray.push({
-			'id': yeastGraph[key][mb.baseURI + 'hasID'][0].value,
-			'href': key,
-			'name': yeastGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
-			'suppliedby': yeastGraph[key][mb.baseURI + 'suppliedBy'][0].value,
-			'comment': yeastGraph[key]['http://www.w3.org/2000/01/rdf-schema#comment'][0].value
+			j++;
+			}
+			callback();
+		},
+		suppleidby : function (callback) {
+			origin.getSuppliers( function (err,res) {
+			for (var i = yeastArray.length - 1; i >= 0; i--) {
+					for (var j = res.suppliers.length - 1; j >= 0; j--) {
+						if(res.suppliers[j].href === yeastArray[i].suppliedbyid) {
+							yeastArray[i].suppliedby = res.suppliers[j].name;
+						}
+					}
+				}
+			callback();
+			});
+		},
+		flocculation : function (callback) {
+			ts.graph('<' + mb.baseURI + 'Flocculation>', function (err, res) {
+				for(var key in res) {
+					for (var i = yeastArray.length - 1; i >= 0; i--) {
+						if(key === yeastArray[i].flocculationid && typeof yeastArray[i].flocculationid !== 'undefined') {
+							yeastArray[i].flocculation = res[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value;
+						}
+					}
+				}
+			callback();
+			});
+		},
+		alcoholtolerance : function (callback) {
+			ts.graph('<' + mb.baseURI + 'Alcohol_Tolerance>', function (err, res) {
+				for(var key in res) {
+					for (var i = yeastArray.length - 1; i >= 0; i--) {
+						if(key === yeastArray[i].alcoholtoleranceid && typeof yeastArray[i].alcoholtoleranceid !== 'undefined') {
+							yeastArray[i].alcoholtolerance = res[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value;
+						}
+					}
+				}
+			callback();
+			});
+		},
+
+	}, function (err)	{
+		if(err) {
+			callback(err);
+		} else {
+			callback(null, yeastArray);
+		}
+
 	});
-
-	j++
-	}
-	callback(null, yeastArray);
-
 };
 
 var getYeasts = function (callback) {
