@@ -16,8 +16,8 @@ var apiFormattingYeasts = function (yeastGraph, callback) {
 					'id': yeastGraph[key][mb.baseURI + 'hasID'][0].value,
 					'href': key,
 					'name': yeastGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
-					'suppliedbyid': yeastGraph[key][mb.baseURI + 'suppliedBy'][0].value,
-					'description': yeastGraph[key]['http://www.w3.org/2000/01/rdf-schema#comment'][0].value
+					'description': yeastGraph[key]['http://www.w3.org/2000/01/rdf-schema#comment'][0].value,
+					'links': {'suppliedbyid': yeastGraph[key][mb.baseURI + 'suppliedBy'][0].value }
 			});
 				if(typeof yeastGraph[key][mb.baseURI + 'attenuationLow'] !== 'undefined') {
 					yeastArray[j].attenuationlow = yeastGraph[key][mb.baseURI + 'attenuationLow'][0].value;
@@ -35,11 +35,10 @@ var apiFormattingYeasts = function (yeastGraph, callback) {
 					yeastArray[j].temperaturehigh = yeastGraph[key][mb.baseURI + 'temperatureHigh'][0].value;
 				}
 				if(typeof yeastGraph[key][mb.baseURI + 'hasFlocculation'] !== 'undefined') {
-					yeastArray[j].flocculationid = yeastGraph[key][mb.baseURI + 'hasFlocculation'][0].value;
+					yeastArray[j].links.flocculationid = yeastGraph[key][mb.baseURI + 'hasFlocculation'][0].value;
 				}
 				if(typeof yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'] !== 'undefined') {
-					console.log(yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'][0].value);
-					yeastArray[j].alcoholtoleranceid = yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'][0].value;
+					yeastArray[j].links.alcoholtoleranceid = yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'][0].value;
 				}
 
 			j++;
