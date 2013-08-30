@@ -6,6 +6,9 @@ The project is maintained/developed by guys 'n gals [Pils & Programming](http://
 ## Development
 Find and add userstories at [trello](https://trello.com/board/webapp/5125df4dd87d5d68570087ba)
 
+## The Stack
+Microbrew.it runs on the SNARP-stack.
+
 ## Setup
 1. Install [Node.js](http://nodejs.org/)
 2. Clone the project.
