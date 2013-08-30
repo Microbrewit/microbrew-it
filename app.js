@@ -36,7 +36,7 @@
         store: new RedisStore(),
         secret: 'fortesting756498',
         key: 'mb_auth',
-        domain: '*.microbrew.it'}
+        domain: '.microbrew.it'}
     ));
     app.use(app.router);
  });
