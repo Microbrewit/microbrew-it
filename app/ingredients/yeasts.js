@@ -37,11 +37,18 @@ var apiFormattingYeasts = function (yeastGraph, callback) {
 				if(typeof yeastGraph[key][mb.baseURI + 'temperatureHigh'] !== 'undefined') {
 					yeastArray[j].temperaturehigh = yeastGraph[key][mb.baseURI + 'temperatureHigh'][0].value;
 				}
+
 				if(typeof yeastGraph[key][mb.baseURI + 'hasFlocculation'] !== 'undefined') {
-					yeastArray[j].links.flocculationid = yeastGraph[key][mb.baseURI + 'hasFlocculation'][0].value;
+						yeastArray[j].links.flocculationid = [];
+					for (var h = yeastGraph[key][mb.baseURI + 'hasFlocculation'].length - 1; h >= 0; h--) {
+						yeastArray[j].links.flocculationid.push(yeastGraph[key][mb.baseURI + 'hasFlocculation'][h].value);
+					}
 				}
 				if(typeof yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'] !== 'undefined') {
-					yeastArray[j].links.alcoholtoleranceid = yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'][0].value;
+						yeastArray[j].links.alcoholtoleranceid = [];
+					for (var i = yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'].length - 1; i >= 0; i--) {
+						yeastArray[j].links.alcoholtoleranceid.push(yeastGraph[key][mb.baseURI + 'hasAlcoholTolerance'][i].value);
+					}
 				}
 
 			j++;
@@ -63,10 +70,15 @@ var apiFormattingYeasts = function (yeastGraph, callback) {
 		},
 		flocculation : function (callback) {
 			ts.graph('<' + mb.baseURI + 'Flocculation>', function (err, res) {
-				for(var key in res) {
 					for (var i = yeastArray.length - 1; i >= 0; i--) {
-						if(key === yeastArray[i].flocculationid && typeof yeastArray[i].flocculationid !== 'undefined') {
-							yeastArray[i].flocculation = res[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value;
+						if(typeof yeastArray[i].links.flocculationid !== 'undefined') {
+							yeastArray[i].flocculation = [];
+							for (var j = yeastArray[i].links.flocculationid.length - 1; j >= 0; j--) {
+								for(var key in res) {
+									if(key === yeastArray[i].links.flocculationid[j]) {
+										yeastArray[i].flocculation.push(res[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value);
+								}
+							}
 						}
 					}
 				}
@@ -75,10 +87,15 @@ var apiFormattingYeasts = function (yeastGraph, callback) {
 		},
 		alcoholtolerance : function (callback) {
 			ts.graph('<' + mb.baseURI + 'Alcohol_Tolerance>', function (err, res) {
-				for(var key in res) {
-					for (var i = yeastArray.length - 1; i >= 0; i--) {
-						if(key === yeastArray[i].alcoholtoleranceid && typeof yeastArray[i].alcoholtoleranceid !== 'undefined') {
-							yeastArray[i].alcoholtolerance = res[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value;
+				for (var i = yeastArray.length - 1; i >= 0; i--) {
+						if(typeof yeastArray[i].links.alcoholtoleranceid !== 'undefined') {
+							yeastArray[i].alcoholtolerance = [];
+							for (var j = yeastArray[i].links.alcoholtoleranceid.length - 1; j >= 0; j--) {
+								for(var key in res) {
+									if(key === yeastArray[i].links.alcoholtoleranceid[j]) {
+										yeastArray[i].alcoholtolerance.push(res[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value);
+								}
+							}
 						}
 					}
 				}
