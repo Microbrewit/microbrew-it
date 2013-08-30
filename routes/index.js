@@ -1,7 +1,5 @@
 'use strict';
-var mb = require('../app/ontology').mb,
-    url = require('url'),
-    utils = require('../app/util'),
+var util = require('../app/util'),
     beersRoute = require('./beer.js'),
     usersRoute = require('./users.js'),
     breweriesRoute = require('./brewery.js'),
@@ -10,7 +8,8 @@ var mb = require('../app/ontology').mb,
     fermentablesRoute = require('./fermentables.js'),
     othersRoute = require('./others.js'),
     beer = require('./beer.js'),
-    origin = require('../app/origin');
+    origin = require('../app/origin'),
+    recipe = require('./recipe.js');
 /*
  * GET home page.
  */
@@ -30,7 +29,7 @@ var origins = function (req, res) {
 		} else {
 		var	response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
-    		res.end(response);
+			res.end(response);
 			}
 	});
 };
@@ -42,9 +41,9 @@ var suppliers = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
-		var	response = utils.formatJsonResponse(req.query, result);
+		var	response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
-    		res.end(response);
+			res.end(response);
 			}
 	});
 };
@@ -61,4 +60,5 @@ exports = module.exports = {
     'origins': origins,
     'suppliers': suppliers,
     'beer': beer,
+    'recipe': recipe,
 };
