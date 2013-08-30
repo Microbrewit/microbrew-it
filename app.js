@@ -36,7 +36,7 @@
         store: new RedisStore(),
         secret: 'fortesting756498',
         key: 'mb_auth',
-        domain: '.microbrew.it'}
+        domain: 'microbrew.it'}
     ));
     app.use(app.router);
  });
@@ -86,7 +86,7 @@ app.get('/suppliers', routes.suppliers);
 app.get('/beerstyles', routes.beer.beerStyles);
 
 //RECIPE ROUTES
-//app.post('/recipe', routes.recipe.addRecipe);
+app.post('/recipe', routes.recipe.addRecipe);
 
 
 // 404
