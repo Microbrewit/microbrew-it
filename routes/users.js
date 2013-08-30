@@ -52,6 +52,7 @@ var login = function (req, res) {
 					console.log(params);
 					req.session.user = params.id;
 					req.session.userObj = result.user;
+					res.cookie('Hello','Yeah');
 					console.log(result);
 					response = {
 						meta: {
