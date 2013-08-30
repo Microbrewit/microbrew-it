@@ -107,7 +107,6 @@ exports.selectSync = function (query) {
 		});
 		response.on('end', function () {
 			var json = JSON.parse(returnedJSON);
-			console.log(json);
 			return(json);
 		});
 	});
