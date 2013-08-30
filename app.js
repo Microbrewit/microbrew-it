@@ -18,7 +18,7 @@
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
 
     next();
-}
+};
 
  app.configure(function () {
     app.set('port', process.env.PORT || 3000);
@@ -36,7 +36,7 @@
         store: new RedisStore(),
         secret: 'fortesting756498',
         key: 'mb_auth',
-        domain: 'microbrew.it'}
+        domain: '*.microbrew.it'}
     ));
     app.use(app.router);
  });
