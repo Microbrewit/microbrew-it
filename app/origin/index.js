@@ -1,6 +1,8 @@
+
 var config = require('../config'),
   mb = require('../ontology').mb,
   util = require('../util'),
+  async = require('async'),
   ts = require('../triplestore');
 
 var apiFormattingOrigins = function (originGraph, callback) {
@@ -31,17 +33,17 @@ var getOrigins = function (callback) {
   var graph = '<' + mb.baseURI + 'OriginGraph>';
   ts.graph(graph, function (err, originGraph) {
     if (err) {
-    	callback(err);
-  	} else {
-  		apiFormattingOrigins(originGraph, function (error, result) {
+		callback(err);
+	} else {
+		apiFormattingOrigins(originGraph, function (error, result) {
            if(error) {
-           	callback(error);
+				callback(error);
            } else {
-           	callback(null, result);
+				callback(null, result);
            }
-  		});
-  		//callback(null,originGraph);
-  	}
+		});
+		//callback(null,originGraph);
+	}
   });
     };
 
@@ -55,25 +57,52 @@ var apiFormattingSuppliers = function (supplierGraph, callback) {
 			},
 			'suppliers' :[
 			]
-    },
-    j = 0;
-    for (var key in supplierGraph) {
-		apiJson.suppliers.push({
-			'id': supplierGraph[key][mb.baseURI + 'hasID'][0].value,
-			'href': key,
-			'name': supplierGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
-			'suppliesid': [],
-			});
-			if(typeof supplierGraph[key][mb.baseURI + 'locatedIn'] !== 'undefined') {
-					apiJson.suppliers[j].locatedin = supplierGraph[key][mb.baseURI + 'locatedIn'][0].value;
+    };
+    async.series({
+    one: function (callback) {
+		j = 0;
+		for (var key in supplierGraph) {
+			apiJson.suppliers.push({
+				'id': supplierGraph[key][mb.baseURI + 'hasID'][0].value,
+				'href': key,
+				'name': supplierGraph[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value,
+				'links': {
+					'suppliesid': [],
+				},
+				});
+				if(typeof supplierGraph[key][mb.baseURI + 'locatedIn'] !== 'undefined') {
+						apiJson.suppliers[j].links.locatedinid = supplierGraph[key][mb.baseURI + 'locatedIn'][0].value;
+					}
+				for (var i = supplierGraph[key][mb.baseURI + 'supplies'].length - 1; i >= 0; i--) {
+					apiJson.suppliers[j].links.suppliesid.push(supplierGraph[key][mb.baseURI + 'supplies'][i].value);
 				}
-			for (var i = supplierGraph[key][mb.baseURI + 'supplies'].length - 1; i >= 0; i--) {
-				apiJson.suppliers[j].suppliesid.push(supplierGraph[key][mb.baseURI + 'supplies'][i].value);
+			j++;
+		}
+		callback();
+	},
+	origin: function (callback) {
+		getOrigins(function (err, originJSON) {
+			if(err) {
+				callback(err);
+			} else {
+				for (var i = apiJson.suppliers.length - 1; i >= 0; i--) {
+					for (var j = originJSON.origins.length - 1; j >= 0; j--) {
+						if(typeof apiJson.suppliers[i].links.locatedinid !== 'undefined' && apiJson.suppliers[i].links.locatedinid === originJSON.origins[j].href) {
+							apiJson.suppliers[i].origin = originJSON.origins[j].name;
+						}
+					}
+				}
+				callback();
 			}
-		j++;
-    }
-
-    callback(null, apiJson);
+		});
+	}
+    }, function(err) {
+		if(err) {
+			callback();
+		} else {
+			callback(null, apiJson);
+		}
+    });
 };
 
 var getSuppliers = function(callback) {
