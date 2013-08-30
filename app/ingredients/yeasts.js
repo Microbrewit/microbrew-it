@@ -1,4 +1,5 @@
 'use strict';
+
 var http = require('http'),
     config = require('../config'),
     mb = require('../ontology').mb,
@@ -8,10 +9,7 @@ var http = require('http'),
 
 var apiFormattingYeasts = function (yeastGraph, callback) {
 	var yeastArray = [];
-	async.series({
-		one: function(callback) {
-			var j = 0;
-			for(var key in yeastGraph){
+	for(var key in yeastGraph){
 				yeastArray.push({
 					'id': yeastGraph[key][mb.baseURI + 'hasID'][0].value,
 					'href': key,
@@ -19,6 +17,11 @@ var apiFormattingYeasts = function (yeastGraph, callback) {
 					'description': yeastGraph[key]['http://www.w3.org/2000/01/rdf-schema#comment'][0].value,
 					'links': {'suppliedbyid': yeastGraph[key][mb.baseURI + 'suppliedBy'][0].value }
 			});
+			}
+	async.parallel({
+		optional: function(callback) {
+			var j = 0;
+			for(var key in yeastGraph) {
 				if(typeof yeastGraph[key][mb.baseURI + 'attenuationLow'] !== 'undefined') {
 					yeastArray[j].attenuationlow = yeastGraph[key][mb.baseURI + 'attenuationLow'][0].value;
 				}
@@ -49,8 +52,9 @@ var apiFormattingYeasts = function (yeastGraph, callback) {
 			origin.getSuppliers( function (err,res) {
 			for (var i = yeastArray.length - 1; i >= 0; i--) {
 					for (var j = res.suppliers.length - 1; j >= 0; j--) {
-						if(res.suppliers[j].href === yeastArray[i].suppliedbyid) {
+						if(res.suppliers[j].href === yeastArray[i].links.suppliedbyid) {
 							yeastArray[i].suppliedby = res.suppliers[j].name;
+							yeastArray[i].origin = res.suppliers[j].origin;
 						}
 					}
 				}
