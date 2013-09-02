@@ -1,5 +1,6 @@
-var url = require('url'),
-user = require('../app/user'),
+'use strict';
+
+var user = require('../app/user'),
 utils = require('../app/util');
 
 /*
@@ -11,7 +12,7 @@ var login = function (req, res) {
 	var response = {},
 		head = {
 			'statuscode': 0,
-			'contentType': {'Content-Type': 'application/json'}
+			'contentType': {'Content-Type': 'application/json'},
 		};
 	var params = req.body;
 	if(typeof req.session !== 'undefined' && req.session.user && req.session.user.length > 0) {
@@ -52,17 +53,8 @@ var login = function (req, res) {
 					console.log(params);
 					req.session.user = params.id;
 					req.session.userObj = result.user;
-					res.cookie('Hello','Yeah');
-					console.log(result);
-					response = {
-						meta: {
-							message: 'User successfully logged in.',
-							returned: 1
-						},
-						'users': [result.user]
-					};
 					head.statuscode = 200;
-					console.log(req.session);
+					console.log(req.sessionID);
 				}
 				response = utils.formatJsonResponse(params, response);
 				res.header('Access-Control-Allow-Origin', '*');
@@ -128,7 +120,6 @@ var check = function (req, res) {
 			'statuscode': 0,
 			'contentType': {'Content-Type': 'application/json'}
 		};
-	var params = req.body;
 		if(typeof req.session !== 'undefined' && typeof req.session.user !== 'undefined' && req.session.user) {
 			head.statuscode = 200;
 							response = {
@@ -159,7 +150,7 @@ var check = function (req, res) {
  */
 var details = function (req, res) {
 	res.writeHead(200, {'Content-Type': 'application/json'});
-	res.end("{'message': 'Here comes user info in time");
+	res.end({'message': 'Here comes user info in time'});
 };
 
 /*
@@ -190,7 +181,7 @@ var addUpdateUser = function (req, res) {
 		var addUser = function (userData, callback) {
 			if(typeof req.session !== 'undefined' && req.session.user) { // User is logged in
 				callback({
-						message: "Can not register new user while logged in.",
+						message: 'Can not register new user while logged in.',
 						code: 0
 					});
 			} else { // User is not logged in
@@ -227,7 +218,7 @@ var addUpdateUser = function (req, res) {
 				res.writeHead(head.statuscode, head.contentType);
 				res.end(response);
 			} else {
-				console.log("Exists? : " + existsRes);
+				console.log('Exists? : ' + existsRes);
 				if(existsRes) { // User exists
 					updateUser(userData, function (updateErr, updateRes) {
 						if(updateErr) { // Could not update the user
@@ -297,15 +288,15 @@ var addUpdateUser = function (req, res) {
 	}
 };
 
-var changePassword = function (req, res) {
+// var changePassword = function (req, res) {
 
-};
+// };
 
 exports = module.exports = {
 	'login': login,
 	'logout': logout,
 	'details': details,
 	'addUpdateUser': addUpdateUser,
-	'changePassword': changePassword,
+	//'changePassword': changePassword,
 	'check': check,
 };
