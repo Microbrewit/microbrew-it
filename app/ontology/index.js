@@ -1,7 +1,7 @@
 //Ontology export
 var baseURI = 'http://microbrew.it/ontology.owl#';
 
-exports.prefix = 'PREFIX mb:<http://microbrew.it/ontology.owl#> PREFIX foaf:<http://xmlns.com/foaf/0.1/> PREFIX mbu: <http://microbrew.it/users/> PREFIX mbb: <http://microbrew.it/brewery/>';
+exports.prefix = 'PREFIX mb:<http://microbrew.it/ontology.owl#> PREFIX foaf:<http://xmlns.com/foaf/0.1/> PREFIX mbu: <http://microbrew.it/users/> PREFIX mbb: <http://microbrew.it/brewery/> PREFIX mbr: <http://microbrew.it/recipes/> PREFIX mbmash: <http://microbrew.it/mashsteps/> PREFIX mbboil: <http://microbrew.it/boilsteps/> ';
 
 
 exports.mb = {
@@ -9,6 +9,10 @@ exports.mb = {
 	baseURI : baseURI,
 	userURI : 'http://microbrew.it/users/',
 	breweryURI : 'http://microbrew.it/brewery/',
+	recipeURI : 'http://microbrew.it/recipes/',
+	mashURI : 'http://microbrew.it/mashsteps/',
+	boilURI : 'http://microbrew.it/boilsteps/',
+	fermURI : 'http://microbrew.it/fermentablesteps/',
 	beer  : ' <' + baseURI + 'Beer> ',
 	name : ' <' + baseURI + 'name> ',
 	style : ' <' + baseURI + 'hasStyle> ',
