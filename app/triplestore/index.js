@@ -1,7 +1,6 @@
-"use strict";
+'use strict';
 var http = require('http'),
 	config = require('../config'),
-	mb = require('../ontology').mb,
 	util = require('../util'),
 	opts = {
 		'host': config.ts.host,
@@ -24,9 +23,9 @@ exports.ask = function (query, callback) {
 			data += chunk;
 		});
 		response.on('end', function () {
-			if(data == "false") {
+			if(data == 'false') {
 				data = false;
-			} else if(data == "true") {
+			} else if(data == 'true') {
 				data = true;
 			}
 			callback(null, data);
@@ -50,16 +49,19 @@ exports.insert = function (query, callback) {
 	request = http.request(options, function (response) {
 		response.on('end', function () {
 			if (response.statusCode !== 204) {
+				console.log('error with insert');
 				callback(new Error('Insertion was not accepted (' + response.statusCode + ')'));
 			} else {
+				console.log('insert ok');
 				callback(null, {'statusCode': response.statusCode, 'query' : query});
 			}
 		});
 		response.on('data', function (data) {
+			console.log('data: ' + data);
 		});
 	});
-
 	request.on('error', function (e) {
+		console.log('error: ' + e);
 		callback(new Error(e.message));
 	});
 	request.end('update=' + encodeURIComponent(query));
