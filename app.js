@@ -93,8 +93,8 @@ app.get('/suppliers', routes.suppliers);
 app.get('/beerstyles', routes.beer.beerStyles);
 
 //RECIPE ROUTES
-app.post('/recipe', routes.recipe.addRecipe);
-app.get('/recipe/:recipe', routes.recipe.getRecipe);
+app.post('/recipes', routes.recipe.addRecipe);
+app.get('/recipes/:recipe', routes.recipe.getRecipe);
 
 
 // 404
