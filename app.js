@@ -13,11 +13,11 @@
  var app = express();
 
  var allowCrossDomain = function(req, res, next) {
+	res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Set-Cookie');
     res.header('Access-Control-Expose-Headers','*');
-
     next();
 };
 
@@ -35,9 +35,13 @@
     app.use(express.cookieParser());
     app.use(express.session({
         store: new RedisStore(),
-        secret: 'fortesting756498',
         key: 'mb_auth',
-        domain: '.microbrew.it',
+        secret: 'fortesting756498',
+        cookie: {
+
+        domain: 'localhost',
+        httpOnly: false,
+			}
 		}
     ));
     app.use(app.router);
@@ -53,8 +57,9 @@ app.get('/', routes.index);
 
 // // === USER ROUTES
 app.post('/users', routes.users.addUpdateUser);
-app.post('/users/changepassword', routes.users.changePassword);
+//app.post('/users/changepassword', routes.users.changePassword);
 app.post('/users/login', routes.users.login); //?username=...&password=...
+app.options('/users/login', routes.users.check);
 app.get('/users/logout', routes.users.logout);
 app.get('/users/details/:ids', routes.users.details);
 app.get('/users', routes.users.check);
@@ -89,6 +94,7 @@ app.get('/beerstyles', routes.beer.beerStyles);
 
 //RECIPE ROUTES
 app.post('/recipe', routes.recipe.addRecipe);
+app.get('/recipe/:recipe', routes.recipe.getRecipe);
 
 
 // 404
