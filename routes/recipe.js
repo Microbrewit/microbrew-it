@@ -12,6 +12,7 @@ var addRecipe = function (req, res) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
 		} else {
+			console.log('else');
 		var response = util.formatJsonResponse(req.query, result);
 			res.writeHead(200, {'Content-Type' : 'application/json'});
 			res.end(response);
@@ -19,9 +20,24 @@ var addRecipe = function (req, res) {
 	});
 };
 
+var getRecipe = function (req, res) {
+	var recipeID = req.params.recipe;
+	recipe.getRecipe(recipeID, function (error, result) {
+		if(error) {
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end(error.message);
+		} else {
+			console.log('else');
+		var response = util.formatJsonResponse(req.query, result);
+			res.writeHead(200, {'Content-Type' : 'application/json'});
+			res.end(response);
+			}
+	});
+};
 
 exports = module.exports = {
 	'addRecipe': addRecipe,
+	'getRecipe': getRecipe
 
 };
 
