@@ -1,11 +1,11 @@
 
 exports.recipe = {
-		'user': [{
+		'brewer': [{
 			'id': 1377263864213,
 			'href': 'http://microbrew.it/users/torstein'
 		}],
 		'recipename' : 'Brun Bjarne',
-		'recipename': 'http://microbrew.it/ontology.owl#Belgian-Style_Dubbel',
+		'recipestyle': 'http://microbrew.it/ontology.owl#Belgian-Style_Dubbel',
 		'mashSteps' :[
 			{
 				'number': 1,
