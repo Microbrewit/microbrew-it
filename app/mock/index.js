@@ -4,6 +4,8 @@ exports.recipe = {
 			'id': 1377263864213,
 			'href': 'http://microbrew.it/users/torstein'
 		}],
+		'recipename' : 'Brun Bjarne',
+		'recipename': 'http://microbrew.it/ontology.owl#Belgian-Style_Dubbel',
 		'mashSteps' :[
 			{
 				'number': 1,
@@ -61,7 +63,7 @@ exports.recipe = {
 				'notes': ''
 			},
 			{
-				'number': 4,
+				'number': 3,
 				'length': 0,
 				'volume': 20,
 				'fermentables': [],
@@ -79,7 +81,7 @@ exports.recipe = {
 
 		'fermentationSteps' : [
 			{
-				'number': 5,
+				'number': 4,
 				'type': 'http://microbrew.it/ontology#Primary',
 				'length': 14,
 				'temperature': 24,
