@@ -32,11 +32,14 @@ var createInsertQuery = function(recipeJSON, callback) {
 	where = '';
 	console.log(recipeID);
 	insert += 'INSERT { GRAPH ' + recipeURI + ' { ';
-	insert += recipeURI + ' rdf:type mb:Recipe ; rdf:type owl:NamedIndividual ; mb:brewedBy <' + recipeJSON.user[0].href + '> ; ';
+	insert += recipeURI + ' rdf:type mb:Recipe ; rdf:type owl:NamedIndividual ; mb:brewedBy <' + recipeJSON.brewer[0].href + '> ; ';
+	insert += ' mb:recipeName "' + recipeJSON.recipename + '" ; ';
+	insert += ' mb:recipeStyle "' + recipeJSON.recipestyle + '" ; ';
 
 	if(typeof recipeJSON.notes !== 'undefined' && recipeJSON.notes.length > 0) {
 		insert += 'mb:notes "' + recipeJSON.notes + '" ; ';
 	}
+
 	//MashStep
 	for (var m = recipeJSON.mashSteps.length - 1; m >= 0; m--) {
 		var mashID = util.createID(),
@@ -164,7 +167,7 @@ var createInsertQuery = function(recipeJSON, callback) {
 		}
 	}
 	insert += ' } }';
-	where += ' WHERE { <' + recipeJSON.user[0].href + '> mb:hasID "' + recipeJSON.user[0].id +'" }';
+	where += ' WHERE { <' + recipeJSON.brewer[0].href + '> mb:hasID "' + recipeJSON.brewer[0].id +'" }';
 
 	callback(null, prefix + insert + where);
 };
@@ -191,6 +194,7 @@ var apiRecipeJson = function(recipe, callback) {
 		var apiJson = {
 			'recipename': '',
 			'recipestyle': '',
+			'brewer':[],
 			'mashSteps': [],
 			'boilSteps': [],
 			'fermentationSteps': [],
@@ -198,6 +202,19 @@ var apiRecipeJson = function(recipe, callback) {
 		};
 
 	async.series({
+		meta: function (callback) {
+			for(var key in recipe) {
+				if(key.indexOf(mb.recipeURI) !== -1) {
+					apiJson.recipename = recipe[key][mb.baseURI + 'recipeName'][0].value;
+					apiJson.recipestyle = recipe[key][mb.baseURI + 'recipeStyle'][0].value;
+					for (var i = recipe[key][mb.baseURI + 'brewedBy'].length - 1; i >= 0; i--) {
+						apiJson.brewer.push({'href': recipe[key][mb.baseURI + 'brewedBy'][i].value})
+					};
+
+				}
+			}
+			callback();
+		},
 		steps: function (callback) {
 			var b = 0,
 				m = 0,
