@@ -3,6 +3,8 @@
 var mb = require('../ontology').mb,
 	prefix = require ('../ontology').prefix,
 	util = require('../util'),
+	async = require('async'),
+	ingredients = require('../ingredients'),
 	ts = require('../triplestore');
 
 var addRecipe = function(recipeJSON, callback) {
@@ -42,7 +44,7 @@ var createInsertQuery = function(recipeJSON, callback) {
 		insert += ' mb:hasMashStep ' + mashURI + ' . ';
 		insert += ' <' + mb.mashURI + mashID + '> rdf:type <' + recipeJSON.mashSteps[m].type + '> ; mb:isStep ' + recipeJSON.mashSteps[m].number + ' ; ';
 		insert += ' mb:stepLength ' + recipeJSON.mashSteps[m].length + ' ; ' + ' mb:volume ' + recipeJSON.mashSteps[m].volume + ' ; ';
-		insert += ' mb:stepTemprature ' + recipeJSON.mashSteps[m].temperature + ' . ';
+		insert += ' mb:stepTemperature ' + recipeJSON.mashSteps[m].temperature + ' . ';
 		if(typeof recipeJSON.mashSteps[m].fermentables !== 'undefined') {
 			for (var f = recipeJSON.mashSteps[m].fermentables.length - 1; f >= 0; f--) {
 				insert += mashURI + ' mb:hasFermentable <' + recipeJSON.mashSteps[m].fermentables[f].href  + '> . ';
@@ -173,9 +175,227 @@ var getRecipe = function(id, callback) {
 			if(error){
 				callback(error);
 			} else {
-				callback(null,recipeGraph);
+				apiRecipeJson(recipeGraph, function(err, apiJson){
+					if(err) {
+						callback(err);
+					} else {
+						callback(null,apiJson);
+					}
+				});
+				//callback(null,recipeGraph);
 			}
 		});
+};
+
+var apiRecipeJson = function(recipe, callback) {
+		var apiJson = {
+			'recipename': '',
+			'recipestyle': '',
+			'mashSteps': [],
+			'boilSteps': [],
+			'fermentationSteps': [],
+
+		};
+
+	async.series({
+		steps: function (callback) {
+			var b = 0,
+				m = 0,
+				f = 0;
+			for(var key in recipe) {
+				if(key.indexOf(mb.mashURI) !== -1) {
+					console.log('Mash Step: ' + key);
+
+					apiJson.mashSteps.push({
+						'number': recipe[key][mb.baseURI + 'isStep'][0].value,
+						'href': key,
+						'type': recipe[key]['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'][0].value,
+						'temperature': recipe[key][mb.baseURI + 'stepTemperature'][0].value,
+						'length': recipe[key][mb.baseURI + 'stepLength'][0].value,
+						'volume': recipe[key][mb.baseURI + 'volume'][0].value,
+						'fermentables' : [],
+						'hops' : [],
+						'fruits': [],
+						'spices': [],
+					});
+
+					//adds fermentables href to mash step
+
+					if(typeof recipe[key][mb.baseURI + 'hasFermentable'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasFermentable'].length - 1; i >= 0; i--) {
+
+								apiJson.mashSteps[m].fermentables.push({
+										'href': recipe[key][mb.baseURI + 'hasFermentable'][i].value});
+							};
+						}
+					//adds hops to mash step
+					if(typeof recipe[key][mb.baseURI + 'hasHops'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasHops'].length - 1; i >= 0; i--) {
+								apiJson.mashSteps[m].hops.push({
+										'href': recipe[key][mb.baseURI + 'hasHops'][i].value});
+							};
+						}
+					//adds fruits to mash step
+					if(typeof recipe[key][mb.baseURI + 'hasFruit'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasFruit'].length - 1; i >= 0; i--) {
+								apiJson.mashSteps[m].fruits.push({
+										'href': recipe[key][mb.baseURI + 'hasFruit'][i].value});
+							};
+						}
+					//adds spices to mash step
+					if(typeof recipe[key][mb.baseURI + 'hasSpice'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasSpice'].length - 1; i >= 0; i--) {
+								apiJson.mashSteps[m].spice.push({
+										'href': recipe[key][mb.baseURI + 'hasSpice'][i].value});
+							};
+						}
+
+					if(typeof recipe[key][mb.baseURI + 'notes'] !== 'undefined') {
+						apiJson.mashSteps[m].notes =  recipe[key][mb.baseURI + 'notes'][0].value;
+						}
+						m++;
+				}
+
+				if(key.indexOf(mb.boilURI) !== -1) {
+					console.log('Boil Step ' + b + ':' + key);
+					apiJson.boilSteps.push({
+						'number': recipe[key][mb.baseURI + 'isStep'][0].value,
+						'href': key,
+						'length': recipe[key][mb.baseURI + 'stepLength'][0].value,
+						'fermentables' : [],
+						'hops' : [],
+						'fruits': [],
+						'spices': [],
+						});
+					if(typeof recipe[key][mb.baseURI + 'volume'] !== 'undefined') {
+						apiJson.boilSteps[b].volume = recipe[key][mb.baseURI + 'volume'][0].value;
+						}
+						//adds fermentebles to boils step
+					if(typeof recipe[key][mb.baseURI + 'hasFermentable'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasFermentable'].length - 1; i >= 0; i--) {
+								console.log('ferm: ' + recipe[key][mb.baseURI + 'hasFermentable'][i].value);
+								apiJson.boilSteps[b].fermentables.push({
+										'href': recipe[key][mb.baseURI + 'hasFermentable'][i].value});
+							};
+						}
+					//adds hops to boil step
+					if(typeof recipe[key][mb.baseURI + 'hasHops'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasHops'].length - 1; i >= 0; i--) {
+								apiJson.boilSteps[b].hops.push({
+										'href': recipe[key][mb.baseURI + 'hasHops'][i].value});
+							};
+						}
+
+					//adds fruits to boil step
+					if(typeof recipe[key][mb.baseURI + 'hasFruit'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasFruit'].length - 1; i >= 0; i--) {
+								apiJson.boilSteps[b].fruits.push({
+										'href': recipe[key][mb.baseURI + 'hasFruit'][i].value});
+							};
+						}
+					//adds spices to mash step
+					if(typeof recipe[key][mb.baseURI + 'hasSpice'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasSpice'].length - 1; i >= 0; i--) {
+								apiJson.boilSteps[b].spice.push({
+										'href': recipe[key][mb.baseURI + 'hasSpice'][i].value});
+							};
+						}
+					if(typeof recipe[key][mb.baseURI + 'notes'] !== 'undefined') {
+						apiJson.boilSteps[b].notes =  recipe[key][mb.baseURI + 'notes'][0].value;
+						}
+						b++;
+				}
+				if(key.indexOf(mb.fermURI) !== -1) {
+					console.log('Ferm Step: ' + key);
+					apiJson.fermentationSteps.push({
+						'number': recipe[key][mb.baseURI + 'isStep'][0].value,
+						'href': key,
+						'type': recipe[key]['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'][0].value,
+						'temperature': recipe[key][mb.baseURI + 'stepTemperature'][0].value,
+						'length': recipe[key][mb.baseURI + 'stepLength'][0].value,
+						'fermentables': [],
+						'hops' : [],
+						'fruits': [],
+						'spices': [],
+					});
+					if(typeof recipe[key][mb.baseURI + 'volume'] !== 'undefined') {
+						apiJson.fermentationSteps[f].volume = recipe[key][mb.baseURI + 'volume'][0].value;
+						}
+
+						//adds fermentebles to fermentation step
+					if(typeof recipe[key][mb.baseURI + 'hasFermentable'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasFermentable'].length - 1; i >= 0; i--) {
+								console.log('ferm: ' + recipe[key][mb.baseURI + 'hasFermentable'][i].value);
+								apiJson.fermentationSteps[f].fermentables.push({
+										'href': recipe[key][mb.baseURI + 'hasFermentable'][i].value});
+							};
+						}
+					//adds hops to fermentation step
+					if(typeof recipe[key][mb.baseURI + 'hasHops'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasHops'].length - 1; i >= 0; i--) {
+								apiJson.fermentationSteps[f].hops.push({
+										'href': recipe[key][mb.baseURI + 'hasHops'][i].value});
+							};
+						}
+
+					//adds fruits to fermentation step
+					if(typeof recipe[key][mb.baseURI + 'hasFruit'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasFruit'].length - 1; i >= 0; i--) {
+								apiJson.fermentationSteps[f].fruits.push({
+										'href': recipe[key][mb.baseURI + 'hasFruit'][i].value});
+							};
+						}
+					//adds spices to fermentation step
+					if(typeof recipe[key][mb.baseURI + 'hasSpice'] !== 'undefined') {
+
+							for (var i = recipe[key][mb.baseURI + 'hasSpice'].length - 1; i >= 0; i--) {
+								apiJson.fermentationSteps[f].spice.push({
+										'href': recipe[key][mb.baseURI + 'hasSpice'][i].value});
+							};
+						}
+
+					if(typeof recipe[key][mb.baseURI + 'notes'] !== 'undefined') {
+						apiJson.fermentationSteps[f].notes =  recipe[key][mb.baseURI + 'notes'][0].value;
+						}
+					f++;
+				}
+
+			}
+			callback();
+		},
+		fermentables: function (callback) {
+			ingredients.fermentables.getFermentebles
+			callback();
+		},
+		hops: function (callback) {
+
+			callback();
+		},
+		yeasts: function (callback) {
+			callback();
+		},
+		others: function (callback) {
+			callback();
+		}
+
+	}, function(error) {
+		if(error) {
+			callback(error);
+		} else {
+			callback(null,apiJson);
+		}
+	});
 };
 
 exports = module.exports = {
