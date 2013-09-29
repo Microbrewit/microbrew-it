@@ -53,7 +53,26 @@ var getFermentables = function (callback) {
 	});
 };
 
+var getFermentableURI = function(fermID, callback) {
+	if(typeof fermID === 'object' ) {
+		fermID = fermID.value;
+	}
+	getFermentable(fermID, function (error, fermentable){
+		if(error) {
+			callback(error);
+		} else {
+			for(key in fermentable) {
+				if(key === 'grains') {
+					callback(null, fermentable[key][0]);
+
+						}
+					}
+				}
+	});
+};
+
 var getFermentable = function (fermID, callback) {
+
 	async.parallel({
 		extract : function (callback) {
 			getExtract(fermID, function(err, result) {
@@ -90,7 +109,6 @@ var getFermentable = function (fermID, callback) {
 		} else if (typeof res.sugar.error === 'undefined') {
 		callback(null,res.sugar);
 		} else {
-			console.log('res');
 			callback(null, {'error': {
 								'message' : 'Not a fermentalbe.',
 								'code': 234531
@@ -132,7 +150,6 @@ var apiFormattingFermentables = function (fermentableGraph, callback) {
 								if(typeof fermentablesArray[i].suppliedbyid !== 'undefined') {
 
 									for (var h = suppliers.suppliers.length - 1; h >= 0; h--) {
-										console.log(suppliers.suppliers[h].href + ' == ' + fermentablesArray[i].suppliedbyid);
 										if(suppliers.suppliers[h].href === fermentablesArray[i].suppliedbyid) {
 											fermentablesArray[i].suppliedby = suppliers.suppliers[h].name;
 										}
@@ -196,9 +213,7 @@ var getGrain = function (grainID, callback) {
 			callback(err);
 		} else {
 			for (var i = res.length - 1; i >= 0; i--) {
-				console.log('resID: ' + res[i].id + ' === ' + grainID);
-				console.log(res[i].id === grainID);
-				if(res[i].id === grainID) {
+				if(res[i].id === grainID || res[i].href === grainID) {
 					apiGrain.grains.push(res[i]);
 			}
 		}
@@ -397,7 +412,6 @@ var getLiquidExtracts = function (callback) {
 };
 
 var getExtracts = function (callback) {
-	console.log('getExtracts');
 	async.parallel({
 		liquidextracts : function (callback) {
 			getLiquidExtracts( function(error, result) {
@@ -448,7 +462,6 @@ var getExtract = function (extractID, callback) {
 		} else if (typeof res.dryextract.error === 'undefined') {
 			callback(null,res.dryextract);
 		} else {
-			console.log('res');
 			callback(null, {'error': {
 								'message' : 'Not a extract.',
 								'code': 234100
@@ -461,6 +474,7 @@ var getExtract = function (extractID, callback) {
 exports = module.exports = {
     'getFermentables': getFermentables,
     'getFermentable': getFermentable,
+    'getFermentableURI': getFermentableURI,
     'getGrains': getGrains,
     'getSugars': getSugars,
     'getSugar' : getSugar,
