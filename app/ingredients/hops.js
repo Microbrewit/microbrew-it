@@ -40,7 +40,6 @@ var apiFormattingHops = function (hopGraph, callback) {
 				}
 
 		      if(typeof hopGraph[key][mb.baseURI + 'flavourDescription'] !== 'undefined') {
-			  	console.log(hopGraph[key][mb.baseURI + 'flavourDescription'][0].value);
 	 		  	hopsArray[j].flavourdescription = hopGraph[key][mb.baseURI + 'flavourDescription'][0].value;
 	 		  }
 	 	      if(typeof hopGraph[key][mb.baseURI + 'hasFlavour'] !== 'undefined') {
@@ -59,7 +58,6 @@ var apiFormattingHops = function (hopGraph, callback) {
        callback();
     },
     two: function (callback) {
-    	console.log(hopsArray.length);
 	    origin.getOrigins(function (err, originJson) {
 			if (err) {
 				console.log('ERROR');
@@ -67,8 +65,6 @@ var apiFormattingHops = function (hopGraph, callback) {
 			} else {
 			for (var h = 0; h < hopsArray.length; h++) {
 				for (var i = originJson.origins.length - 1; i >= 0; i--) {
-					//console.log(originJson.origins[i].href + ' = ' + hopsArray[k].links.originid);
-					//console.log(originJson.origins[i].href === hopsArray[k].links.originid);
 				  if(typeof originJson.origins !== 'undefined' && originJson.origins[i].href === hopsArray[h].links.originid) {
 					hopsArray[h].origin = originJson.origins[i].name;
 				}
@@ -81,7 +77,6 @@ var apiFormattingHops = function (hopGraph, callback) {
 	tree : function(callback) {
 		var	select = ' SELECT DISTINCT ?recommendeduses ?label ';
 		select +=    ' WHERE { ?hop mb:recommendedUsage ?recommendeduses . ?recommendeduses rdfs:label ?label . }';
-		console.log(prefix + select);
 		ts.select(prefix + select, function(error, result) {
 			if(error) {
 				callback(error);
@@ -131,7 +126,7 @@ var getHops = function (callback) {
 				          }
 				        }
 				      };
-				   apiJson.hops =result
+				   apiJson.hops = result
       				callback(null, apiJson);
       			}
       		});
@@ -139,7 +134,24 @@ var getHops = function (callback) {
       }
     });
   };
+var getHopURI = function(hopID, callback) {
 
+	if(typeof hopID === 'object' ) {
+		hopID = hopID.value;
+	}
+	getHop(hopID, function (error, hop){
+		if(error) {
+			callback(error);
+		} else {
+			for(key in hop) {
+				if(key === 'hops') {
+					console.log('hops return')
+					callback(null, hop[key][0]);
+						}
+					}
+				}
+	});
+};
 var getHop = function (hopID, callback) {
 	var apiHop = {
 			'meta': {
@@ -159,13 +171,13 @@ var getHop = function (hopID, callback) {
 			'hops' :[
 			]
 		}
-    if (hopID.length > 12) {
+    if (true) {
 	getHops(function (err, res) {
 		if(err) {
 			callback(err);
 		} else {
 			for (var i = res.hops.length - 1; i >= 0; i--) {
-				if(res.hops[i].id === hopID) {
+				if(res.hops[i].id === hopID || res.hops[i].href === hopID) {
 					apiHop.hops.push(res.hops[i]);
 					callback(null, apiHop);
 				}
@@ -187,7 +199,7 @@ var getHopFlavour = function (hop, callback) {
 		select +=	' WHERE { ?hop ' + mb.hasID + ' "' + hop.id + '" ; ' + mb.hasID + ' ?id . ';
 		select +=	' OPTIONAL { ?hop ' + mb.flavour + ' ?flavour } .';
 		select +=	' } ';
-		console.log(select);
+		//console.log(select);
 	ts.select(select, function (err, res) {
 		if (err) {
 			callback(err);
@@ -197,7 +209,7 @@ var getHopFlavour = function (hop, callback) {
 };
 
 var updateHop = function (hop, callback) {
-	console.log(hop);
+	//console.log(hop);
 	hardUpdateHop(hop,function (err, res) {
 		if(err) {
 			callback(err);
@@ -332,6 +344,7 @@ var	hopID = util.createID(),
 
 exports = module.exports = {
     'getHops': getHops,
+    'getHopURI': getHopURI,
     'getHop' : getHop,
     'updateHop': updateHop
 };
