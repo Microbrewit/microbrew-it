@@ -151,11 +151,33 @@ var getYeasts = function (callback) {
 
 };
 
-var getYeast = function (yeast, callback) {
-		console.log('getExtracts');
+var getYeastURI = function(yeastID, callback) {
+	console.log('yeastID ' + yeastID);
+	if(typeof yeastID === 'object' ) {
+		yeastID = yeastID.value;
+	}
+	getYeast(yeastID, function (error, yeast){
+		console.log('getYeasts by URI')
+		if(error) {
+			callback(error);
+		} else {
+			console.log(yeast);
+			for(key in yeast) {
+				if(key === 'liquidyeasts' || key === 'dryyeasts') {
+					console.log(yeast[key][0]);
+					callback(null, yeast[key][0]);
+
+						}
+					}
+				}
+	});
+};
+
+
+var getYeast = function (yeastID, callback) {
 	async.parallel({
 		liquidyeasts : function (callback) {
-			getLiquidYeast( function(error, result) {
+			getLiquidYeast(yeastID, function(error, result) {
 				if(error) {
 					callback(error);
 				} else {
@@ -164,7 +186,7 @@ var getYeast = function (yeast, callback) {
 			});
 		},
 		dryyeasts : function (callback) {
-			getDryYeast( function(error, result) {
+			getDryYeast(yeastID, function(error, result) {
 				if(error) {
 					callback(error);
 				} else {
@@ -173,7 +195,13 @@ var getYeast = function (yeast, callback) {
 			});
 		},
 	}, function (err, res) {
-		callback(null,res);
+		if(typeof res.dryyeasts.error === 'undefined' || typeof res.liquidyeasts.error !== 'undefined') {
+			console.log(res.dryyeasts);
+			callback(null,res.dryyeasts);
+		} {
+			console.log(res.liquidyeasts);
+		callback(null,res.liquidyeasts);
+		}
 	});
 };
 
@@ -218,7 +246,8 @@ var getLiquidYeast = function (liquidID, callback) {
 			callback(err);
 		} else {
 			for (var i = res.length - 1; i >= 0; i--) {
-				if(res[i].id === liquidID) {
+				console.log(liquidID === res[i].href === liquidID)
+				if(res[i].id === liquidID || res[i].href === liquidID) {
 					apiLiquid.liquidyeasts.push(res[i]);
 					}
 		}
@@ -260,7 +289,7 @@ var getDryYeast = function (dryID, callback) {
 			callback(err);
 		} else {
 			for (var i = res.length - 1; i >= 0; i--) {
-				if(res[i].id === dryID) {
+				if(res[i].id === dryID || res[i].href === dryID) {
 					apiDry.dryyeasts.push(res[i]);
 					}
 		}
@@ -298,6 +327,7 @@ var getDryYeasts = function (callback) {
 exports = module.exports = {
     'getYeasts': getYeasts,
     'getYeast': getYeast,
+    'getYeastURI': getYeastURI,
     'getLiquidYeasts': getLiquidYeasts,
     'getLiquidYeast': getLiquidYeast,
     'getDryYeasts': getDryYeasts,
