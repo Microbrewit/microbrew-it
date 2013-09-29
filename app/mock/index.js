@@ -27,7 +27,7 @@ exports.recipe = {
 					},
 					{
 						'id': '1377073452234',
-						'href': 'http://microbrew.it/ontology.owl#mb:Simpsons_Pale_Ale_Malt',
+						'href': 'http://microbrew.it/ontology.owl#Simpsons_Pale_Ale_Malt',
 						'name': 'Pale Ale Malt',
 						'amount': 50
 					},
@@ -36,6 +36,7 @@ exports.recipe = {
 				'hops': [],
 				'spices': [],
 				'fruits': [],
+				'yeasts': [],
 				'notes': ''
 			}
 		],
@@ -48,18 +49,19 @@ exports.recipe = {
 				'fermentables': [],
 				'hops': [
 					{
-						'href': 'http://microbrew.it/ontology#Summit',
+						'href': 'http://microbrew.it/ontology.owl#Summit',
 						'aalow': 5,
 						'amount': 50
 					},
 					{
-						'href': 'http://microbrew.it/ontology#Willamette',
+						'href': 'http://microbrew.it/ontology.owl#Willamette',
 						'aalow': 5,
 						'amount': 50
 					},
 				],
 				'spices': [],
 				'fruits': [],
+				'yeasts': [],
 				'notes': ''
 			},
 			{
@@ -67,11 +69,17 @@ exports.recipe = {
 				'length': 0,
 				'volume': 20,
 				'fermentables': [],
-				'hops': [],
+				'hops': [
+					{
+						'href': 'http://microbrew.it/ontology.owl#Willamette',
+						'aalow': 5,
+						'amount': 20
+					},
+				],
 				'spices': [],
 				'fruits': [
 					{
-					'href':'http://microbrew.it/ontology#Strawberry',
+					'href':'http://microbrew.it/ontology.owl#Strawberry',
 					'amount': 30
 					}
 				],
@@ -82,18 +90,18 @@ exports.recipe = {
 		'fermentationSteps' : [
 			{
 				'number': 4,
-				'type': 'http://microbrew.it/ontology#Primary',
+				'type': 'http://microbrew.it/ontology.owl#Primary',
 				'length': 14,
 				'temperature': 24,
 				'fermentables': [],
 				'hops': [
 					{
-						'href': 'http://microbrew.it/ontology#Summit',
+						'href': 'http://microbrew.it/ontology.owl#Summit',
 						'aalow': 5,
 						'amount': 50
 					},
 					{
-						'href': 'http://microbrew.it/ontology#Willamette',
+						'href': 'http://microbrew.it/ontology.owl#Willamette',
 						'aalow': 5,
 						'amount': 50
 					},
@@ -101,7 +109,12 @@ exports.recipe = {
 				],
 				'spices': [],
 				'fruits': [],
-				'yeasts': [],
+				'yeasts': [
+					{
+						'href': 'http://microbrew.it/ontology.owl#WLP550',
+						'amount': 1,
+					}
+				],
 				'notes': ''
 			}
 		],
