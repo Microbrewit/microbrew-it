@@ -9,7 +9,7 @@ var addRecipe = function (req, res) {
 	var mockRecipe = mock.recipe;
 	var recipeData = JSON.parse(req.body.recipe);
 	console.log(req);
-	recipe.addRecipe(recipe, function (error, result) {
+	recipe.addRecipe(recipeData, function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
 			res.end(error.message);
