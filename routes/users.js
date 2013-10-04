@@ -38,6 +38,7 @@ var login = function (req, res) {
 					password: params.password
 				},
 			function (err, result) {
+				response = result;
 				if(err) {
 					head.statuscode = 401;
 					response = {
@@ -51,6 +52,13 @@ var login = function (req, res) {
 					};
 				} else {
 					console.log(params);
+						response = {
+							meta: {
+								message: 'User successfully logged in.',
+								returned: 1
+							},
+							'users': [result.user]
+						};
 					req.session.user = params.id;
 					req.session.userObj = result.user;
 					head.statuscode = 200;
@@ -59,6 +67,7 @@ var login = function (req, res) {
 				response = utils.formatJsonResponse(params, response);
 				res.header('Access-Control-Allow-Origin', '*');
 				res.writeHead(head.statuscode, head.contentType);
+				console.log(JSON.stringify(response));
 				res.end(response);
 
 			});
