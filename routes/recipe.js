@@ -7,7 +7,8 @@ var util = require('../app/util'),
 
 var addRecipe = function (req, res) {
 	var mockRecipe = mock.recipe;
-	var recipe = params.recipe
+	var recipe = req.params.recipe
+	console.log(req);
 	recipe.addRecipe(recipe, function (error, result) {
 		if(error) {
 			res.writeHead(500, {'Content-Type': 'text/plain'});
