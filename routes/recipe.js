@@ -7,7 +7,7 @@ var util = require('../app/util'),
 
 var addRecipe = function (req, res) {
 	var mockRecipe = mock.recipe;
-	var recipe = JSON.parse(req.body.recipe);
+	var recipeData = JSON.parse(req.body.recipe);
 	console.log(req);
 	recipe.addRecipe(recipe, function (error, result) {
 		if(error) {
